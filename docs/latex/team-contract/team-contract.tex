@@ -1,0 +1,154 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Journal Article
+% LaTeX Template
+% Version 1.3 (9/9/13)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Frits Wenneker (http://www.howtotex.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%    PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[twoside]{article}
+
+\usepackage{lipsum}
+
+\usepackage[sc]{mathpazo} % Use the Palatino font
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\linespread{1.05} % Line spacing - Palatino needs more space between lines
+\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+
+\usepackage[hmarginratio=1:1,top=32mm,columnsep=20pt]{geometry} % Document margins
+\usepackage{multicol} % Used for the two-column layout of the document
+\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+\usepackage{booktabs} % Horizontal rules in tables
+\usepackage{float} % Required for tables and figures in the multi-column environment - they need to be placed in specific locations with the [H] (e.g. \begin{table}[H])
+\usepackage{hyperref} % For hyperlinks in the PDF
+
+\usepackage{lettrine} % The lettrine is the first enlarged letter at the beginning of the text
+\usepackage{paralist} % Used for the compactitem environment which makes bullet points with less space between them
+
+\usepackage{abstract} % Allows abstract customization
+\renewcommand{\abstractnamefont}{\normalfont\bfseries} % Set the "Abstract" text to bold
+\renewcommand{\abstracttextfont}{\normalfont\small\itshape} % Set the abstract itself to small italic text
+
+\usepackage{titlesec} % Allows customization of titles
+\renewcommand\thesection{\Roman{section}} % Roman numerals for the sections
+\renewcommand\thesubsection{\Roman{subsection}} % Roman numerals for subsections
+\titleformat{\section}[block]{\large\scshape\centering}{\thesection.}{1em}{} % Change the look of the section titles
+\titleformat{\subsection}[block]{\large}{\thesubsection.}{1em}{} % Change the look of the section titles
+
+\usepackage{fancyhdr} % Headers and footers
+\pagestyle{fancy} % All pages have headers and footers
+\fancyhead{} % Blank out the default header
+\fancyfoot{} % Blank out the default footer
+\fancyhead[C]{Team Contract $\bullet$ 6.005 Project 2 $\bullet$ 2013 Dec 3} %
+\fancyfoot[RO,LE]{\thepage} % Custom footer text
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\title{\vspace{-15mm}\fontsize{24pt}{10pt}\selectfont\textbf{Team Contract}} % Article title
+
+\author{
+\large
+\textsc{Andre Aboulian, Cathleen Gendron, \& Jon Beaulieu}\\[2mm] % member name
+\normalsize 6.005 Software Construction - Fall 2013 - Project 2: "Collaborative Whiteboard"
+\vspace{-5mm}
+}
+\date{}
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Insert title
+
+\thispagestyle{fancy} % All pages have headers and footers
+
+%%----------------------------------------------------------------------------------------
+%%	ABSTRACT
+%%----------------------------------------------------------------------------------------
+%
+%\begin{abstract}
+%
+%\noindent \lipsum[1] % Dummy abstract text
+%
+%\end{abstract}
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
+
+\hspace{10mm}
+
+\begin{multicols}{2} % Two-column layout throughout the main article text
+
+%Goals
+%* implement necessary components first
+%
+%Meetings
+%* review next time goals and next meeting time
+%
+%Work Norms
+%* ~10hr/person/week
+%* separation of tasks
+%* mini-deadlines at end of each meeting
+%* email out if 2 people working only
+%
+%Decision
+%* 2/3 enough
+%
+%* test first programming
+%* no classes/methods with comments
+
+\section{Goals}
+
+\begin{description}
+    \item[Team Goals] As a team, we intend to fully implement and test the assigned "Collaborative Whiteboard", applying concepts and practices learned thus far.
+	\item[Personal Goals] Mindful of each others' commitments and limits, we will each individually contribute as much as is feasible, asking for help when encountering roadblocks and being candid about our abilities. As a tight-knit team, we believe that this will be a reasonable strategy for accomplishing our goals. 
+	\item[Obstacles] We fully understand that there may be possible conflicts that arise. When the issue involves understanding the problem or moving past a particularly difficult task, we vouch to seek help (office hours) immediately to reduce delays. Recognized design flaws are to be discussed immediately with other team members and resolved. (Interpersonal obstacles are described below.)
+	\item[Time Constraints] Although a fully successful implementation is the eventual goal, we understand that certain components may not be ready on time.  For instance, certain "bells and whistles" that we intended to include may never make it past the planning stage.  In such a case, holistic functionality will be prioritized over refining details.  We believe that this will improve the overall result by eliminating premature complexity and by reducing the need for reworking existing code.
+	\item[Equity of Effort] In our pursuit of having candid discourse, it will be permissible to urge a straggling member of the team along. We have each agreed to do well on this project; therefore, refocusing a member by offering help or appropriately stern words will be encouraged.  On the other hand, it will also be permissible to repress an over-active team member, asking for work to be shared more equally.
+\end{description}
+
+
+\section{Meetings}
+
+\begin{description}
+	\item[Online Communication] The mailing list 'glitter-n-code@mit.edu' will be created and will serve as our primary channel for communicating progress, meetings, questions, and problems. Relying on email will help to keep a record of what has been discussed and will allow people to work on their own hours. All communications should be sent to both other members of the team to limit exclusion, keeping each member aware of all changes.
+	\item[Time and Location] Regular gatherings are planned to take place, roughly every day or two. We believe that meeting regularly will be effective in preventing procrastination. An initial gathering will be scheduled to discuss the overall functionality and design. At the conclusion of each meeting, remaining components will be enumerated and the time/location of the next meeting will be set before the members leave. Gatherings may be arranged when brainstorming, design, or conflict resolution needs to occur. The likely location of all meetings will be Simmons Hall, the common residence of all the team members. If two members work together to complete a component, they should inform the third of new developments and the status of the project via the mailing list.
+	\item[Class Time] We intend to meet mostly outside of class.  We unanimously feel that time can be better spent working elsewhere and attending office hours and recitation when required.
+\end{description}
+
+
+\section{Strategy}
+
+\begin{description}
+	\item[Distribution] The overall division of labor will occur in the design stage. Further delegations may occur dynamically as expectations evolve. Roles will be evaluated and reassigned at each regular team meeting in accordance with the status of components.
+	\item[Deadlines] Deadlines will mostly follow those set forth by the project instructions. Incremental deadlines (ex. "finish method x by tonight") will be informally set once development/design is underway. This will likely follow a discussion about a particular problem or step. A listing of all current deadlines and roles will be sent to the mailing list at the conclusion of each meeting.
+	\item[Responsibility \& Failure] Set deadlines will be collectively managed by all members, since they will be kept in the loop. Failure to complete discussed/assigned tasks will e dealt with as descried in "Equity of Effort" above.
+	\item[Review and Revision] Each member is responsible for writing accompanying tests for each segment of code written. Other members are encouraged to read through others' code, although we expect this to happen naturally due to interdependence of the component. This will increase the likelihood of catching bugs and ensuring compatibility between partners' work. If the reviewed code contains code that a member believes should be revised, it is his/her own responsibility to revise this segment and communicate the changes to the original contributor, who will in turn review the changes. If the issue is one of preference rather than functionality, it is best to preserve the existing code unless it excessively complicates the implementation of successive components.
+\end{description}
+
+
+\section{Decisions}
+
+\begin{description}
+	\item[Changes] We believe that the members of our team are generally prudent and usually in agreement. Therefore, a significant design or specification change only requires discussion between two members before it can be made. Naturally, the third member should be notified and be aware of the change.
+	\item[Disagreement] Further discourse may be required if the third member disagrees with a particular change. If the change is one of preference, the agreement of two members is sufficient to override the opinion of the third. If the change concerns the core functionality or overall design of the project, then it requires a consensus.
+\end{description}
+
+\end{multicols}
+
+\end{document}
