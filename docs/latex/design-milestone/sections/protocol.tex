@@ -3,7 +3,7 @@
 \subsection{Protocol}
 
 \subsubsection{Grammar}
-The following grammar will facilitate the text-based communication between the clients and the server. The server will send a \texttt{StoC\_MSG} to the client, which will be able to send a \texttt{CtoS\_MSG} back to the server.
+The following grammar will facilitate the text-based communication between the clients and the server. The server will send \texttt{StoC\_MSG} messages to the client, which will be able to send \texttt{CtoS\_MSG} messages back to the server.
 
 \vspace{5mm}
 
@@ -31,7 +31,7 @@ The following grammar will facilitate the text-based communication between the c
 \texttt{USER\_REQ :== "user\_req" S USER\_NAME}\\
 \texttt{USER\_INIT :== "you\_are" S USER\_NAME}\\
 
-\texttt{NAME :== [$\wedge$N]}\\
+\texttt{NAME :== [$\char`\^$N]}\\
 \texttt{USER\_NAME :== [A-Za-z]([A-Za-z0-9]?)+}\\
 \texttt{BOARD\_ID :== INT}\\
 
@@ -41,17 +41,23 @@ The following grammar will facilitate the text-based communication between the c
 
 \setlength{\parindent}{15pt} %default
 
+
 \subsubsection{Usage}
 
-\paragraph{Adding and Removing Users} When a new client attempts to...
+\paragraph{Adding Users} Upon entering a username in the client application, a \texttt{USER\_REQ} message will be sent to the server to request the desired username. (Note that regex checking for \texttt{USER\_NAME} occurs on the client side before this request is made.) The server responds with a \texttt{USER\_INIT} message, signifying the acquired username for the client. If there is a username conflict, one is chosen for the client. When the client is ready to accept information about existing boards, it calls \texttt{BRD\_ALL} to begin receiving \texttt{BRD\_INFO} messages for all previously created boards.
 
-\paragraph{Adding and Removing Boards} TEXT
+\paragraph{Adding Boards} When a client wants to create a new whiteboard, it sends a \texttt{BRD\_REQ} request to the server with a desired \texttt{NAME} (duplicate names allowed). Once the server has initialized a new internal board object, it sends a \texttt{BRD\_INFO} message to all connected users to inform them of the newly available board. Note that the \texttt{BOARD\_ID} used is a number unique to each whiteboard and is never reused. This is a different number than the sequential board numbering in the GUI, although the order is preserved.
 
-\paragraph{Selecting Boards} TEXT
+\paragraph{Removing Boards} Deleting boards entails a process similar to adding them. A client sends a \texttt{BRD\_DEL} request to the server, which forwards this requests to all other users. The server internally disassociates all connected users and removes the board, taking care to ignore drawing requests and selection requests for this deleted board.
 
-\paragraph{Drawing Strokes} TEXT
+\paragraph{Selecting Boards} Upon selecting a different board, the client sends a \texttt{SEL} request to the server. The server clears all stroke messages queued to update the client's whiteboard before associating the requested whiteboard object to the user, if available. The \texttt{SEL} command also requests all previously drawn strokes to be sent to the client. A \texttt{BRD\_USERS} messages is sent to all users of the previous and current whiteboard to inform them of this change in editors.
 
-\subsection{Interaction}
+\paragraph{Disconnecting Users}
+When a client disconnects -- by either severing the connection or closing the client application -- the server closes the associated socket and streams, disassociates the user from its whiteboard, and removes the user from its main users list. A \texttt{BRD\_USERS} message is sent to all users of the board that was being edited.
+
+\paragraph{Drawing Strokes} When a client draws a stroke in the selected whiteboard, a sequence of \texttt{STROKE} messages are sent to the server. The corresponding lines are logged as drawn in the order they are received by the server. The server proceeds to forward the \texttt{STROKE} messages to all users editing the same whiteboard, including the user who made the edit. Since the server sends the \texttt{STROKE} updates in the order they were made, the user's stroke will be covered by the echoed version from the server. This will not be visually apparent and will ensure that concurrently drawn lines appear constant across clients.
+
+\subsection{Data Transport}
 
 \subsubsection{New Connections}
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  2 DEC 2013 06:34
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  2 DEC 2013 08:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -587,22 +587,25 @@ Package microtype Info: Character `029' is missing
 (microtype)             Ignoring protrusion settings for this character.
 
 (./sections/functionality.tex
-<img/gui-sketch.jpg, id=104, 1170.3725pt x 824.07875pt>
+<img/gui-sketch.jpg, id=128, 1170.3725pt x 824.07875pt>
 File: img/gui-sketch.jpg Graphic file (type jpg)
 
 <use img/gui-sketch.jpg>
-Package pdftex.def Info: img/gui-sketch.jpg used on input line 3.
+Package pdftex.def Info: img/gui-sketch.jpg used on input line 5.
 (pdftex.def)             Requested size: 433.62pt x 305.31932pt.
 
-Overfull \hbox (3.61537pt too wide) in paragraph at lines 3--4
+Overfull \hbox (3.61537pt too wide) in paragraph at lines 5--6
 [] 
  []
 
-[1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <10> not available
+(Font)              Font shape `T1/pplx/b/n' tried instead on input line 7.
+
+Underfull \vbox (badness 1527) has occurred while \output is active []
+
+ [1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
  <./img/gui-sketch.jpg>]) (./sections/protocol.tex
-LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <10> not available
-(Font)              Font shape `T1/pplx/b/n' tried instead on input line 5.
 LaTeX Font Info:    Try loading font information for T1+pcr on input line 6.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/t1pcr.fd
@@ -627,7 +630,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 17--22
 
  []
 
-
+[2]
 Underfull \hbox (badness 10000) in paragraph at lines 23--24
 
  []
@@ -637,7 +640,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 25--30
 
  []
 
-[2]
+
 Underfull \hbox (badness 10000) in paragraph at lines 31--33
 
  []
@@ -652,12 +655,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 38--41
 
  []
 
-) [3] (./sections/concurrency.tex) (./sections/testing.tex)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 113.
- [4]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 113.
+[3]) (./sections/concurrency.tex) (./sections/testing.tex
+Underfull \vbox (badness 1817) has occurred while \output is active []
 
-(./design-milestone.aux)
+ [4])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 113.
+
+[5]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 113.
+ (./design-milestone.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 113.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 113.
 
@@ -667,28 +673,40 @@ Package rerunfilecheck Warning: File `design-milestone.out' has changed.
 (rerunfilecheck)                or use package `bookmark'.
 
 Package rerunfilecheck Info: Checksums for `design-milestone.out':
-(rerunfilecheck)             Before: BFE836808149AD6921F39B2C8B716F9E;1724
-(rerunfilecheck)             After:  C338F1EAA7A121A0CF1C92E358C46AB0;2060.
+(rerunfilecheck)             Before: C338F1EAA7A121A0CF1C92E358C46AB0;2060
+(rerunfilecheck)             After:  30886AE22D25083295AAB65CDC0C1220;2230.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 113.
  ) 
 Here is how much of TeX's memory you used:
- 10748 strings out of 493315
- 166009 string characters out of 6137904
- 378882 words of memory out of 5000000
- 13912 multiletter control sequences out of 15000+600000
- 39149 words of font info for 120 fonts, out of 8000000 for 9000
+ 10793 strings out of 493315
+ 166490 string characters out of 6137904
+ 380882 words of memory out of 5000000
+ 13918 multiletter control sequences out of 15000+600000
+ 40933 words of font info for 144 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 40i,14n,43p,598b,336s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2013/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
-exlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
-xlive/2013/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb></usr/local/texlive/20
-13/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2013/texmf
--dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2013/texmf-dist/f
-onts/type1/urw/palatino/uplr8a.pfb>
-Output written on design-milestone.pdf (4 pages, 311805 bytes).
+ 40i,14n,43p,721b,336s stack positions out of 5000i,500n,10000p,200000b,80000s
+pdfTeX warning (dest): name{subsection.1.6} has been referenced but does not 
+exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.1.5} has been referenced but does not ex
+ist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.1.4} has been referenced but does not ex
+ist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.1.3} has been referenced but does not ex
+ist, replaced by a fixed one
+
+{/usr/local/texlive/2013/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/tex
+live/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texl
+ive/2013/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb></usr/local/texlive/2013
+/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2013/texmf-d
+ist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2013/texmf-dist/fon
+ts/type1/urw/palatino/uplr8a.pfb>
+Output written on design-milestone.pdf (5 pages, 317491 bytes).
 PDF statistics:
- 161 PDF objects out of 1000 (max. 8388607)
- 147 compressed objects within 2 object streams
- 36 named destinations out of 1000 (max. 500000)
- 31950 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 193 PDF objects out of 1000 (max. 8388607)
+ 178 compressed objects within 2 object streams
+ 43 named destinations out of 1000 (max. 500000)
+ 31998 words of extra memory for PDF output out of 35830 (max. 10000000)
 
