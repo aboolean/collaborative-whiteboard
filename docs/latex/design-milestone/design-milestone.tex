@@ -101,32 +101,8 @@
 
 \hspace{10mm}
 
-\section{User Functionality Overview}
+\input{sections/functionality.tex}
 
-\includegraphics[keepaspectratio=1,width=6in]{img/gui-sketch.jpg}
-
-\subsection{Whiteboard Selector}
-
-The board selector in the left pane includes a list of all current whiteboards. Each line will represent a different board, which will be numbered sequentially and named by the user. Upon creation of a new board, users will be prompted to enter a name, which will be permanently stored. Clicking on a board in the list will download the board from the server, overwriting the local copy if one exists, and display the board in the canvas window. 
-
-\subsection{Board Editors}
-
-Displays a list of users, including the viewer, who are currently modifying the selected board. This list will be updated as users enter and exit this board.
-
-\subsection{Thickness Selector}
-
-This tool allows the user to select a brush/eraser thickness for use on the whiteboard.
-
-\subsection{Color Selector}
-
-The main color palette displays a grid of colors from which the user can choose to paint with. Clicking the "`more colors"' button will open a new window with a larger selection of colors (JColorChooser).
-
-\subsection{Erasing Tools}
-
-The erase button will allow the user to toggle between erasing and painting. "`Erasing" will be defined as drawing with a white selection. Toggling back to painting will preserve users' previous color choice.
-
-\subsection{Whiteboard Window}
-
-Displays the status of the currently selected whiteboard. The whiteboard be real-time interactive to allow users to collaborate simultaneously. 
+\input{sections/protocol.tex}
 
 \end{document}
