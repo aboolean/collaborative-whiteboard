@@ -2,4 +2,53 @@
 
 \subsection{Protocol}
 
+\subsubsection{Grammar}
+The following grammar will facilitate the text-based communication between the clients and the server. The server will send a \texttt{StoC\_MSG} to the client, which will be able to send a \texttt{CtoS\_MSG} back to the server.
+
+\vspace{5mm}
+
+\setlength{\parindent}{0in}
+
+\texttt{StoC\_MSG :== (STROKE | BRD\_INFO | BRD\_DEL | USER\_INIT | BRD\_USERS) N}\\
+
+\texttt{CtoS\_MSG :== (STROKE | SEL | BRD\_REQ | BRD\_DEL | BRD\_ALL | USER\_REQ) N}\\
+
+
+\texttt{STROKE :== "stroke" S BOARD\_ID S THICK S COORDS S COLOR}\\
+\texttt{COORDS :== X1 S Y1 S X2 S Y2}\\
+\texttt{X1, Y1, X2, Y2 :== INT}\\
+\texttt{COLOR :== [0-255] S [0-255] S [0-255]}\\
+\texttt{THICK :== [1-10]}\\
+
+\texttt{SEL :== "select" S BOARD\_ID}\\
+
+\texttt{BRD\_REQ :== "board\_req" S NAME}\\
+\texttt{BRD\_ALL :== "board\_all"}\\
+\texttt{BRD\_INFO :== "board" S BOARD\_ID S NAME}\\
+\texttt{BRD\_DEL :== "del" S BOARD\_ID}\\
+\texttt{BRD\_USERS :== "board\_users" S BOARD\_ID (S USER\_NAME)+}\\
+
+\texttt{USER\_REQ :== "user\_req" S USER\_NAME}\\
+\texttt{USER\_INIT :== "you\_are" S USER\_NAME}\\
+
+\texttt{NAME :== [$\wedge$N]}\\
+\texttt{USER\_NAME :== [A-Za-z]([A-Za-z0-9]?)+}\\
+\texttt{BOARD\_ID :== INT}\\
+
+\texttt{INT :== [0-9]+}\\
+\texttt{N :== "$\backslash$r?$\backslash$n"}\\
+\texttt{S :== " "}\\
+
+\setlength{\parindent}{15pt} %default
+
+\subsubsection{Usage}
+
+\paragraph{Adding and Removing Users} When a new client attempts to...
+
+\paragraph{Adding and Removing Boards} TEXT
+
+\paragraph{Selecting Boards} TEXT
+
+\paragraph{Drawing Strokes} TEXT
+
 \subsection{Interaction}

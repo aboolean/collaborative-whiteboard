@@ -5,4 +5,8 @@
 \BOOKMARK [2][-]{subsection.1.4}{Color Selector}{section.1}% 5
 \BOOKMARK [2][-]{subsection.1.5}{Erasing Tools}{section.1}% 6
 \BOOKMARK [2][-]{subsection.1.6}{Whiteboard Window}{section.1}% 7
-\BOOKMARK [1][-]{section.2}{Protocol}{}% 8
+\BOOKMARK [1][-]{section.2}{Server-Client Communication}{}% 8
+\BOOKMARK [2][-]{subsection.2.1}{Protocol}{section.2}% 9
+\BOOKMARK [3][-]{subsubsection.2.1.1}{Grammar}{subsection.2.1}% 10
+\BOOKMARK [3][-]{subsubsection.2.1.2}{Usage}{subsection.2.1}% 11
+\BOOKMARK [2][-]{subsection.2.2}{Interaction}{section.2}% 12

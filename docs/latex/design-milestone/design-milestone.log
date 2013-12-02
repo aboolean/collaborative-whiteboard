@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  1 DEC 2013 00:03
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  2 DEC 2013 02:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -94,6 +94,9 @@ Package color Info: Driver file: pdftex.def on input line 130.
 )
 (/usr/local/texlive/2013/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2004/09/05 1.3 listings language file
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/courier.sty
+Package: courier 2005/04/12 PSNFSS-v9.2a (WaS) 
 )
 (/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/mathpazo.sty
 Package: mathpazo 2005/04/12 PSNFSS-v9.2a Palatino w/ Pazo Math (D.Puga, WaS) 
@@ -420,25 +423,24 @@ File: block.tss 2011/12/15
 \f@ncyO@olf=\skip65
 \f@ncyO@orf=\skip66
 )
-(./design-milestone.aux (./sections/functionality.tex.aux)
-(./sections/protocol.tex.aux))
+(./design-milestone.aux)
 \openout1 = `design-milestone.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 96.
-LaTeX Font Info:    ... okay on input line 96.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 96.
-LaTeX Font Info:    ... okay on input line 96.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 96.
-LaTeX Font Info:    ... okay on input line 96.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 96.
-LaTeX Font Info:    ... okay on input line 96.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 96.
-LaTeX Font Info:    ... okay on input line 96.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 96.
-LaTeX Font Info:    ... okay on input line 96.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 96.
-LaTeX Font Info:    ... okay on input line 96.
-LaTeX Font Info:    Try loading font information for T1+pplx on input line 96.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 97.
+LaTeX Font Info:    ... okay on input line 97.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 97.
+LaTeX Font Info:    ... okay on input line 97.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 97.
+LaTeX Font Info:    ... okay on input line 97.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 97.
+LaTeX Font Info:    ... okay on input line 97.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 97.
+LaTeX Font Info:    ... okay on input line 97.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 97.
+LaTeX Font Info:    ... okay on input line 97.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 97.
+LaTeX Font Info:    ... okay on input line 97.
+LaTeX Font Info:    Try loading font information for T1+pplx on input line 97.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/t1pplx.fd
 File: t1pplx.fd 2004/09/06 font definitions for T1/pplx.
@@ -473,7 +475,7 @@ e
 ))
 \c@lstlisting=\count135
 \big@size=\dimen169
-LaTeX Info: Redefining \microtypecontext on input line 96.
+LaTeX Info: Redefining \microtypecontext on input line 97.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -527,7 +529,7 @@ Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
 \AtBeginShipoutBox=\box60
-Package hyperref Info: Link coloring OFF on input line 96.
+Package hyperref Info: Link coloring OFF on input line 97.
 (/usr/local/texlive/2013/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
@@ -536,42 +538,42 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count136
 )
-LaTeX Info: Redefining \ref on input line 96.
-LaTeX Info: Redefining \pageref on input line 96.
-LaTeX Info: Redefining \nameref on input line 96.
+LaTeX Info: Redefining \ref on input line 97.
+LaTeX Info: Redefining \pageref on input line 97.
+LaTeX Info: Redefining \nameref on input line 97.
 
 (./design-milestone.out) (./design-milestone.out)
 \@outlinefile=\write3
 \openout3 = `design-milestone.out'.
 
 LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <24> not available
-(Font)              Font shape `T1/pplx/b/n' tried instead on input line 99.
-LaTeX Font Info:    Try loading font information for OT1+pplx on input line 99.
-
+(Font)              Font shape `T1/pplx/b/n' tried instead on input line 100.
+LaTeX Font Info:    Try loading font information for OT1+pplx on input line 100
+.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/ot1pplx.fd
 File: ot1pplx.fd 2004/09/06 font definitions for OT1/pplx.
 )
-LaTeX Font Info:    Try loading font information for OML+zplm on input line 99.
-
+LaTeX Font Info:    Try loading font information for OML+zplm on input line 100
+.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/omlzplm.fd
 File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
 )
-LaTeX Font Info:    Try loading font information for OMS+zplm on input line 99.
-
+LaTeX Font Info:    Try loading font information for OMS+zplm on input line 100
+.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/omszplm.fd
 File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
 )
-LaTeX Font Info:    Try loading font information for OMX+zplm on input line 99.
-
+LaTeX Font Info:    Try loading font information for OMX+zplm on input line 100
+.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/omxzplm.fd
 File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
 )
-LaTeX Font Info:    Try loading font information for OT1+zplm on input line 99.
-
+LaTeX Font Info:    Try loading font information for OT1+zplm on input line 100
+.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/ot1zplm.fd
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
@@ -585,9 +587,10 @@ Package microtype Info: Character `029' is missing
 (microtype)             Ignoring protrusion settings for this character.
 
 (./sections/functionality.tex
-<img/gui-sketch.jpg, id=4, 1170.3725pt x 824.07875pt>
+<img/gui-sketch.jpg, id=52, 1170.3725pt x 824.07875pt>
 File: img/gui-sketch.jpg Graphic file (type jpg)
- <use img/gui-sketch.jpg>
+
+<use img/gui-sketch.jpg>
 Package pdftex.def Info: img/gui-sketch.jpg used on input line 3.
 (pdftex.def)             Requested size: 433.62pt x 305.31932pt.
 
@@ -597,41 +600,87 @@ Overfull \hbox (3.61537pt too wide) in paragraph at lines 3--4
 
 [1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
- <./img/gui-sketch.jpg>]) (./sections/protocol.tex)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 108.
- [2]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 108.
+ <./img/gui-sketch.jpg>]) (./sections/protocol.tex
+LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <10> not available
+(Font)              Font shape `T1/pplx/b/n' tried instead on input line 5.
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 6.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/t1pcr.fd
+File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
+)
+Package microtype Info: Loading generic settings for font family
+(microtype)             `pcr' (encoding: T1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+
+Underfull \hbox (badness 10000) in paragraph at lines 12--13
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 14--15
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 17--22
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 23--24
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 25--30
+
+ []
+
+[2]
+Underfull \hbox (badness 10000) in paragraph at lines 31--33
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 34--37
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 38--41
+
+ []
+
+)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 109.
+ [3]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 109.
  (./design-milestone.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 108.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 108.
-
-
-Package rerunfilecheck Warning: File `design-milestone.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `design-milestone.out':
-(rerunfilecheck)             Before: D41D8CD98F00B204E9800998ECF8427E;0
-(rerunfilecheck)             After:  ACA972C1E0F82AE9D1CAFA87020A547F;493.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 108.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 109.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 109.
+Package rerunfilecheck Info: File `design-milestone.out' has not changed.
+(rerunfilecheck)             Checksum: C4BBBC8CFAC183822982798C0AAD21B4;762.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 109.
  ) 
 Here is how much of TeX's memory you used:
- 10615 strings out of 493315
- 164109 string characters out of 6137904
- 377695 words of memory out of 5000000
- 13843 multiletter control sequences out of 15000+600000
- 34660 words of font info for 94 fonts, out of 8000000 for 9000
+ 10693 strings out of 493315
+ 165196 string characters out of 6137904
+ 377882 words of memory out of 5000000
+ 13899 multiletter control sequences out of 15000+600000
+ 38257 words of font info for 108 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 40i,14n,43p,504b,336s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 40i,14n,43p,598b,336s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2013/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
 xlive/2013/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb></usr/local/texlive/20
-13/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2013/texm
-f-dist/fonts/type1/urw/palatino/uplr8a.pfb>
-Output written on design-milestone.pdf (2 pages, 282627 bytes).
+13/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2013/texmf
+-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2013/texmf-dist/f
+onts/type1/urw/palatino/uplr8a.pfb>
+Output written on design-milestone.pdf (3 pages, 305099 bytes).
 PDF statistics:
- 45 PDF objects out of 1000 (max. 8388607)
- 35 compressed objects within 1 object stream
- 11 named destinations out of 1000 (max. 500000)
- 30726 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 95 PDF objects out of 1000 (max. 8388607)
+ 83 compressed objects within 1 object stream
+ 16 named destinations out of 1000 (max. 500000)
+ 31846 words of extra memory for PDF output out of 35830 (max. 10000000)
 
