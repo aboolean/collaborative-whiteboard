@@ -31,8 +31,8 @@ import javax.swing.SwingUtilities;
 public class Canvas extends JPanel {
 	// image where the user's drawing is stored
 	private Image drawingBuffer;
-	//private final JToggleButton selectErase;
-	//private boolean eraseMode;
+	private final JToggleButton selectErase;
+	private boolean eraseMode;
 
 	/**
 	 * Make a canvas.
@@ -45,18 +45,18 @@ public class Canvas extends JPanel {
 	public Canvas(int width, int height) {
 		this.setPreferredSize(new Dimension(width, height));
 
-		//eraseMode = false;
-		//selectErase = new JToggleButton("Write/Erase");
-		//selectErase.addItemListener(new ItemListener() {
-//			public void itemStateChanged(ItemEvent ie) {
-//				if (selectErase.isSelected())
-//					eraseMode = true;
-//				else
-//					eraseMode = false;
-//			}
-//		});
+		eraseMode = false;
+		selectErase = new JToggleButton("Write/Erase");
+		selectErase.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent ie) {
+				if (selectErase.isSelected())
+					eraseMode = true;
+				else
+					eraseMode = false;
+			}
+		});
 		
-		//this.add(selectErase);
+		this.add(selectErase);
 
 		addDrawingController();
 		// note: we can't call makeDrawingBuffer here, because it only
@@ -146,13 +146,13 @@ public class Canvas extends JPanel {
 	private void drawLineSegment(int x1, int y1, int x2, int y2) {
 		Graphics2D g = (Graphics2D) drawingBuffer.getGraphics();
 
-//		if(eraseMode){
-//			g.setStroke(new BasicStroke(10));
-//			g.setColor(Color.WHITE);
-//		} else {
+		if(eraseMode){
+			g.setStroke(new BasicStroke(10));
+			g.setColor(Color.WHITE);
+		} else {
 			g.setStroke(new BasicStroke(3));
 			g.setColor(Color.BLACK);
-		//}
+		}
 		g.drawLine(x1, y1, x2, y2);
 
 		// IMPORTANT! every time we draw on the internal drawing buffer, we
