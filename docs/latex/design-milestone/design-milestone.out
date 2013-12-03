@@ -40,8 +40,8 @@
 \BOOKMARK [3][-]{subsubsection.4.1.4}{Selecting Boards}{subsection.4.1}% 40
 \BOOKMARK [2][-]{subsection.4.2}{Averted Race Conditions}{section.4}% 41
 \BOOKMARK [3][-]{subsubsection.4.2.1}{New Board and New User}{subsection.4.2}% 42
-\BOOKMARK [3][-]{subsubsection.4.2.2}{Concurrent Strokes}{subsection.4.2}% 43
-\BOOKMARK [3][-]{subsubsection.4.2.3}{Serve-Client Races}{subsection.4.2}% 44
+\BOOKMARK [3][-]{subsubsection.4.2.2}{Remove Board and New User}{subsection.4.2}% 43
+\BOOKMARK [3][-]{subsubsection.4.2.3}{Concurrent Strokes}{subsection.4.2}% 44
 \BOOKMARK [3][-]{subsubsection.4.2.4}{Atomic ID Generation}{subsection.4.2}% 45
 \BOOKMARK [1][-]{section.5}{Testing}{}% 46
 \BOOKMARK [2][-]{subsection.5.1}{SS1}{section.5}% 47
