@@ -1,17 +1,71 @@
 \section{Testing}
 Overview Text
 
-\subsection{SS1}
-Section 1
+\subsection{Constructor Testing}
 
-\subsection{SS2}
-Section 2
+\subsubsection{New Board} 
 
-\subsubsection{SSS 2-1}
-Subtopic of Section 2
+\paragraph{Valid Name}
+Test the creation of a new whiteboard with a valid name. This is simple to conduct by simply clicking the “+” button under the list of whiteboards. The client should be prompted to enter a name. Enter a valid name that is not already in use. The server should create a new \texttt{MasterBoard} object and add it to the list of existing boards.  This should be seen by all clients. The new whiteboard should be completely white.
 
-\subsubsection{SSS 2-2}
-Another Subtopic of Section 2
+\paragraph{Invalid Name}
+Test the creation of a new whiteboard with an invalid name. Again, conduct by simply clicking the “+” button under the list of whiteboards. The client should be prompted to enter a name. Enter a name that is already in use. The server should inform the user that the name is already in use, then create a new \texttt{MasterBoard} object with a default name assigned by the server. Again, this new \texttt{MasterBoard} should be added to the list of existing boards, and should be seen by all users. The new whiteboard should be completely white.
 
-\subsection{SS3}
-Section 3
+\subsubsection{New User}
+
+\paragraph{Valid Name}
+Connect to the whiteboard server.  When prompted for a username, enter a valid one – that is, one that is not already in use.  The server should accept this name and assign it to the user, then allow the user to select a board and begin drawing.
+
+\paragraph{Invalid Name}
+Connect to the whiteboard server. When prompted for a username, enter a name that is already in use. The server should notify the new client that his/her choice of username is already in use, and should assign the new user a different (valid) name from a predefined list of names.  The new client should then be allowed to select a board and begin drawing.
+
+\subsection{Normal Functionality}
+
+\subsubsection{Loading a Board}
+Tests behavior when a user attempts to load an existing board to work on.  This will happen when a client clicks on a board name from the list of existing board on the left of the GUI.  Expected behavior: The \texttt{User} associated with this client will be removed from the list of users working on the previous board.  It will then be added to the list of users working on the newly selected board.  This will be reflected on the list of users on the bottom left of the GUI for anyone working on the newly selected board.  In addition, the client who changed selections will have his drawing space refreshed to contain an up-to-date version of his/her newly selected board.  The client will then be able to modify this board as usual.
+
+\subsubsection{Creating a New Board}
+Tests behavior when a client attempts to create a new multi-user whiteboard.  This event will occur when the client clicks the “+” button located below the list of existing whiteboards.  When this button is clicked, the client will be prompted to enter a name for the new whiteboard. If the name is not valid (already in use), the server will assign a default one.  The new whiteboard will appear in the list of existing whiteboards in the GUI, so that all users are able to access it.  The client who created the whiteboard will automatically have his GUI switched so that he is viewing the newly created board, in accordance to the “Loading a Board” test above. The newly created \texttt{MasterBoard} will begin as a blank white canvas, with the standard 800x600 pixel dimensions.
+
+\subsubsection{Deleting a Board}
+Tests behavior when a client deletes an existing board. This will occur when a client clicks the “-” button located below the list of existing whiteboards.  To prevent clients from accidentally (or purposefully) deleting others’ work, the “-” button will always delete the whiteboard that the client is currently viewing. In addition, it will be impossible to delete a whiteboard if only one is currently is existence, to prevents errors arising from a lack of whiteboards.  Deletion will completely remove the selected \texttt{MasterBoard} object from the server memory. It will be reflected in the list of whiteboards that appears in the user GUI, where the name of the deleted whiteboard will be removed for all users. Other clients who are working on a whiteboard when it is deleted will be notified via a pop-up message that their board has been deleted.  Their workspace will then not have any whiteboard selected, meaning that they will need to load another whiteboard before continuing to draw.  All requests sent to the server referencing the deleted whiteboard will be ignored after board deletion.
+
+\subsubsection{Choosing Stroke Thickness}
+This will test the user’s ability to select a stroke thickness for drawing purposes. Thickness will be controlled through the \texttt{Width} component of a \texttt{Java 2D Stroke}. A variety of stroke widths will be available for selection from the thickness panel near the bottom left corner of the GUI. Each image in this area will be associated with a specified stroke thickness. Clicking on one of these images will switch the user’s default stroke thickness to the width associated with the selected image.
+
+\subsubsection{Choosing Stroke Color}
+This will test the user’s ability to select a drawing color. Thickness will be controlled through the \texttt{Color} component of \texttt{Java 2D Graphics}. A variety of colors will be available for selection from the color panel along the bottom of the GUI. Clicking on one of these given colors will switch the user’s default stroke color to the selected color.
+
+\subsubsection{"More Colors" Button}
+In addition to choosing a color as listed above, users should be able to select from a wider range of colors in a \texttt{JColorChooser} window. This window will appear when a client clicks the “more colors” button to the right of the GUI’s color panel. The client will then be able to change his default stroke color to any color provided in the \texttt{JColorChooser} window. If the user clicks outside of the \texttt{JColorChooser} window while it is open, the window will be closed and the client’s color will not be changed.
+
+\subsubsection{"Erase" Button}
+The erase button will function as a toggle, switching the client between his previously chosen color and white. As the default board color is white, painting with white will appear visually the same as erasing an existing portion of the whiteboard. When the user selects “erase” for the first time, his/her color choice will switch to white.  Clicking the “erase” button a second time will switch the user back to whichever color was selected before “erase” was clicked the first time.
+
+\subsubsection{"Clear" Button}
+The “clear” button will completely erase the client’s currently selected board.  On the server side, this will delete all strokes that have ever been applied to the selected whiteboard. As a result, the whiteboard will appear as it did when it was first created – blank white. This change, like any other painting operation, will be seen by all clients viewing the whiteboard.
+
+\subsubsection{Drawing on a Whiteboard}
+
+\paragraph{Whiteboard Selected}
+When a client clicks and drags across the whiteboard area, a new instance of a \texttt{Stroke} object will be created to match the users’ input with regards to length, shape, location, color, etc.  This \texttt{Stroke} will be sent to the server, where it will be associated with the whiteboard it should be applied to. The server will then update the views of all other users working on the same whiteboard to include the new stroke.  In this way, all users will be able to see all other users’ changes in real time
+
+\paragraph{No Whiteboard Selected}
+If the client has not selected a whiteboard, attempting to interact with the canvas will result in a message box appearing, warning the user to select a whiteboard before drawing. The user’s attempts to draw will produce no visible result on the canvas, nor will there be anything sent to the server.
+
+\subsubsection{Concurrent Board Operations}
+
+\paragraph{User A Deletes while User B Modifies}
+The selected \texttt{MasterBoard} instance will be deleted. Both users (as well as any other users on the board) will be notified via message box that it has been deleted. They will all then need to select another whiteboard in order to continue drawing. User B’s request to the server will be ignored.
+
+\paragraph{Switch then Disconnect}
+Test when a user switches boards, then immediately disconnects from the server. The user’s name should disappear from all lists, including the board he/she switched to just before disconnecting. All other users should see this in the list of users currently editing whiteboards.
+
+\paragraph{Rapid-Switching between Boards}
+Test when a client switches very quickly between a number of boards.  The server should only attempt to update the client’s view to the most recent whiteboard selected – that is, it should abandon any attempts to update the client’s board to a previously selected board, even if the loading process is not complete. At the same time, the client’s GUI should ignore any server messages regarding a whiteboard that is no longer selected. In this way, the client will only ever see their most recent whiteboard selection loading.
+
+\paragraph{Edit then Switch}
+Test when a user makes a stroke on a whiteboard, then very quickly switches to another board. The client’s edits should still be sent to the server, and be reflected on the server’s copy of that board, so that all other users can see the edit. The client who made the edit, however, should not have it reflected back to him/her by the server. Instead, the client should go through the normal process of loading their newly-selected board.
+
+\subsubsection{User Disconnect}
+Test the normal functionality of a user disconnecting from the server. The user’s GUI client should close, and the user’s name should be removed from the whiteboard it was currently working on, meaning that it should not appear anywhere on the server. All other clients should be able to see this change.
