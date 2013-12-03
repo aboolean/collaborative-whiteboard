@@ -17,7 +17,8 @@ Upon receiving a \texttt{BRD\_DEL} message, the WhiteboardServer calls \texttt{r
 Each time a line is drawn on a client's Canvas, a request is added to the WhiteboardClient's output BlockingQueue. The queue then informs the MasterBoard of the new stroke, locking on the \texttt{strokes} ArrayList and appending it. The use of the threadsafe BlockingQueue ensures that all strokes are sent from the GUI to the MasterBoard in the correct order. Before releasing the lock, all Users associated with this board are informed of the newly added stroke.
 
 \subsubsection{Selecting Boards}
-% lots of things to consider... :(
+
+When the client selects a new board, the server fetches the board to be sent. The User calls \texttt{allStrokes} to obtain all of the strokes associated with the new board. This method locks on the \texttt{strokes} ArrayList, so that no new strokes can be added before the User has received the entire ArrayList. The User also adds itself to the MasterBoard's \texttt{users} ArrayList, locking on that field to ensure that only one User is added at a time.
 
 \subsection{Averted Race Conditions}
 
@@ -31,7 +32,7 @@ Similar to the strategy in the previous section, both \texttt{DEL\_BRD} and \tex
 
 \subsubsection{Concurrent Strokes}
 
-Because the GUI sends the new stroke messages through a BlockingQueue, the order is preserved. The MasterBoard then appends the strokes to its \texttt{strokes} in the order that they are received from the clients. (Note that this is not necessarily exactly the same as the order in which each stroke is sent from each GUI, but every User will receive strokes in the exact same order when receiving updates from the MasterBoard.) Because the \texttt{makeStrokes} method locks on \texttt{strokes} while it processes a request, only one stroke will be processed at a time, and the risk of losing strokes or having clients receive stroke updates in different orders is eliminated.
+Because the GUI sends the new stroke messages through a BlockingQueue, the order is preserved. The MasterBoard then appends the strokes to its \texttt{strokes} in the order that they are received from the clients. (Note that this is not necessarily exactly the same as the order in which each stroke is sent from each GUI, but every User will receive strokes in the exact same order when receiving updates from the MasterBoard.) Because the \texttt{makeStrokes} method locks on \texttt{strokes} while it processes a request, only one stroke will be processed at a time, and the risk of losing strokes or having clients receive stroke updates in different orders is eliminated. Similarly, while a newly selected board is being transferred to a client, no new strokes can be added, to eliminate these same risks.
 
 \subsubsection{Atomic ID Generation}
 
