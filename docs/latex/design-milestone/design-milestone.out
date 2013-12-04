@@ -44,8 +44,18 @@
 \BOOKMARK [3][-]{subsubsection.4.2.3}{Concurrent Strokes}{subsection.4.2}% 44
 \BOOKMARK [3][-]{subsubsection.4.2.4}{Atomic ID Generation}{subsection.4.2}% 45
 \BOOKMARK [1][-]{section.5}{Testing}{}% 46
-\BOOKMARK [2][-]{subsection.5.1}{SS1}{section.5}% 47
-\BOOKMARK [2][-]{subsection.5.2}{SS2}{section.5}% 48
-\BOOKMARK [3][-]{subsubsection.5.2.1}{SSS 2-1}{subsection.5.2}% 49
-\BOOKMARK [3][-]{subsubsection.5.2.2}{SSS 2-2}{subsection.5.2}% 50
-\BOOKMARK [2][-]{subsection.5.3}{SS3}{section.5}% 51
+\BOOKMARK [2][-]{subsection.5.1}{Constructor Testing}{section.5}% 47
+\BOOKMARK [3][-]{subsubsection.5.1.1}{New Board}{subsection.5.1}% 48
+\BOOKMARK [3][-]{subsubsection.5.1.2}{New User}{subsection.5.1}% 49
+\BOOKMARK [2][-]{subsection.5.2}{Normal Functionality}{section.5}% 50
+\BOOKMARK [3][-]{subsubsection.5.2.1}{Loading a Board}{subsection.5.2}% 51
+\BOOKMARK [3][-]{subsubsection.5.2.2}{Creating a New Board}{subsection.5.2}% 52
+\BOOKMARK [3][-]{subsubsection.5.2.3}{Deleting a Board}{subsection.5.2}% 53
+\BOOKMARK [3][-]{subsubsection.5.2.4}{Choosing Stroke Thickness}{subsection.5.2}% 54
+\BOOKMARK [3][-]{subsubsection.5.2.5}{Choosing Stroke Color}{subsection.5.2}% 55
+\BOOKMARK [3][-]{subsubsection.5.2.6}{"More Colors" Button}{subsection.5.2}% 56
+\BOOKMARK [3][-]{subsubsection.5.2.7}{"Erase" Button}{subsection.5.2}% 57
+\BOOKMARK [3][-]{subsubsection.5.2.8}{"Clear" Button}{subsection.5.2}% 58
+\BOOKMARK [3][-]{subsubsection.5.2.9}{Drawing on a Whiteboard}{subsection.5.2}% 59
+\BOOKMARK [3][-]{subsubsection.5.2.10}{Concurrent Board Operations}{subsection.5.2}% 60
+\BOOKMARK [3][-]{subsubsection.5.2.11}{User Disconnect}{subsection.5.2}% 61
