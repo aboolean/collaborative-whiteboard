@@ -1,7 +1,6 @@
 \section{Data Type}
 
-\subsection{MasterBoard}
-
+\subsection{\texttt{MasterBoard}}
 
 \subsubsection{Description}
 \texttt{MasterBoard} represents a single whiteboard on the server. The instance is held by several \texttt{User} objects editing the board, which are mutually stored in the \texttt{MasterBoard} object; in other words, the board is aware of its editors and the editors are aware of the board.
@@ -34,7 +33,7 @@
 \includegraphics[keepaspectratio=1,width=6in]{img/wb-snapshot.jpg}
 
 
-\subsection{User}
+\subsection{\texttt{User}}
 
 \subsubsection{Description}
 Each instance of \texttt{User} represents a separate client connected to the server. \texttt{User} is not only responsible for storing properties that pertain to the client; it also facilitates the socket communication and request handling for each client.
@@ -66,10 +65,10 @@ Each instance of \texttt{User} represents a separate client connected to the ser
 \end{itemize}
 
 
-\subsection{WhiteLine}
+\subsection{\texttt{WhiteLine}}
 
 \subsubsection{Description}
-\texttt{WhiteLine} is a simple class designed to represent a drawn stroke on a whiteboard. It is used by the \texttt{MasterBoard} class on the server side. Due to the frequent need to work with lines and the neatness of working with a single object containing the multiple properties of the line -- location, color, thickness -- we decided to have a dedicated class. The class is immutable, as all its properties are themselves immutable and stored upon construction.
+\texttt{WhiteLine} is a simple class designed to represent a drawn stroke on a whiteboard. It is used by the \texttt{MasterBoard} class on the server side and the \texttt{ClientView} class on the client side. Due to the frequent need to work with lines and the neatness of working with a single object containing the multiple properties of the line -- location, color, thickness -- we decided to have a dedicated class. The class is immutable, as all its properties are themselves immutable and stored upon construction.
 
 \subsubsection{Fields}
 \begin{itemize}
@@ -92,7 +91,7 @@ Each instance of \texttt{User} represents a separate client connected to the ser
 %\texttt{String toString()}, \texttt{boolean equals()}, and \texttt{int hashCode()} have been implemented for debugging; they behave as expected.
 
 
-\subsection{ClientBoard}
+\subsection{\texttt{ClientBoard}}
 
 \subsubsection{Description}
 \texttt{ClientBoard} is used by the client application to store basic properties about the active whiteboards, which include those created by the client and other users. A new instance is created each time the client receives a \texttt{BRD\_INFO} message. The class is immutable, as the contained properties are never changed after initialization on the server side.
@@ -110,3 +109,33 @@ Each instance of \texttt{User} represents a separate client connected to the ser
 \item \texttt{int compareTo(Object other)} - Compares two boards on the basis of their ID numbers. Overrides the default comparison method and follows its conventions.
 \item \texttt{String toString()} - Returns the properties of the board in the form of a \texttt{BOARD\_INFO} message.
 \end{itemize}
+
+
+\subsection{\texttt{ClientView extends JPanel}}
+
+\subsubsection{Description}
+\texttt{ClientView} has the simple task of managing the drawing canvas of the current board. It fulfills the role of the "View" component of the Model-View-Controller structure. Since the class that extends \texttt{JPanel}, it is used directly as a component within the client application.
+
+\subsubsection{Fields}
+\begin{itemize}
+\item \texttt{final Image buffer} - The buffer where changes are made before being drawn to the displayed canvas.
+\item \texttt{final static int Y\_SIZE, X\_SIZE} - The X and Y dimensions of the whiteboard.
+\end{itemize}
+
+\subsubsection{Methods}
+\begin{itemize}
+\item \texttt{void drawLine(WhiteLine line)} - Draws the designated \texttt{line} on the \texttt{buffer}, which does not appear on the displayed canvas.
+\item \texttt{void clear()} - Clears the displayed canvas and the contents of the \texttt{buffer} immediately.
+\item \texttt{void push()} - Displays all changes that were made since the last time \texttt{push()} or \texttt{clear()} was called. Copies the contents of the \texttt{buffer} to the displayed canvas.
+\end{itemize}
+
+\newpage
+\subsection{Board Switching}
+The following sequence of steps defines the back-end operation of changing a client's whiteboard.
+\begin{enumerate}
+\item The \texttt{User} instance that represents a specific connected client begins with a reference to a \texttt{MasterBoard} instance. That \texttt{MasterBoard} instance has that associated \texttt{User} in its \texttt{users} list. The client then selects another board in the list of available boards, sending a \texttt{SEL} message to the server and is processed in the \texttt{User} class. \\  \includegraphics[keepaspectratio=1,width=6in]{img/switch-sequence/switch-00.jpg}
+\item The \texttt{User} calls \texttt{board.removeUser(this)} on its current board, causing the board to no longer identify the client as one of its users. \\ \includegraphics[keepaspectratio=1,width=6in]{img/switch-sequence/switch-01.jpg}
+\item The \texttt{User} executes \texttt{board = server.getBoard(id\_num)} obtain the requested board from the server and reassign its reference to it. \\ \includegraphics[keepaspectratio=1,width=6in]{img/switch-sequence/switch-02.jpg}
+\item The \texttt{User} calls \texttt{board.addUser(this)} on its new board, causing the board to identify the client as one of its users. \\ \includegraphics[keepaspectratio=1,width=6in]{img/switch-sequence/switch-03.jpg}
+\end{enumerate}
+

@@ -30,6 +30,10 @@ Displays the currently selected whiteboard, including all of its drawn strokes a
 
 \subsection{Behavior}
 
-\paragraph{Erasing} TEXT
+\paragraph{Erasing}
 
-\paragraph{Editing a Deleted Board} TEXT
+Because the default canvas color is white, erasing will function the same as drawing with the color white selected.  The thickness functionality that is present during normal drawing will continue to work with erasing. The Erase button on the client GUI will function as a toggle. Clicking the button once will switch to erasing mode, which essentially is simply switching the client's selected color to white. At this time, the user's previously selected color will be stored for future use. Clicking the button a second time will return the user's selected color to what is was before the user entered erasing mode.
+
+\paragraph{Editing a Deleted Board}
+
+Clients should not be allowed to edit a board that has been deleted by another user. To prevent this, users who are working on a board when it is marked for deletion by another user will be presented with a message box, stating that their board has been deleted.  The deleted board then becomes unselected by any client GUIs who had the board selected at the time of deletion, forcing users to select a different whiteboard to work on. Simultaneously, the board will be removed from the master list of whiteboards available, so that no users in the future may accidentally select the deleted board.

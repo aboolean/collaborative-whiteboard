@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  3 DEC 2013 19:41
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  7 DEC 2013 23:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -587,7 +587,7 @@ Package microtype Info: Character `029' is missing
 (microtype)             Ignoring protrusion settings for this character.
 
 (./sections/functionality.tex
-<img/gui-sketch.jpg, id=249, 1170.3725pt x 824.07875pt>
+<img/gui-sketch.jpg, id=269, 1170.3725pt x 824.07875pt>
 File: img/gui-sketch.jpg Graphic file (type jpg)
 
 <use img/gui-sketch.jpg>
@@ -615,7 +615,7 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             `pcr' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-
+ [2]
 Underfull \hbox (badness 10000) in paragraph at lines 12--13
 
  []
@@ -630,7 +630,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 17--22
 
  []
 
-[2]
+
 Underfull \hbox (badness 10000) in paragraph at lines 23--24
 
  []
@@ -655,59 +655,109 @@ Underfull \hbox (badness 10000) in paragraph at lines 38--41
 
  []
 
-[3]) (./sections/datatype.tex
-Underfull \vbox (badness 1817) has occurred while \output is active []
+LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <10> not available
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 47.
+[3]) (./sections/datatype.tex [4]
+LaTeX Font Info:    Try loading font information for OMS+pplx on input line 10.
 
- [4]
-LaTeX Font Info:    Try loading font information for OMS+pplx on input line 11.
-
-LaTeX Font Info:    No file OMSpplx.fd. on input line 11.
+LaTeX Font Info:    No file OMSpplx.fd. on input line 10.
 
 
 LaTeX Font Warning: Font shape `OMS/pplx/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textbullet' on input line 11.
+(Font)              for symbol `textbullet' on input line 10.
 
-<img/wb-snapshot.jpg, id=272, 316.3017pt x 265.9536pt>
+[5] <img/wb-snapshot.jpg, id=310, 316.3017pt x 265.9536pt>
 File: img/wb-snapshot.jpg Graphic file (type jpg)
 
 <use img/wb-snapshot.jpg>
-Package pdftex.def Info: img/wb-snapshot.jpg used on input line 34.
+Package pdftex.def Info: img/wb-snapshot.jpg used on input line 33.
 (pdftex.def)             Requested size: 433.62pt x 364.618pt.
 
-Overfull \hbox (3.61537pt too wide) in paragraph at lines 34--35
+Overfull \hbox (3.61537pt too wide) in paragraph at lines 33--34
 [] 
  []
 
-[5] [6 <./img/wb-snapshot.jpg>]
-Overfull \hbox (62.04558pt too wide) in paragraph at lines 55--57
+[6 <./img/wb-snapshot.jpg>]
+Overfull \hbox (62.04558pt too wide) in paragraph at lines 54--56
 \T1/pcr/m/n/10 User \T1/pplx/m/n/10 (-20) in-stances once the re-quest for a ne
 w board has been pro-cessed. \T1/pcr/m/n/10 void forgetBoard(MasterBoard
  []
 
 
-Overfull \hbox (31.23994pt too wide) in paragraph at lines 59--60
+Overfull \hbox (31.23994pt too wide) in paragraph at lines 58--59
 \T1/pplx/m/n/10 (-20) mand from the client. The user re-moves it-self from the 
 cur-rent board by call-ing \T1/pcr/m/n/10 removeUser(this)
  []
 
 
-Overfull \hbox (6.35895pt too wide) in paragraph at lines 59--60
+Overfull \hbox (6.35895pt too wide) in paragraph at lines 58--59
 \T1/pplx/m/n/10 (-20) on the locked \T1/pcr/m/n/10 board\T1/pplx/m/n/10 (-20) ,
  re-plac-ing \T1/pcr/m/n/10 board \T1/pplx/m/n/10 (-20) with on ac-quired from 
 \T1/pcr/m/n/10 server.getBoard(boardID)
  []
 
-[7] [8]) (./sections/classes.tex) (./sections/concurrency.tex [9])
-(./sections/testing.tex [10] [11] [12])
+[7] [8] [9]
+<img/switch-sequence/switch-00.jpg, id=329, 2634.84375pt x 876.27374pt>
+File: img/switch-sequence/switch-00.jpg Graphic file (type jpg)
+
+<use img/switch-sequence/switch-00.jpg>
+Package pdftex.def Info: img/switch-sequence/switch-00.jpg used on input line 1
+36.
+(pdftex.def)             Requested size: 433.62pt x 144.20454pt.
+
+Overfull \hbox (28.6154pt too wide) in paragraph at lines 136--137
+[] 
+ []
+
+<img/switch-sequence/switch-01.jpg, id=330, 2634.84375pt x 876.27374pt>
+File: img/switch-sequence/switch-01.jpg Graphic file (type jpg)
+
+<use img/switch-sequence/switch-01.jpg>
+Package pdftex.def Info: img/switch-sequence/switch-01.jpg used on input line 1
+37.
+(pdftex.def)             Requested size: 433.62pt x 144.20454pt.
+
+Overfull \hbox (28.6154pt too wide) in paragraph at lines 137--138
+[] 
+ []
+
+<img/switch-sequence/switch-02.jpg, id=331, 2634.84375pt x 876.27374pt>
+File: img/switch-sequence/switch-02.jpg Graphic file (type jpg)
+
+<use img/switch-sequence/switch-02.jpg>
+Package pdftex.def Info: img/switch-sequence/switch-02.jpg used on input line 1
+38.
+(pdftex.def)             Requested size: 433.62pt x 144.20454pt.
+
+Overfull \hbox (28.6154pt too wide) in paragraph at lines 138--139
+[] 
+ []
+
+<img/switch-sequence/switch-03.jpg, id=332, 2634.84375pt x 876.27374pt>
+File: img/switch-sequence/switch-03.jpg Graphic file (type jpg)
+
+<use img/switch-sequence/switch-03.jpg>
+Package pdftex.def Info: img/switch-sequence/switch-03.jpg used on input line 1
+39.
+(pdftex.def)             Requested size: 433.62pt x 144.20454pt.
+
+Overfull \hbox (28.6154pt too wide) in paragraph at lines 139--140
+[] 
+ []
+
+[10 <./img/switch-sequence/switch-00.jpg> <./img/switch-sequence/switch-01.jpg>
+ <./img/switch-sequence/switch-02.jpg>]) (./sections/classes.tex)
+(./sections/concurrency.tex [11 <./img/switch-sequence/switch-03.jpg>] [12])
+(./sections/testing.tex [13] [14] [15])
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 117.
- [13]
+ [16]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 117.
  (./design-milestone.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 117.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 117.
 Package rerunfilecheck Info: File `design-milestone.out' has not changed.
-(rerunfilecheck)             Checksum: 296C4EAB7F0DE103E54AB53D84A04C3A;4257.
+(rerunfilecheck)             Checksum: A06260CC0C111072B86050BA5B69EEE7;4594.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
@@ -715,23 +765,24 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 117.
  ) 
 Here is how much of TeX's memory you used:
- 10947 strings out of 493315
- 168552 string characters out of 6137904
+ 11002 strings out of 493315
+ 169581 string characters out of 6137904
  380882 words of memory out of 5000000
- 13958 multiletter control sequences out of 15000+600000
- 44947 words of font info for 198 fonts, out of 8000000 for 9000
+ 13984 multiletter control sequences out of 15000+600000
+ 45966 words of font info for 199 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 40i,14n,43p,1183b,404s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 40i,14n,43p,1183b,431s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2013/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
 xlive/2013/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb></usr/local/texlive/20
-13/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2013/texmf
--dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2013/texmf-dist/f
-onts/type1/urw/palatino/uplr8a.pfb>
-Output written on design-milestone.pdf (13 pages, 544202 bytes).
+13/texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb></usr/local/texlive/2013/texmf
+-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2013/texmf-dist/fo
+nts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/typ
+e1/urw/palatino/uplr8a.pfb>
+Output written on design-milestone.pdf (16 pages, 1900051 bytes).
 PDF statistics:
- 351 PDF objects out of 1000 (max. 8388607)
- 325 compressed objects within 4 object streams
- 75 named destinations out of 1000 (max. 500000)
- 32243 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 412 PDF objects out of 1000 (max. 8388607)
+ 378 compressed objects within 4 object streams
+ 100 named destinations out of 1000 (max. 500000)
+ 33327 words of extra memory for PDF output out of 35830 (max. 10000000)
 
