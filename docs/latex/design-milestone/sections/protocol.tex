@@ -41,34 +41,46 @@ The following grammar will facilitate the text-based communication between the c
 
 \setlength{\parindent}{15pt} %default
 
+\subsubsection{Definitions and Usage}
+Below is the definition for each of the messages that can be sent across the network. Note that particular messages warrant a response after processing, and those returned messages are included in the definition.
 
-\subsubsection{Usage}
+\paragraph{\texttt{STROKE}} A \texttt{STROKE} message is sent from a client to the server upon drawing a line.
+\begin{enumerate}
+\item A \texttt{WhiteLine} object is created for the line from (\texttt{X1},\texttt{Y1}) to (\texttt{X2},\texttt{Y2}) with thickness \texttt{THICK} and color \texttt{COLOR}. It is then added to the \texttt{MasterBoard} corresponding to the provided \texttt{BOARD\_ID}.
+\item The \texttt{STROKE} message is forwarded to all clients who are currently editing the same board, so that the line can be incorporated onto their whiteboards.
+\end{enumerate}
 
-\paragraph{Adding Users} Upon entering a username in the client application, a \texttt{USER\_REQ} message will be sent to the server to request the desired username. (Note that regex checking for \texttt{USER\_NAME} occurs on the client side before this request is made.) The server responds with a \texttt{USER\_INIT} message, signifying the acquired username for the client. If there is a username conflict, one is chosen for the client. When the client is ready to accept information about existing boards, it calls \texttt{BRD\_ALL} to begin receiving \texttt{BRD\_INFO} messages for all previously created boards.
+\paragraph{\texttt{SEL}} Upon selecting a different board, the client sends a \texttt{SEL} request to the server.
+\begin{enumerate}
+\item The server clears all stroke messages queued to update the client's whiteboard.
+\item The server disassociates the client with the current whiteboard if one is assigned and associates the client with the requested board.
+\item A \texttt{BRD\_USERS} message is sent to all users of the requested board, with the addition of the new editor, to inform them of the change. Another \texttt{BRD\_USERS} message is sent to all users of the previous board, with the omission of the removed editor, to inform them of the change.
+\item A sequence of \texttt{STROKE} messages are sent to the client to recreate the current state of the selected whiteboard.
+\end{enumerate}
 
-\paragraph{Adding Boards} When a client wants to create a new whiteboard, it sends a \texttt{BRD\_REQ} request to the server with a desired \texttt{NAME} (duplicate names allowed). Once the server has initialized a new internal board object, it sends a \texttt{BRD\_INFO} message to all connected users to inform them of the newly available board. Note that the \texttt{BOARD\_ID} used is a number unique to each whiteboard and is never reused. This is a different number than the sequential board numbering in the GUI, although the order is preserved.
+\paragraph{\texttt{BRD\_REQ}} When the client wants to create a new board, it send a \texttt{BRD\_REQ} message with a properly formatted \texttt{NAME}.
+\begin{enumerate}
+\item The server initializes a new \texttt{MasterBoard} object with relevant properties and adds it to its list of boards.
+\item A \texttt{BRD\_INFO} message for the new board is sent to all connected clients to inform them of the newly available whiteboard. The clients add this board to their list of available boards.
+\end{enumerate}
 
-\paragraph{Removing Boards} Deleting boards entails a process similar to adding them. A client sends a \texttt{BRD\_DEL} request to the server, which forwards this requests to all other users. The server internally disassociates all connected users and removes the board, taking care to ignore drawing requests and selection requests for this deleted board.
+\paragraph{\texttt{BRD\_ALL}} This is often called by the client upon initialization. It prompts a series of \texttt{BRD\_INFO} replies for all existing boards.
 
-\paragraph{Selecting Boards} Upon selecting a different board, the client sends a \texttt{SEL} request to the server. The server clears all stroke messages queued to update the client's whiteboard before associating the requested whiteboard object to the user, if available. The \texttt{SEL} command also requests all previously drawn strokes to be sent to the client. A \texttt{BRD\_USERS} messages is sent to all users of the previous and current whiteboard to inform them of this change in editors.
+\paragraph{\texttt{BRD\_DEL}} When the client wants to remove a board, it send a \texttt{BRD\_DEL} message to the server.
+\begin{enumerate}
+\item If the provided \texttt{BOARD\_ID} exists, the server removes the designated board from its central list of boards.
+\item The \texttt{BRD\_DEL} message is forwarded to all clients to signify that the board is no longer available. The clients remove this board from their list of available boards.
+\end{enumerate}
 
-\paragraph{Disconnecting Users}
-When a client disconnects -- by either severing the connection or closing the client application -- the server closes the associated socket and streams, disassociates the user from its whiteboard, and removes the user from its main users list. A \texttt{BRD\_USERS} message is sent to all users of the board that was being edited.
+\paragraph{\texttt{USER\_REQ}} Upon entering a username in the client application, a \texttt{USER\_REQ} message with a properly formatted \texttt{USER\_NAME} will be sent to the server to request the desired username.
+\begin{enumerate}
+\item The requested username is checked against existing username. If the name already exists, a name is generated using the new board's ID number.
+\item A \texttt{User} object with relevant properties is created to represent the new client.
+\item A \texttt{USER\_INIT} message is sent to the client to inform it of its acquired username.
+\end{enumerate}
 
-\paragraph{Drawing Strokes} When a client draws a stroke in the selected whiteboard, a sequence of \texttt{STROKE} messages are sent to the server. The corresponding lines are logged as drawn in the order they are received by the server. The server proceeds to forward the \texttt{STROKE} messages to all users editing the same whiteboard, including the user who made the edit. Since the server sends the \texttt{STROKE} updates in the order they were made, the user's stroke will be covered by the echoed version from the server. This will not be visually apparent and will ensure that concurrently drawn lines appear constant across clients.
+Note that \texttt{BRD\_USERS}, \texttt{BRD\_INFO}, and \texttt{USER\_INIT} are used solely as replies and are included in the descriptions above.
+
 
 \subsection{Data Transport}
-
-\subsubsection{New Connections}
-
-The Whiteboard server will maintain a background thread that listens for new connections. Upon accepting a new socket, a new thread prompts the client for a username, and then instantiates a new User, which is then added to the ArrayList of all Users.
-
-\subsubsection{Request Streams}
-
-GUI: The GUI maintains two threads, one which listens for requests from the associated User, and another which contains a BlockingQueue containing requests to be sent to the User. Possible requests include creating a new Whiteboard, deleting a Whiteboard, selecting a different Whiteboard, or sending a Stroke.
-
-User: Each User object holds the client-side socket. The User maintains two threads, one which listens for requests from either its MasterBoard or its GUI, and another which contains a BlockingQueue containing requests to be sent to the GUI. The request() method parses GUI requests and sends the appropriately formatted text protocol message to either the MasterBoard (when a Stroke is made) or the WhiteboardServer (for other User/Whiteboard requests).
-
-MasterBoard: The MasterBoard maintains two threads, one which listens for requests from any of its associated Users, and another which contains a BlockingQueue containing requests to be sent to all of its associated Users. For example, the listening thread will accept a request to create a new Stroke to be added to its strokes ArrayList, and then send that updated ArrayList to all its Users.
-
-WhiteboardServer: The WhiteboardServer is responsible for instantiating new Users with each new connection, and creating new MasterBoard objects in response to requests from Users. It maintains an InputStream to receive requests from the Users, but does not need an OutputStream.
+For a detailed explanation of the communication method between the clients and the server, please see the "Threads and Queues" section.
