@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  7 DEC 2013 22:47
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  7 DEC 2013 23:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -615,7 +615,7 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             `pcr' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-
+ [2]
 Underfull \hbox (badness 10000) in paragraph at lines 12--13
 
  []
@@ -630,7 +630,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 17--22
 
  []
 
-[2]
+
 Underfull \hbox (badness 10000) in paragraph at lines 23--24
 
  []
@@ -657,7 +657,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 38--41
 
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <10> not available
 (Font)              Font shape `T1/pcr/b/n' tried instead on input line 47.
-[3]) (./sections/datatype.tex
+[3]) (./sections/datatype.tex [4]
 LaTeX Font Info:    Try loading font information for OMS+pplx on input line 10.
 
 LaTeX Font Info:    No file OMSpplx.fd. on input line 10.
@@ -667,7 +667,7 @@ LaTeX Font Warning: Font shape `OMS/pplx/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
 (Font)              for symbol `textbullet' on input line 10.
 
-[4] <img/wb-snapshot.jpg, id=306, 316.3017pt x 265.9536pt>
+[5] <img/wb-snapshot.jpg, id=310, 316.3017pt x 265.9536pt>
 File: img/wb-snapshot.jpg Graphic file (type jpg)
 
 <use img/wb-snapshot.jpg>
@@ -678,7 +678,7 @@ Overfull \hbox (3.61537pt too wide) in paragraph at lines 33--34
 [] 
  []
 
-[5] [6 <./img/wb-snapshot.jpg>]
+[6 <./img/wb-snapshot.jpg>]
 Overfull \hbox (62.04558pt too wide) in paragraph at lines 54--56
 \T1/pcr/m/n/10 User \T1/pplx/m/n/10 (-20) in-stances once the re-quest for a ne
 w board has been pro-cessed. \T1/pcr/m/n/10 void forgetBoard(MasterBoard
@@ -767,7 +767,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 117.
 Here is how much of TeX's memory you used:
  11002 strings out of 493315
  169581 string characters out of 6137904
- 379882 words of memory out of 5000000
+ 380882 words of memory out of 5000000
  13984 multiletter control sequences out of 15000+600000
  45966 words of font info for 199 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
@@ -779,7 +779,7 @@ xlive/2013/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb></usr/local/texlive/20
 -dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2013/texmf-dist/fo
 nts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/typ
 e1/urw/palatino/uplr8a.pfb>
-Output written on design-milestone.pdf (16 pages, 1899436 bytes).
+Output written on design-milestone.pdf (16 pages, 1900051 bytes).
 PDF statistics:
  412 PDF objects out of 1000 (max. 8388607)
  378 compressed objects within 4 object streams
