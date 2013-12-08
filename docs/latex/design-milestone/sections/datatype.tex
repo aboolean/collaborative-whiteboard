@@ -128,3 +128,14 @@ Each instance of \texttt{User} represents a separate client connected to the ser
 \item \texttt{void clear()} - Clears the displayed canvas and the contents of the \texttt{buffer} immediately.
 \item \texttt{void push()} - Displays all changes that were made since the last time \texttt{push()} or \texttt{clear()} was called. Copies the contents of the \texttt{buffer} to the displayed canvas.
 \end{itemize}
+
+\newpage
+\subsection{Board Switching}
+The following sequence of steps defines the back-end operation of changing a client's whiteboard.
+\begin{enumerate}
+\item The \texttt{User} instance that represents a specific connected client begins with a reference to a \texttt{MasterBoard} instance. That \texttt{MasterBoard} instance has that associated \texttt{User} in its \texttt{users} list. The client then selects another board in the list of available boards, sending a \texttt{SEL} message to the server and is processed in the \texttt{User} class. \\  \includegraphics[keepaspectratio=1,width=6in]{img/switch-sequence/switch-00.jpg}
+\item The \texttt{User} calls \texttt{board.removeUser(this)} on its current board, causing the board to no longer identify the client as one of its users. \\ \includegraphics[keepaspectratio=1,width=6in]{img/switch-sequence/switch-01.jpg}
+\item The \texttt{User} executes \texttt{board = server.getBoard(id\_num)} obtain the requested board from the server and reassign its reference to it. \\ \includegraphics[keepaspectratio=1,width=6in]{img/switch-sequence/switch-02.jpg}
+\item The \texttt{User} calls \texttt{board.addUser(this)} on its new board, causing the board to identify the client as one of its users. \\ \includegraphics[keepaspectratio=1,width=6in]{img/switch-sequence/switch-03.jpg}
+\end{enumerate}
+

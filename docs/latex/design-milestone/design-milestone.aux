@@ -60,46 +60,47 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {V.1}Description}{9}{subsubsection.3.5.1}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {V.2}Fields}{9}{subsubsection.3.5.2}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {V.3}Methods}{9}{subsubsection.3.5.3}}
-\@writefile{toc}{\contentsline {section}{\numberline {IV}Threads and Queues}{9}{section.4}}
-\@writefile{toc}{\contentsline {paragraph}{Client}{9}{section.4}}
-\@writefile{toc}{\contentsline {paragraph}{User}{9}{section.4}}
-\@writefile{toc}{\contentsline {paragraph}{MasterBoard}{10}{section.4}}
-\@writefile{toc}{\contentsline {paragraph}{WhiteboardServer}{10}{section.4}}
-\@writefile{toc}{\contentsline {section}{\numberline {V}Thread Safety}{10}{section.5}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {I}Processes}{10}{subsection.5.1}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {I.1}Adding New Users}{10}{subsubsection.5.1.1}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {I.2}Adding and Removing Boards}{10}{subsubsection.5.1.2}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {I.3}Drawing Strokes}{10}{subsubsection.5.1.3}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {I.4}Selecting Boards}{10}{subsubsection.5.1.4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {II}Averted Race Conditions}{11}{subsection.5.2}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.1}New Board and New User}{11}{subsubsection.5.2.1}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.2}Remove Board and New User}{11}{subsubsection.5.2.2}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.3}Concurrent Strokes}{11}{subsubsection.5.2.3}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.4}Atomic ID Generation}{11}{subsubsection.5.2.4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {III}Thread-Safe Collections}{11}{subsection.5.3}}
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Testing}{11}{section.6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {I}Constructor Testing}{12}{subsection.6.1}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {I.1}New Board}{12}{subsubsection.6.1.1}}
-\@writefile{toc}{\contentsline {paragraph}{Valid Name}{12}{subsubsection.6.1.1}}
-\@writefile{toc}{\contentsline {paragraph}{Invalid Name}{12}{subsubsection.6.1.1}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {I.2}New User}{12}{subsubsection.6.1.2}}
-\@writefile{toc}{\contentsline {paragraph}{Valid Name}{12}{subsubsection.6.1.2}}
-\@writefile{toc}{\contentsline {paragraph}{Invalid Name}{12}{subsubsection.6.1.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {II}Normal Functionality}{12}{subsection.6.2}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.1}Loading a Board}{12}{subsubsection.6.2.1}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.2}Creating a New Board}{12}{subsubsection.6.2.2}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.3}Deleting a Board}{13}{subsubsection.6.2.3}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.4}Choosing Stroke Thickness}{13}{subsubsection.6.2.4}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.5}Choosing Stroke Color}{13}{subsubsection.6.2.5}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.6}"More Colors" Button}{13}{subsubsection.6.2.6}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.7}"Erase" Button}{13}{subsubsection.6.2.7}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.8}"Clear" Button}{14}{subsubsection.6.2.8}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.9}Drawing on a Whiteboard}{14}{subsubsection.6.2.9}}
-\@writefile{toc}{\contentsline {paragraph}{Whiteboard Selected}{14}{subsubsection.6.2.9}}
-\@writefile{toc}{\contentsline {paragraph}{No Whiteboard Selected}{14}{subsubsection.6.2.9}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.10}Concurrent Board Operations}{14}{subsubsection.6.2.10}}
-\@writefile{toc}{\contentsline {paragraph}{User A Deletes while User B Modifies}{14}{subsubsection.6.2.10}}
-\@writefile{toc}{\contentsline {paragraph}{Switch then Disconnect}{14}{subsubsection.6.2.10}}
-\@writefile{toc}{\contentsline {paragraph}{Rapid-Switching between Boards}{14}{subsubsection.6.2.10}}
-\@writefile{toc}{\contentsline {paragraph}{Edit then Switch}{14}{subsubsection.6.2.10}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.11}User Disconnect}{15}{subsubsection.6.2.11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {VI}Board Switching}{10}{subsection.3.6}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Threads and Queues}{11}{section.4}}
+\@writefile{toc}{\contentsline {paragraph}{Client}{11}{section.4}}
+\@writefile{toc}{\contentsline {paragraph}{User}{11}{section.4}}
+\@writefile{toc}{\contentsline {paragraph}{MasterBoard}{11}{section.4}}
+\@writefile{toc}{\contentsline {paragraph}{WhiteboardServer}{11}{section.4}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Thread Safety}{11}{section.5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {I}Processes}{11}{subsection.5.1}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {I.1}Adding New Users}{11}{subsubsection.5.1.1}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {I.2}Adding and Removing Boards}{12}{subsubsection.5.1.2}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {I.3}Drawing Strokes}{12}{subsubsection.5.1.3}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {I.4}Selecting Boards}{12}{subsubsection.5.1.4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {II}Averted Race Conditions}{12}{subsection.5.2}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.1}New Board and New User}{12}{subsubsection.5.2.1}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.2}Remove Board and New User}{12}{subsubsection.5.2.2}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.3}Concurrent Strokes}{12}{subsubsection.5.2.3}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.4}Atomic ID Generation}{13}{subsubsection.5.2.4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {III}Thread-Safe Collections}{13}{subsection.5.3}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Testing}{13}{section.6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {I}Constructor Testing}{13}{subsection.6.1}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {I.1}New Board}{13}{subsubsection.6.1.1}}
+\@writefile{toc}{\contentsline {paragraph}{Valid Name}{13}{subsubsection.6.1.1}}
+\@writefile{toc}{\contentsline {paragraph}{Invalid Name}{13}{subsubsection.6.1.1}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {I.2}New User}{13}{subsubsection.6.1.2}}
+\@writefile{toc}{\contentsline {paragraph}{Valid Name}{13}{subsubsection.6.1.2}}
+\@writefile{toc}{\contentsline {paragraph}{Invalid Name}{14}{subsubsection.6.1.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {II}Normal Functionality}{14}{subsection.6.2}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.1}Loading a Board}{14}{subsubsection.6.2.1}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.2}Creating a New Board}{14}{subsubsection.6.2.2}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.3}Deleting a Board}{14}{subsubsection.6.2.3}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.4}Choosing Stroke Thickness}{14}{subsubsection.6.2.4}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.5}Choosing Stroke Color}{15}{subsubsection.6.2.5}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.6}"More Colors" Button}{15}{subsubsection.6.2.6}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.7}"Erase" Button}{15}{subsubsection.6.2.7}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.8}"Clear" Button}{15}{subsubsection.6.2.8}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.9}Drawing on a Whiteboard}{15}{subsubsection.6.2.9}}
+\@writefile{toc}{\contentsline {paragraph}{Whiteboard Selected}{15}{subsubsection.6.2.9}}
+\@writefile{toc}{\contentsline {paragraph}{No Whiteboard Selected}{15}{subsubsection.6.2.9}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.10}Concurrent Board Operations}{16}{subsubsection.6.2.10}}
+\@writefile{toc}{\contentsline {paragraph}{User A Deletes while User B Modifies}{16}{subsubsection.6.2.10}}
+\@writefile{toc}{\contentsline {paragraph}{Switch then Disconnect}{16}{subsubsection.6.2.10}}
+\@writefile{toc}{\contentsline {paragraph}{Rapid-Switching between Boards}{16}{subsubsection.6.2.10}}
+\@writefile{toc}{\contentsline {paragraph}{Edit then Switch}{16}{subsubsection.6.2.10}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {II.11}User Disconnect}{16}{subsubsection.6.2.11}}
