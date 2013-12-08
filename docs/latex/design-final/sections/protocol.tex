@@ -1,0 +1,86 @@
+\section{Server-Client Communication}
+
+\subsection{Protocol}
+
+\subsubsection{Grammar}
+The following grammar will facilitate the text-based communication between the clients and the server. The server will send \texttt{StoC\_MSG} messages to the client, which will be able to send \texttt{CtoS\_MSG} messages back to the server.
+
+\vspace{5mm}
+
+\setlength{\parindent}{0in}
+
+\texttt{StoC\_MSG :== (STROKE | BRD\_INFO | BRD\_DEL | USER\_INIT | BRD\_USERS) N}\\
+
+\texttt{CtoS\_MSG :== (STROKE | SEL | BRD\_REQ | BRD\_DEL | BRD\_ALL | USER\_REQ) N}\\
+
+
+\texttt{STROKE :== "stroke" S BOARD\_ID S THICK S COORDS S COLOR}\\
+\texttt{COORDS :== X1 S Y1 S X2 S Y2}\\
+\texttt{X1, Y1, X2, Y2 :== INT}\\
+\texttt{COLOR :== [0-255] S [0-255] S [0-255]}\\
+\texttt{THICK :== [1-10]}\\
+
+\texttt{SEL :== "select" S BOARD\_ID}\\
+
+\texttt{BRD\_REQ :== "board\_req" S NAME}\\
+\texttt{BRD\_ALL :== "board\_all"}\\
+\texttt{BRD\_INFO :== "board" S BOARD\_ID S NAME}\\
+\texttt{BRD\_DEL :== "del" S BOARD\_ID}\\
+\texttt{BRD\_USERS :== "board\_users" S BOARD\_ID (S USER\_NAME)+}\\
+
+\texttt{USER\_REQ :== "user\_req" S USER\_NAME}\\
+\texttt{USER\_INIT :== "you\_are" S USER\_NAME}\\
+
+\texttt{NAME :== [$\char`\^$N]}\\
+\texttt{USER\_NAME :== [A-Za-z]([A-Za-z0-9]?)+}\\
+\texttt{BOARD\_ID :== INT}\\
+
+\texttt{INT :== [0-9]+}\\
+\texttt{N :== "$\backslash$r?$\backslash$n"}\\
+\texttt{S :== " "}\\
+
+\setlength{\parindent}{15pt} %default
+
+\subsubsection{Definitions and Usage}
+Below is the definition for each of the messages that can be sent across the network. Note that particular messages warrant a response after processing, and those returned messages are included in the definition.
+
+\paragraph{\texttt{STROKE}} A \texttt{STROKE} message is sent from a client to the server upon drawing a line.
+\begin{enumerate}
+\item A \texttt{WhiteLine} object is created for the line from (\texttt{X1},\texttt{Y1}) to (\texttt{X2},\texttt{Y2}) with thickness \texttt{THICK} and color \texttt{COLOR}. It is then added to the \texttt{MasterBoard} corresponding to the provided \texttt{BOARD\_ID}.
+\item The \texttt{STROKE} message is forwarded to all clients who are currently editing the same board, so that the line can be incorporated onto their whiteboards.
+\end{enumerate}
+
+\paragraph{\texttt{SEL}} Upon selecting a different board, the client sends a \texttt{SEL} request to the server.
+\begin{enumerate}
+\item The server clears all stroke messages queued to update the client's whiteboard.
+\item The server disassociates the client with the current whiteboard if one is assigned and associates the client with the requested board.
+\item A \texttt{BRD\_USERS} message is sent to all users of the requested board, with the addition of the new editor, to inform them of the change. Another \texttt{BRD\_USERS} message is sent to all users of the previous board, with the omission of the removed editor, to inform them of the change.
+\item A sequence of \texttt{STROKE} messages are sent to the client to recreate the current state of the selected whiteboard.
+\end{enumerate}
+
+\paragraph{\texttt{BRD\_REQ}} When the client wants to create a new board, it send a \texttt{BRD\_REQ} message with a properly formatted \texttt{NAME}.
+\begin{enumerate}
+\item The server initializes a new \texttt{MasterBoard} object with relevant properties and adds it to its list of boards.
+\item A \texttt{BRD\_INFO} message for the new board is sent to all connected clients to inform them of the newly available whiteboard. The clients add this board to their list of available boards.
+\end{enumerate}
+
+\paragraph{\texttt{BRD\_ALL}} This is often called by the client upon initialization. It prompts a series of \texttt{BRD\_INFO} replies for all existing boards.
+
+\paragraph{\texttt{BRD\_DEL}} When the client wants to remove a board, it send a \texttt{BRD\_DEL} message to the server.
+\begin{enumerate}
+\item If the provided \texttt{BOARD\_ID} exists, the server removes the designated board from its central list of boards.
+\item The \texttt{BRD\_DEL} message is forwarded to all clients to signify that the board is no longer available. The clients remove this board from their list of available boards.
+\end{enumerate}
+
+\paragraph{\texttt{USER\_REQ}} Upon entering a username in the client application, a \texttt{USER\_REQ} message with a properly formatted \texttt{USER\_NAME} will be sent to the server to request the desired username.
+\begin{enumerate}
+\item The requested username is checked against existing username. If the name already exists, a name is generated using the new board's ID number.
+\item A \texttt{User} object with relevant properties is created to represent the new client.
+\item A \texttt{USER\_INIT} message is sent to the client to inform it of its acquired username.
+\end{enumerate}
+
+Note that \texttt{BRD\_USERS}, \texttt{BRD\_INFO}, and \texttt{USER\_INIT} are used solely as replies and are included in the descriptions above.
+
+
+\subsection{Data Transport}
+For a detailed explanation of the communication method between the clients and the server, please see the "Threads and Queues" section.

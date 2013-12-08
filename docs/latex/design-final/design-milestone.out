@@ -1,0 +1,66 @@
+\BOOKMARK [1][-]{section.1}{User Functionality Overview}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Components}{section.1}% 2
+\BOOKMARK [3][-]{subsubsection.1.1.1}{Selector}{subsection.1.1}% 3
+\BOOKMARK [3][-]{subsubsection.1.1.2}{Board Editors}{subsection.1.1}% 4
+\BOOKMARK [3][-]{subsubsection.1.1.3}{Thickness Selector}{subsection.1.1}% 5
+\BOOKMARK [3][-]{subsubsection.1.1.4}{Color Selector}{subsection.1.1}% 6
+\BOOKMARK [3][-]{subsubsection.1.1.5}{Erasing Tools}{subsection.1.1}% 7
+\BOOKMARK [3][-]{subsubsection.1.1.6}{Whiteboard Window}{subsection.1.1}% 8
+\BOOKMARK [2][-]{subsection.1.2}{Behavior}{section.1}% 9
+\BOOKMARK [1][-]{section.2}{Server-Client Communication}{}% 10
+\BOOKMARK [2][-]{subsection.2.1}{Protocol}{section.2}% 11
+\BOOKMARK [3][-]{subsubsection.2.1.1}{Grammar}{subsection.2.1}% 12
+\BOOKMARK [3][-]{subsubsection.2.1.2}{Definitions and Usage}{subsection.2.1}% 13
+\BOOKMARK [2][-]{subsection.2.2}{Data Transport}{section.2}% 14
+\BOOKMARK [1][-]{section.3}{Data Type}{}% 15
+\BOOKMARK [2][-]{subsection.3.1}{MasterBoard}{section.3}% 16
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Description}{subsection.3.1}% 17
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Fields}{subsection.3.1}% 18
+\BOOKMARK [3][-]{subsubsection.3.1.3}{Methods}{subsection.3.1}% 19
+\BOOKMARK [3][-]{subsubsection.3.1.4}{In Action}{subsection.3.1}% 20
+\BOOKMARK [2][-]{subsection.3.2}{User}{section.3}% 21
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Description}{subsection.3.2}% 22
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Fields}{subsection.3.2}% 23
+\BOOKMARK [3][-]{subsubsection.3.2.3}{Methods}{subsection.3.2}% 24
+\BOOKMARK [2][-]{subsection.3.3}{WhiteLine}{section.3}% 25
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Description}{subsection.3.3}% 26
+\BOOKMARK [3][-]{subsubsection.3.3.2}{Fields}{subsection.3.3}% 27
+\BOOKMARK [3][-]{subsubsection.3.3.3}{Methods}{subsection.3.3}% 28
+\BOOKMARK [2][-]{subsection.3.4}{ClientBoard}{section.3}% 29
+\BOOKMARK [3][-]{subsubsection.3.4.1}{Description}{subsection.3.4}% 30
+\BOOKMARK [3][-]{subsubsection.3.4.2}{Fields}{subsection.3.4}% 31
+\BOOKMARK [3][-]{subsubsection.3.4.3}{Methods}{subsection.3.4}% 32
+\BOOKMARK [2][-]{subsection.3.5}{ClientView extends JPanel}{section.3}% 33
+\BOOKMARK [3][-]{subsubsection.3.5.1}{Description}{subsection.3.5}% 34
+\BOOKMARK [3][-]{subsubsection.3.5.2}{Fields}{subsection.3.5}% 35
+\BOOKMARK [3][-]{subsubsection.3.5.3}{Methods}{subsection.3.5}% 36
+\BOOKMARK [2][-]{subsection.3.6}{Board Switching}{section.3}% 37
+\BOOKMARK [1][-]{section.4}{Threads and Queues}{}% 38
+\BOOKMARK [1][-]{section.5}{Thread Safety}{}% 39
+\BOOKMARK [2][-]{subsection.5.1}{Processes}{section.5}% 40
+\BOOKMARK [3][-]{subsubsection.5.1.1}{Adding New Users}{subsection.5.1}% 41
+\BOOKMARK [3][-]{subsubsection.5.1.2}{Adding and Removing Boards}{subsection.5.1}% 42
+\BOOKMARK [3][-]{subsubsection.5.1.3}{Drawing Strokes}{subsection.5.1}% 43
+\BOOKMARK [3][-]{subsubsection.5.1.4}{Selecting Boards}{subsection.5.1}% 44
+\BOOKMARK [2][-]{subsection.5.2}{Averted Race Conditions}{section.5}% 45
+\BOOKMARK [3][-]{subsubsection.5.2.1}{New Board and New User}{subsection.5.2}% 46
+\BOOKMARK [3][-]{subsubsection.5.2.2}{Remove Board and New User}{subsection.5.2}% 47
+\BOOKMARK [3][-]{subsubsection.5.2.3}{Concurrent Strokes}{subsection.5.2}% 48
+\BOOKMARK [3][-]{subsubsection.5.2.4}{Atomic ID Generation}{subsection.5.2}% 49
+\BOOKMARK [2][-]{subsection.5.3}{Thread-Safe Collections}{section.5}% 50
+\BOOKMARK [1][-]{section.6}{Testing}{}% 51
+\BOOKMARK [2][-]{subsection.6.1}{Constructor Testing}{section.6}% 52
+\BOOKMARK [3][-]{subsubsection.6.1.1}{New Board}{subsection.6.1}% 53
+\BOOKMARK [3][-]{subsubsection.6.1.2}{New User}{subsection.6.1}% 54
+\BOOKMARK [2][-]{subsection.6.2}{Normal Functionality}{section.6}% 55
+\BOOKMARK [3][-]{subsubsection.6.2.1}{Loading a Board}{subsection.6.2}% 56
+\BOOKMARK [3][-]{subsubsection.6.2.2}{Creating a New Board}{subsection.6.2}% 57
+\BOOKMARK [3][-]{subsubsection.6.2.3}{Deleting a Board}{subsection.6.2}% 58
+\BOOKMARK [3][-]{subsubsection.6.2.4}{Choosing Stroke Thickness}{subsection.6.2}% 59
+\BOOKMARK [3][-]{subsubsection.6.2.5}{Choosing Stroke Color}{subsection.6.2}% 60
+\BOOKMARK [3][-]{subsubsection.6.2.6}{"More Colors" Button}{subsection.6.2}% 61
+\BOOKMARK [3][-]{subsubsection.6.2.7}{"Erase" Button}{subsection.6.2}% 62
+\BOOKMARK [3][-]{subsubsection.6.2.8}{"Clear" Button}{subsection.6.2}% 63
+\BOOKMARK [3][-]{subsubsection.6.2.9}{Drawing on a Whiteboard}{subsection.6.2}% 64
+\BOOKMARK [3][-]{subsubsection.6.2.10}{Concurrent Board Operations}{subsection.6.2}% 65
+\BOOKMARK [3][-]{subsubsection.6.2.11}{User Disconnect}{subsection.6.2}% 66

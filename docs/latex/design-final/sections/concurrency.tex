@@ -1,0 +1,53 @@
+\section{Threads and Queues}
+
+\paragraph{Client} The GUI maintains two threads, one which listens for requests from the associated \texttt{User}, and another which utilizes a buffered output stream to send message to the \texttt{User}. Possible requests include creating a new Whiteboard, deleting a Whiteboard, selecting a different Whiteboard, or sending a Stroke.
+
+\paragraph{User} Each \texttt{User} object holds the client-side socket. The User maintains two threads, one which listens for requests from either its MasterBoard or its GUI, and another which contains a BlockingQueue containing requests to be sent to the GUI. The request() method parses GUI requests and sends the appropriately formatted text protocol message to either the MasterBoard (when a Stroke is made) or the WhiteboardServer (for other User/Whiteboard requests).
+
+\paragraph{MasterBoard} The MasterBoard maintains two threads, one which listens for requests from any of its associated Users, puts the pending changes on a BlockingQueue, and processes these requests, and another which contains a BlockingQueue containing requests to be sent to all of its associated Users. For example, the listening thread will accept a request to create a new Stroke to be added to its strokes ArrayList. This update is then sent to the \texttt{User}s from the sending thread.
+
+\paragraph{WhiteboardServer} The WhiteboardServer is responsible for instantiating new Users with each new connection, and creating new MasterBoard objects in response to requests from Users. It maintains an InputStream to receive requests from the Users, but does not need an OutputStream.
+
+\section{Thread Safety}
+
+\subsection{Processes}
+
+\subsubsection{Adding New Users}
+
+Upon receiving a \texttt{USER\_REQ} message, the WhiteboardServer calls \texttt{createNewUser} on the main server thread. This instantiates the new User object and adds it to the \texttt{users} ArrayList. This method locks on the \texttt{boards} field first, and then the \texttt{users} field. This ensures that only one User is created at a time, and that behavior that is dependent other User objects, such as username and ID assignment, is consistent.
+
+\subsubsection{Adding and Removing Boards}
+
+Upon receiving a \texttt{BRD\_REQ} message, the WhiteboardServer calls \texttt{createBoard}, which instantiates the new MasterBoard object and adds it to the \texttt{boards} ArrayList. This method locks on the \texttt{boards} field first, and then the \texttt{users} field. If multiple requests for a new board are sent, the locks ensure that another board is not created until the current board is created, added to the ArrayList, and all Users are updated with these changes.
+
+Upon receiving a \texttt{BRD\_DEL} message, the WhiteboardServer calls \texttt{removeBoard}. This removes the board from the server's \texttt{boards} ArrayList, as well disassociating all Users currently active on that board. This method locks on the \texttt{boards} field and then the \texttt{users}, so that only one board can be deleted at a time, and so that one thread cannot be deleting a board from the ArrayList while another is attempting to add one.
+
+\subsubsection{Drawing Strokes}
+
+Each time a line is drawn on a client's Canvas, a request is sent from the WhiteboardClient to the MasterBoard via a buffer. The MasterBoard puts this message on a queue of pending requests, then locks on the \texttt{strokes} ArrayList and appends the stroke encoded in the message. The use of the threadsafe BlockingQueue ensures that all strokes are sent from the GUI to the MasterBoard in the correct order. Before releasing the lock, all Users associated with this board are informed of the newly added stroke.
+
+\subsubsection{Selecting Boards}
+
+When the client selects a new board, the server fetches the board to be sent. The User calls \texttt{allStrokes} to obtain all of the strokes associated with the new board. This method locks on the \texttt{strokes} ArrayList, so that no new strokes can be added before the User has received the entire ArrayList. The User also adds itself to the MasterBoard's \texttt{users} ArrayList, locking on that field to ensure that only one User is added at a time.
+
+\subsection{Averted Race Conditions}
+
+\subsubsection{New Board and New User}
+
+Both \texttt{BRD\_REQ} and \texttt{USER\_REQ} messages are handled on the main server thread. Since only one of these requests can be processed at a time, there cannot be any racing between the two methods that would potentially cause a newly created board to be lost for some Users. 
+
+\subsubsection{Remove Board and New User}
+
+Similar to the strategy in the previous section, both \texttt{DEL\_BRD} and \texttt{USER\_REQ} requests are handled on the main server thread. This eliminates any racing in which a new User would be created and still receive a board that had actually been deleted.
+
+\subsubsection{Concurrent Strokes}
+
+Because the GUI sends the new stroke messages through a BlockingQueue, the order is preserved. The MasterBoard then appends the strokes to its \texttt{strokes} in the order that they are received from the clients. (Note that this is not necessarily exactly the same as the order in which each stroke is sent from each GUI, but every User will receive strokes in the exact same order when receiving updates from the MasterBoard.) Because the \texttt{makeStrokes} method locks on \texttt{strokes} while it processes a request, only one stroke will be processed at a time, and the risk of losing strokes or having clients receive stroke updates in different orders is eliminated. Similarly, while a newly selected board is being transferred to a client, no new strokes can be added, to eliminate these same risks.
+
+\subsubsection{Atomic ID Generation}
+
+All object IDs are generated by a static AtomicInteger associated with each class. Because the AtomicInteger is threadsafe, any risks associated with interleaving integer operations are eliminated.
+
+\subsection{Thread-Safe Collections}
+
+The server-side classes \texttt{User} and \texttt{MasterBoard} contain a number of ArrayList fields, referenced in the preceding sections. With the exception of \texttt{strokes} in \texttt{MasterBoard}, all of these fields will utilize the thread-safe synchronized wrapper, to add additional protection against concurrency problems, such as deadlock. The \texttt{strokes} field will not use this wrapper, because the \texttt{MasterBoard} uses a BlockingQueue for pending changes, which ensures that the \texttt{strokes} ArrayList is not accessed in multiple threads concurrently, and to avoid the synchronized wrapper's performance penalty on an object accessed so frequently.
