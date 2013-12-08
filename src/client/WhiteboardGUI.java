@@ -5,8 +5,12 @@ import canvas.Canvas;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -33,6 +37,8 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         }
     };
     // need to add +/- buttons
+    private final JButton addBoard;
+    private final JButton deleteBoard;
     private final JLabel boardEditorsLabel;
     private final JTable boardEditors;
     private final DefaultTableModel tableModelEditors = new DefaultTableModel(
@@ -44,9 +50,9 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
     };
     private final JLabel sliderLabel;
     private final JSlider thicknessSlider;
-    private final JTable colorPalette; // needs to be a grid of colors
-                                       // eventually...
+    private final JTable colorPalette;
     private final JButton moreColors;
+    private final JColorChooser colorChooser;
     private final JToggleButton eraseToggle;
     private final JButton clear;
     private final Canvas canvas;
@@ -98,11 +104,47 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         c.gridy = 1;
         this.add(allBoards, c);
 
+        c.insets = new Insets(0, 10, 0, 0);
+        c.fill = GridBagConstraints.NONE;
+
+        addBoard = new JButton("Create New Board");
+        addBoard.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                // new board's name
+                String newBoard = JOptionPane
+                        .showInputDialog("New board name:");
+                // Send message to server
+            }
+
+        });
+        c.gridx = 0;
+        c.gridy = 2;
+        this.add(addBoard, c);
+
+        deleteBoard = new JButton("Delete Current Board");
+        deleteBoard.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Send message to server
+                int n = JOptionPane.showConfirmDialog(null,
+                        "Are you sure you want to delete this board?",
+                        "Delete Current Board", JOptionPane.YES_NO_OPTION);
+                // yes -> n = 0; no -> n = 1
+            }
+
+        });
+        c.gridy = 3;
+        this.add(deleteBoard, c);
+
+        c.insets = padding;
         c.fill = GridBagConstraints.NONE;
 
         boardEditorsLabel = new JLabel("Board Editors");
         c.gridx = 0;
-        c.gridy = 2;
+        c.gridy = 3;
         this.add(boardEditorsLabel, c);
 
         tableModelEditors.addRow(new Object[] { "apollo" });
@@ -114,13 +156,13 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         boardEditors.setRowSelectionAllowed(false);
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy = 4;
         this.add(boardEditors, c);
 
         sliderLabel = new JLabel("Stroke Thickness");
         c.fill = GridBagConstraints.NONE;
         c.gridx = 0;
-        c.gridy = 4;
+        c.gridy = 5;
         this.add(sliderLabel, c);
 
         thicknessSlider = new JSlider(1, 10, 3);
@@ -132,14 +174,14 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         thicknessSlider.addChangeListener(this);
         c.fill = GridBagConstraints.NONE;
         c.gridx = 0;
-        c.gridy = 5;
+        c.gridy = 6;
         this.add(thicknessSlider, c);
 
         canvas = new Canvas(800, 600);
         c.fill = GridBagConstraints.NONE;
         c.gridx = 1;
         c.gridy = 0;
-        c.gridheight = 6;
+        c.gridheight = 7;
         c.gridwidth = 4;
         this.add(canvas, c);
 
@@ -152,29 +194,49 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         colorPalette = new JTable(model);
         colorPalette.setGridColor(Color.BLACK);
         colorPalette.setRowHeight(20);
+        colorPalette.setCellSelectionEnabled(true);
+        colorPalette.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         for (int i = 0; i < 7; i++) {
             colorPalette.getColumnModel().getColumn(i).setPreferredWidth(20);
             colorPalette.getColumnModel().getColumn(i)
                     .setCellRenderer(new ColorRenderer());
         }
 
-        colorPalette.getSelectionModel().addListSelectionListener(
-                new ListSelectionListener() {
+        colorPalette.addMouseListener(new MouseListener() {
 
-                    @Override
-                    public void valueChanged(ListSelectionEvent e) {
-                        int row = colorPalette.getSelectedRow();
-                        int col = colorPalette.getSelectedColumn();
-                        drawingColor = colors[row][col];
-                        canvas.setColor(drawingColor);
-                        System.out.println(drawingColor);
-                        // send message to server
-                    }
+            @Override
+            public void mouseClicked(MouseEvent me) {
 
-                });
+                Point point = me.getPoint();
+                JTable table = (JTable) me.getSource();
+                int row = table.rowAtPoint(point);
+                int col = table.columnAtPoint(point);
+                drawingColor = colors[row][col];
+                canvas.setColor(drawingColor);
+                System.out.println("Mouse event: " + row + ", " + col);
+                // send message to server
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent arg0) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent arg0) {
+            }
+
+            @Override
+            public void mousePressed(MouseEvent arg0) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent arg0) {
+            }
+
+        });
 
         c.gridx = 1;
-        c.gridy = 6;
+        c.gridy = 7;
         c.gridheight = 1;
         c.gridwidth = 1;
         this.add(colorPalette, c);
@@ -182,8 +244,19 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         c.insets = new Insets(0, 50, 0, 50);
 
         moreColors = new JButton("More Colors");
+        colorChooser = new JColorChooser();
+        moreColors.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                Color color = colorChooser.showDialog(null, "More Colors", Color.WHITE);
+                drawingColor = color;
+                canvas.setColor(drawingColor);
+            }
+            
+        });
         c.gridx = 2;
-        c.gridy = 6;
+        c.gridy = 7;
         this.add(moreColors, c);
 
         eraseToggle = new JToggleButton("Erase");
@@ -197,7 +270,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
             }
         });
         c.gridx = 3;
-        c.gridy = 6;
+        c.gridy = 7;
         this.add(eraseToggle, c);
 
         clear = new JButton("Clear");
@@ -211,7 +284,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
         });
         c.gridx = 4;
-        c.gridy = 6;
+        c.gridy = 7;
         this.add(clear, c);
 
         this.pack();
