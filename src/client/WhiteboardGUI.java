@@ -251,7 +251,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
             public void actionPerformed(ActionEvent arg0) {
                 Color color = colorChooser.showDialog(null, "More Colors", Color.WHITE);
                 drawingColor = color;
-                canvas.setColor(drawingColor);
+                canvas.setColor(color);
             }
             
         });
