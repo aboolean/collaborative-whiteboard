@@ -55,7 +55,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
     private final JColorChooser colorChooser;
     private final JToggleButton eraseToggle;
     private final JButton clear;
-    private final Canvas canvas;
+    private final ClientView canvas;
 
     /*
      * Drawing-related fields.
@@ -177,7 +177,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         c.gridy = 6;
         this.add(thicknessSlider, c);
 
-        canvas = new Canvas(800, 600);
+        canvas = new ClientView();
         c.fill = GridBagConstraints.NONE;
         c.gridx = 1;
         c.gridy = 0;
@@ -267,6 +267,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
                 else
                     eraseMode = false;
                 canvas.setErase(eraseMode);
+                System.out.println(eraseMode);
             }
         });
         c.gridx = 3;
@@ -278,7 +279,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                canvas.fillWithWhite();
+                canvas.clear();
                 // send message to Server
             }
 
