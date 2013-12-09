@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -65,6 +66,19 @@ public class ClientView extends JPanel {
         final Graphics2D g = (Graphics2D) buffer.getGraphics();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
+    }
+
+    /**
+     * Covers the whiteboard with solid black and a loading message. Does not
+     * repaint the component on screen. Call push() to repaint.
+     */
+    public void loading() {
+        final Graphics2D g = (Graphics2D) buffer.getGraphics();
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, getWidth(), getHeight());
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Georgia", Font.BOLD, 20));
+        g.drawString("Loading...", X_SIZE / 2, Y_SIZE / 2);
     }
 
     /**

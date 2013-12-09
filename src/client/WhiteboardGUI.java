@@ -8,6 +8,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.net.Socket;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -17,6 +18,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import server.WhiteboardServer;
+import data.User;
 import data.WhiteLine;
 
 @SuppressWarnings("serial")
@@ -55,6 +58,9 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
     private final JToggleButton eraseToggle;
     private final JButton clear;
     private final ClientView canvas;
+    Socket socket = new Socket();
+    private final User user = new User("username", socket,
+            new WhiteboardServer());
 
     /*
      * Drawing-related fields.
@@ -70,6 +76,11 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
     private Color drawingColor = Color.BLACK;
     private boolean eraseMode = false;
 
+    /*
+     * Communication-related fields.
+     */
+    
+    
     public WhiteboardGUI() {
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -292,8 +303,8 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
                 canvas.clear();
                 canvas.push();
                 // send BRD_CLR message
+                createListeningThread();
             }
-
         });
         c.gridx = 4;
         c.gridy = 7;
@@ -333,9 +344,9 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
     private void addUser(String BRD_USERS) {
         String[] msg = BRD_USERS.split(" ");
         tableModelEditors.setRowCount(0);
-        for(int i = 2; i < msg.length; i++){
+        for (int i = 2; i < msg.length; i++) {
             System.out.println(msg[i]);
-            tableModelEditors.addRow(new Object[] { msg[i] } );
+            tableModelEditors.addRow(new Object[] { msg[i] });
         }
     }
 
@@ -429,6 +440,27 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         public void mouseExited(MouseEvent e) {
         }
     }
+
+    private void createListeningThread() {
+        Thread listeningThread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        String str = (String) user.getQ().take();
+                        System.out.println(str);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        });
+        listeningThread.start();
+    }
+    
+    
 
     public static void main(final String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
