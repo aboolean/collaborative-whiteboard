@@ -1,16 +1,13 @@
 package client;
 
-import canvas.Canvas;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -20,6 +17,9 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import data.WhiteLine;
+
+@SuppressWarnings("serial")
 public class WhiteboardGUI extends JFrame implements ChangeListener {
 
     private static final long serialVersionUID = 1L;
@@ -36,7 +36,6 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
             return false;
         }
     };
-    // need to add +/- buttons
     private final JButton addBoard;
     private final JButton deleteBoard;
     private final JLabel boardEditorsLabel;
@@ -71,30 +70,32 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
     private Color drawingColor = Color.BLACK;
     private boolean eraseMode = false;
 
-    @SuppressWarnings("serial")
     public WhiteboardGUI() {
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         Insets padding = new Insets(10, 10, 10, 10);
-
         c.insets = padding;
 
         whiteboardsLabel = new JLabel("Whiteboards");
         c.gridx = 0;
         c.gridy = 0;
         this.add(whiteboardsLabel, c);
+
+        // Create table containing all active boards.
         tableModelWhiteboards.addRow(new Object[] { "01 - trojanHorse" });
         tableModelWhiteboards.addRow(new Object[] { "02 - twoStrokeEngine" });
 
         allBoards = new JTable(tableModelWhiteboards);
         allBoards.setPreferredSize(new Dimension(0, 200));
+
+        // Add a listener which sends a SEL message to the server when a board
+        // in the list is selected.
         allBoards.getSelectionModel().addListSelectionListener(
                 new ListSelectionListener() {
 
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
-                        System.out.println("I can has dis board?");
-                        // send message to Server
+                        // send SEL message
                     }
 
                 });
@@ -107,6 +108,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         c.insets = new Insets(0, 10, 0, 0);
         c.fill = GridBagConstraints.NONE;
 
+        // Button which sends a BRD_REQ message to instantiate a new whiteboard.
         addBoard = new JButton("Create New Board");
         addBoard.addActionListener(new ActionListener() {
 
@@ -115,7 +117,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
                 // new board's name
                 String newBoard = JOptionPane
                         .showInputDialog("New board name:");
-                // Send message to server
+                // Send BRD_REQ message
             }
 
         });
@@ -123,16 +125,18 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         c.gridy = 2;
         this.add(addBoard, c);
 
+        // Button which sends a BRD_DEL message to delete the currently selected
+        // board.
         deleteBoard = new JButton("Delete Current Board");
         deleteBoard.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Send message to server
                 int n = JOptionPane.showConfirmDialog(null,
                         "Are you sure you want to delete this board?",
                         "Delete Current Board", JOptionPane.YES_NO_OPTION);
                 // yes -> n = 0; no -> n = 1
+                // Send BRD_DEL message
             }
 
         });
@@ -147,6 +151,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         c.gridy = 3;
         this.add(boardEditorsLabel, c);
 
+        // Create table listing all Users active on this whiteboard.
         tableModelEditors.addRow(new Object[] { "apollo" });
         tableModelEditors.addRow(new Object[] { "zeus" });
         tableModelEditors.addRow(new Object[] { "athena" });
@@ -159,6 +164,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         c.gridy = 4;
         this.add(boardEditors, c);
 
+        // Slider which adjusts the stroke thickness.
         sliderLabel = new JLabel("Stroke Thickness");
         c.fill = GridBagConstraints.NONE;
         c.gridx = 0;
@@ -177,7 +183,10 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         c.gridy = 6;
         this.add(thicknessSlider, c);
 
+        // Create the ClientView that acts as a canvas for the client to draw
+        // on.
         canvas = new ClientView();
+        addDrawingController(canvas);
         c.fill = GridBagConstraints.NONE;
         c.gridx = 1;
         c.gridy = 0;
@@ -185,6 +194,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         c.gridwidth = 4;
         this.add(canvas, c);
 
+        // Create a grid of selectable colors.
         DefaultTableModel model = new DefaultTableModel(2, 7) {
             @Override
             public boolean isCellEditable(int row, int col) {
@@ -212,9 +222,6 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
                 int row = table.rowAtPoint(point);
                 int col = table.columnAtPoint(point);
                 drawingColor = colors[row][col];
-                canvas.setColor(drawingColor);
-                System.out.println("Mouse event: " + row + ", " + col);
-                // send message to server
             }
 
             @Override
@@ -243,22 +250,26 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
         c.insets = new Insets(0, 50, 0, 50);
 
+        // Button which opens a JColorChooser dialog to select more
+        // colors.
         moreColors = new JButton("More Colors");
         colorChooser = new JColorChooser();
         moreColors.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                Color color = colorChooser.showDialog(null, "More Colors", Color.WHITE);
+                Color color = colorChooser.showDialog(null, "More Colors",
+                        Color.WHITE);
                 drawingColor = color;
-                canvas.setColor(color);
             }
-            
+
         });
         c.gridx = 2;
         c.gridy = 7;
         this.add(moreColors, c);
 
+        // Button which toggles between drawing and erasing (drawing
+        // with thick, white strokes).
         eraseToggle = new JToggleButton("Erase");
         eraseToggle.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent ie) {
@@ -266,21 +277,21 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
                     eraseMode = true;
                 else
                     eraseMode = false;
-                canvas.setErase(eraseMode);
-                System.out.println(eraseMode);
             }
         });
         c.gridx = 3;
         c.gridy = 7;
         this.add(eraseToggle, c);
 
+        // Button which clears the whiteboard and sends a BRD_CLR message.
         clear = new JButton("Clear");
         clear.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 canvas.clear();
-                // send message to Server
+                canvas.push();
+                // send BRD_CLR message
             }
 
         });
@@ -292,33 +303,42 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
     }
 
-    /*
-     * Listen to the thickness slider.
+    /**
+     * Listens to the thickness slider and adjusts the thickness field
+     * accordingly.
      */
     @Override
     public void stateChanged(ChangeEvent e) {
         JSlider source = (JSlider) e.getSource();
         if (!source.getValueIsAdjusting()) {
             thickness = source.getValue();
-            canvas.setThickness(thickness);
-            // send message to Server
         }
     }
 
-    /*
-     * Received message adding a Whiteboard to the list.
+    /**
+     * Called when a BRD_INFO message has been received. Adds this new board to
+     * the list of all active boards.
      */
-    private void addWhiteboard() {
+    private void addWhiteboard(String BRD_INFO) {
+        String[] msg = BRD_INFO.split("");
+        int row = tableModelWhiteboards.getRowCount();
+        tableModelWhiteboards.addRow(new Object[] { String.valueOf(row) + " - "
+                + msg[2] });
+    }
+
+    /**
+     * Called when a BRD_USERS message has been received. Updates the list of
+     * active board editors with the usernames of all active users.
+     */
+    private void addUser(String BRD_USERS) {
+        String[] msg = BRD_USERS.split("");
 
     }
 
-    /*
-     * Received message adding a User to the list.
+    /**
+     * Custom TableCellRenderer which colors the colorPalette JTable according
+     * to the colors 2D Array.
      */
-    private void addUser() {
-
-    }
-
     public class ColorRenderer extends JLabel implements TableCellRenderer {
 
         public ColorRenderer() {
@@ -332,7 +352,78 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
             setBackground(colors[row][col]);
             return this;
         }
+    }
 
+    /**
+     * Add the mouse listener that supports the user's freehand drawing.
+     */
+    private void addDrawingController(ClientView cv) {
+        DrawingController controller = new DrawingController();
+        cv.addMouseListener(controller);
+        cv.addMouseMotionListener(controller);
+    }
+
+    /**
+     * DrawingController handles the user's freehand drawing.
+     */
+    private class DrawingController implements MouseListener,
+            MouseMotionListener {
+        // store the coordinates of the last mouse event, so we can
+        // draw a line segment from that last point to the point of the next
+        // mouse event.
+        private int lastX, lastY;
+
+        public void DrawingController() {
+
+        }
+
+        /**
+         * When mouse button is pressed down, start drawing.
+         */
+        public void mousePressed(MouseEvent e) {
+            lastX = e.getX();
+            lastY = e.getY();
+        }
+
+        /**
+         * When mouse moves while a button is pressed down, draw a line segment.
+         */
+        public void mouseDragged(MouseEvent e) {
+            int x = e.getX();
+            int y = e.getY();
+
+            Color strokeColor;
+            int strokeThick;
+            if (eraseMode) {
+                strokeColor = Color.white;
+                strokeThick = 10;
+            } else {
+                strokeColor = drawingColor;
+                strokeThick = (int) thickness;
+            }
+            WhiteLine line = new WhiteLine(lastX, lastY, x, y, strokeColor,
+                    strokeThick);
+            canvas.drawLine(line);
+            canvas.push();
+            // send STROKE message
+            lastX = x;
+            lastY = y;
+        }
+
+        public void mouseMoved(MouseEvent e) {
+        }
+
+        public void mouseClicked(MouseEvent e) {
+        }
+
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        public void mouseExited(MouseEvent e) {
+        }
     }
 
     public static void main(final String[] args) {
