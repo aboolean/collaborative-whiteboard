@@ -320,7 +320,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
      * the list of all active boards.
      */
     private void addWhiteboard(String BRD_INFO) {
-        String[] msg = BRD_INFO.split("");
+        String[] msg = BRD_INFO.split(" ");
         int row = tableModelWhiteboards.getRowCount();
         tableModelWhiteboards.addRow(new Object[] { String.valueOf(row) + " - "
                 + msg[2] });
@@ -331,8 +331,12 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
      * active board editors with the usernames of all active users.
      */
     private void addUser(String BRD_USERS) {
-        String[] msg = BRD_USERS.split("");
-
+        String[] msg = BRD_USERS.split(" ");
+        tableModelEditors.setRowCount(0);
+        for(int i = 2; i < msg.length; i++){
+            System.out.println(msg[i]);
+            tableModelEditors.addRow(new Object[] { msg[i] } );
+        }
     }
 
     /**
