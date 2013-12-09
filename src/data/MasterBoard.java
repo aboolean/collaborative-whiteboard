@@ -22,7 +22,7 @@ public class MasterBoard {
 
 	/**
 	 * Constructs a MasterBoard object with the provided name. (NAME :==
-	 * [A-Za-z0-9 ]+) The ID number of the board is sequentially generated. Each
+	 * [^\r\n]) The ID number of the board is sequentially generated. Each
 	 * instance is initialized with no users or drawn strokes.
 	 * 
 	 * @param name
@@ -67,15 +67,48 @@ public class MasterBoard {
 	 *            a WhiteLine to be added to this MasterBoard
 	 */
 	public void makeStroke(WhiteLine line) {
-		// locking on users guarantees no strokes are sent to them
+		// locking on users guarantees no other strokes are sent to them
 		synchronized (users) {
-			// strokes are not added in any other place; must lock on users
-			strokes.add(line);
+			// strokes are not added in any other place
+			synchronized (strokes) {
+				strokes.add(line);
 
+				// Interleaving is not a problem here, because "strokes" cannot
+				// be concurrently accessed or modified. The users cannot call
+				// getAllStrokes() while a change is being made, so they do not
+				// "miss" any updates or receive duplicates.
+
+				for (User user : users) {
+					// Order is preserved because each user has only one board
+					// at a time and can only belong to one MasterBoard's
+					// (locked) "users" list at a time.
+					user.incorporateStroke(line);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Clears all the strokes on the board and informs all the editors of this
+	 * change. The board is not allowed to be modified or accessed during this
+	 * time.
+	 */
+	public void clearBoard() {
+		// locking on users guarantees no other changes are sent to them
+		synchronized (users) {
+			// strokes cannot be modified or accessed during this time
+			synchronized (strokes) {
+				strokes.clear();
+			}
+
+			// Interleaving is not a problem here, because "strokes" cannot
+			// be concurrently accessed or modified. Reading all the strokes or
+			// making changes must occur after the clearing has occurred and the
+			// users have been nofitied.
+
+			// inform users of change
 			for (User user : users) {
-				// no interleaving problems (for stroke order) because each user
-				// has only one board at a time
-				user.incorporateStroke(line);
+				user.notifyClear();
 			}
 		}
 	}
@@ -179,12 +212,13 @@ public class MasterBoard {
 	}
 
 	/**
-	 * Returns a unique hash code representing the MasterBoard. The produced code
-	 * is the ID of the board added to 2^25.
+	 * Returns a unique hash code representing the MasterBoard. The produced
+	 * code is the ID of the board added to 2^25.
+	 * 
 	 * @return the hash code for this MasterBoard
 	 */
 	@Override
-	public int hashCode(){
-		return (int)Math.pow(2, 25) + id_num;
+	public int hashCode() {
+		return (int) Math.pow(2, 25) + id_num;
 	}
 }

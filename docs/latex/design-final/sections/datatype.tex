@@ -19,6 +19,7 @@
 \begin{itemize}
 \item \texttt{WhiteLine[] allStrokes()} - Returns all the strokes that have been made on the board thus far by locking on \texttt{strokes} list.
 \item \texttt{void makeStroke(WhiteLine stroke)} - Adds the new \texttt{stroke} while locking on the \texttt{strokes} list. Proceeds to call \texttt{incorporateStroke()} on each user while locking on the \texttt{users} list.
+\item \texttt{void clearBoard()} - Clears all strokes from the board while locking on the \texttt{strokes} list. Proveeds to call \texttt{notifyClear()} on each user while locking on the \texttt{users} list.
 \item \texttt{void addUser(User user)} - Adds the new \texttt{user} while locking on the \texttt{users} list.
 \item \texttt{void removeUser(User user)} - Removes the user \texttt{user} while locking on the \texttt{users} list.
 \item \texttt{String getUserList()} - Returns an alphabetized, space-delimited list of current editors while locking on the \texttt{users} list.
@@ -40,7 +41,7 @@ Each instance of \texttt{User} represents a separate client connected to the ser
 
 \subsubsection{Fields}
 \begin{itemize}
-\item \texttt{final Whiteboard Server} - The main server instance is stored for later global calls.
+\item \texttt{final WhiteboardServer server} - The main server instance is stored for later global calls.
 \item \texttt{MasterBoard board} - The current board being edited by the user. A null value indicates that no board is selected.
 \item \texttt{final String username} - The unique acquired username assigned by the server after a username request has been made.
 \item \texttt{final int id\_num} - The unique identification number of the user.
@@ -52,8 +53,9 @@ Each instance of \texttt{User} represents a separate client connected to the ser
 \subsubsection{Methods}
 \begin{itemize}
 \item \texttt{void incorporateBoard(MasterBoard board)} - Queues a \texttt{BRD\_INFO} message to be sent to the client with priority. This method is called by the main \texttt{WhiteboardServer} on all \texttt{User} instances once the request for a new board has been processed.
-\texttt{void forgetBoard(MasterBoard board)} - Queues a \texttt{BRD\_DEL} message to be sent to the client with priority. This method is called by the main \texttt{WhiteboardServer} on all \texttt{User} instances once the request to remove a whiteboard has been processed.
+\item \texttt{void forgetBoard(MasterBoard board)} - Queues a \texttt{BRD\_DEL} message to be sent to the client with priority. This method is called by the main \texttt{WhiteboardServer} on all \texttt{User} instances once the request to remove a whiteboard has been processed.
 \item \texttt{void incorporateStroke(WhiteLine stroke)} - Queues a \texttt{STROKE} message to inform the client of a new stroke drawn on the current board.
+\item \texttt{void notifyClear()} - Queues a \texttt{BRD\_CLR} message to inform the client that the current board has been cleared.
 \item \texttt{void handleRequest()} - Runs in a background thread and takes care of all incoming requests from the client. Appropriate actions are taken for each request, either with the \texttt{server} or on the \texttt{board}.
 \item \texttt{void selectBoard(int boardID)} - This method is called upon receiving a \texttt{SEL} command from the client. The user removes itself from the current board by calling \texttt{removeUser(this)} on the locked \texttt{board}, replacing \texttt{board} with on acquired from \texttt{server.getBoard(boardID)} and calling \texttt{addUser(this)} on the new reference. All queued \texttt{STROKE} are removed since they pertain to the old board. The method finally calls \texttt{board.allStrokes()} to queue all previously drawn strokes for the new board to be sent to the client.
 \item \texttt{String getName()} - Returns the username of the connected client.

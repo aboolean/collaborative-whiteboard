@@ -26,13 +26,14 @@ The following grammar will facilitate the text-based communication between the c
 \texttt{BRD\_ALL :== "board\_all"}\\
 \texttt{BRD\_INFO :== "board" S BOARD\_ID S NAME}\\
 \texttt{BRD\_DEL :== "del" S BOARD\_ID}\\
+\texttt{BRD\_CLR :== "board\_clear" S BOARD\_ID}\\
 \texttt{BRD\_USERS :== "board\_users" S BOARD\_ID (S USER\_NAME)+}\\
 
 \texttt{USER\_REQ :== "user\_req" S USER\_NAME}\\
 \texttt{USER\_INIT :== "you\_are" S USER\_NAME}\\
 
-\texttt{NAME :== [$\char`\^$N]}\\
-\texttt{USER\_NAME :== [A-Za-z]([A-Za-z0-9]?)+}\\
+\texttt{NAME :== [$\char`\^ \backslash$r$\backslash$n]+}\\
+\texttt{USER\_NAME :== [A-Za-z0-9]+}\\
 \texttt{BOARD\_ID :== INT}\\
 
 \texttt{INT :== [0-9]+}\\
@@ -70,6 +71,12 @@ Below is the definition for each of the messages that can be sent across the net
 \begin{enumerate}
 \item If the provided \texttt{BOARD\_ID} exists, the server removes the designated board from its central list of boards.
 \item The \texttt{BRD\_DEL} message is forwarded to all clients to signify that the board is no longer available. The clients remove this board from their list of available boards.
+\end{enumerate}
+
+\paragraph{\texttt{BRD\_CLR}} When the client wants to clear a board, it sends a \texttt{BRD\_CLR} message to the server.
+\begin{enumerate}
+\item If the provided \texttt{BOARD\_ID} exists, the server clears the contents of the board, all associated strokes.
+\item The \texttt{BRD\_CLR} message is forwarded to all clients to signify that the board has been cleared.
 \end{enumerate}
 
 \paragraph{\texttt{USER\_REQ}} Upon entering a username in the client application, a \texttt{USER\_REQ} message with a properly formatted \texttt{USER\_NAME} will be sent to the server to request the desired username.

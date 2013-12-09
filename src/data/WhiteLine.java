@@ -127,7 +127,7 @@ public class WhiteLine {
 	@Override
 	public String toString() {
 		// convert properties to Strings
-		String thick = String.valueOf(this.thickness.getLineWidth());
+		String thick = String.valueOf(Math.round(this.thickness.getLineWidth()));
 		String color = String.valueOf(this.color.getRed()) + " "
 				+ String.valueOf(this.color.getGreen()) + " "
 				+ String.valueOf(this.color.getBlue());
