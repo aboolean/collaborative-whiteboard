@@ -82,7 +82,7 @@ public class MasterBoard {
 					// Order is preserved because each user has only one board
 					// at a time and can only belong to one MasterBoard's
 					// (locked) "users" list at a time.
-					user.incorporateStroke(line);
+					user.notifyStroke(line);
 				}
 			}
 		}
@@ -104,7 +104,7 @@ public class MasterBoard {
 			// Interleaving is not a problem here, because "strokes" cannot
 			// be concurrently accessed or modified. Reading all the strokes or
 			// making changes must occur after the clearing has occurred and the
-			// users have been nofitied.
+			// users have been notified.
 
 			// inform users of change
 			for (User user : users) {
@@ -138,6 +138,16 @@ public class MasterBoard {
 		// lock on users guarantees no strokes made at this time
 		synchronized (users) {
 			users.remove(user);
+		}
+	}
+
+	/**
+	 * Removes all editors of the board. All strokes made afterward are not
+	 * forwarded, since the board is in the process of deletion.
+	 */
+	public void removeAllUsers() {
+		synchronized (users) {
+			users.clear();
 		}
 	}
 
@@ -212,7 +222,7 @@ public class MasterBoard {
 	}
 
 	/**
-	 * Returns a unique hash code representing the MasterBoard. The produced
+	 * Returns a unique hash code representing this MasterBoard. The produced
 	 * code is the ID of the board added to 2^25.
 	 * 
 	 * @return the hash code for this MasterBoard
