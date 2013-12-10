@@ -17,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import data.*;
 
@@ -45,28 +46,34 @@ public class WhiteboardServer {
 		boards = new ArrayList<MasterBoard>();
 
 		serverSocket = new ServerSocket(55000);
-		String hostAddress = serverSocket.getInetAddress().getLocalHost().getHostAddress();
+		String hostAddress = serverSocket.getInetAddress().getLocalHost()
+				.getHostAddress();
 
-        // Dialog to display information about the server. Closes the server
-        // when button is clicked.
-        JButton button = new JButton("Kill Server");
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                System.exit(0);
-            }
-        });
-        final JOptionPane optionPane = new JOptionPane(
-                "WhiteboardServer running.\nPORT: "
-                        + serverSocket.getLocalPort() + "\nADDRESS: "
-                        + hostAddress, JOptionPane.INFORMATION_MESSAGE,
-                JOptionPane.DEFAULT_OPTION, null, new Object[] { button }, null);
-        final JDialog dialog = new JDialog();
-        dialog.setModal(true);
-        dialog.setContentPane(optionPane);
-        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-        dialog.pack();
-        dialog.setVisible(true);
+		// Dialog to display information about the server.
+		// Closes the server when button "Kill Server" is clicked.
+		JButton button = new JButton("Kill Server");
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
+		final JOptionPane optionPane = new JOptionPane(
+				"WhiteboardServer running.\nPORT: "
+						+ serverSocket.getLocalPort() + "\nADDRESS: "
+						+ hostAddress, JOptionPane.INFORMATION_MESSAGE,
+				JOptionPane.DEFAULT_OPTION, null, new Object[] { button }, null);
+
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				final JDialog dialog = new JDialog();
+				dialog.setModal(true);
+				dialog.setContentPane(optionPane);
+				dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+				dialog.pack();
+				dialog.setVisible(true);
+			}
+		});
 	}
 
 	/**
@@ -88,6 +95,19 @@ public class WhiteboardServer {
 			}
 		}
 		return selectedBoard;
+	}
+
+	/**
+	 * Removes expUser from the list of connected users. Called when the
+	 * connection to the client has been terminated.
+	 * 
+	 * @param expUser
+	 *            a disconnected User
+	 */
+	public void deleteUser(User expUser) {
+		synchronized (users) {
+			users.remove(expUser);
+		}
 	}
 
 	/**
@@ -143,7 +163,6 @@ public class WhiteboardServer {
 		while (true) {
 			// blocks until client attempts to connect
 			final Socket socket = serverSocket.accept();
-
 			Thread userInitThread = new Thread(new Runnable() {
 				public void run() {
 					try {
@@ -153,18 +172,22 @@ public class WhiteboardServer {
 					}
 				}
 			});
+
 			userInitThread.start();
 		}
 	}
 
 	public void handleConnection(Socket socket) throws IOException {
-		// TODO IP address
-		System.out.println("New user connected from ");
+		System.out.println("New connection from <"
+				+ socket.getInetAddress().getLocalHost().getHostAddress()
+				+ ">.");
 
 		// initialize input and output streams
 		BufferedReader in = new BufferedReader(new InputStreamReader(
 				socket.getInputStream()));
 		PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+
+		User newUser = null;
 
 		try {
 			String user_req = in.readLine();
@@ -185,16 +208,29 @@ public class WhiteboardServer {
 						username = null;
 					}
 				}
-				
+
 				// create new instance and add to list
-				User newUser = new User(username, socket, this);
+				newUser = new User(username, socket, this);
 				users.add(newUser);
 			}
 
-		} finally {
+			// send new username to client
+			out.println("you_are " + newUser.getName());
+			out.flush();
+
+			newUser.beginConnection();
+			System.out.println("User \'" + newUser.getName()
+					+ "\' instantiated.");
+
+		} catch (IOException e) {
 			out.close();
 			in.close();
 			socket.close();
+
+			// may have failed on beginConnection();
+			synchronized (users) {
+				users.remove(newUser);
+			}
 		}
 	}
 
