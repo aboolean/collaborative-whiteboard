@@ -19,7 +19,7 @@ public class User implements Comparable<User> {
 	private static final AtomicInteger nextID = new AtomicInteger(0);
 
 	private final WhiteboardServer server;
-	private final MasterBoard board;
+	private MasterBoard board;
 	private final Socket socket;
 
 	/*
@@ -109,6 +109,13 @@ public class User implements Comparable<User> {
 		 * independently thread-safe, we know that a user change cannot occur
 		 * while strokes are being drawn.
 		 */
+
+		// no board selected (should never happen when method called)
+		if (board == null) {
+			return;
+		}
+
+		// generate STROKE message
 		String thickness = String.valueOf(Math.round(stroke.getThickness()
 				.getLineWidth()));
 		String coords = String.valueOf(stroke.getX1()) + " "
@@ -131,6 +138,44 @@ public class User implements Comparable<User> {
 	 */
 	public void notifyClear() {
 		outgoingMessageQueue.put("board_clear");
+	}
+
+	/**
+	 * Selects the specified board as the one currently being edited. This User
+	 * removes itself as an editor of the current board before clearing all
+	 * queued outgoing STROKE message. The desired board is then requested from
+	 * the server. If it exists, this User adds itself as an editor and saves it
+	 * as it's current board; otherwise, no board is selected.
+	 * 
+	 * @param boardID
+	 *            the identification number of the desired board
+	 */
+	public void selectBoard(int boardID) {
+		// remove from previous board
+		board.removeUser(this); // notifyStroke no longer called from prev board
+		// clear STROKE notification queue
+		outgoingStrokeQueue.clear();
+		// use new board
+		board = server.fetchBoard(boardID);
+		// if new board exists, add self
+		// if deleted, user should soon receive deletion message
+		if (board != null) {
+			board.addUser(this); // all old strokes resent here by MasterBoard
+		}
+	}
+
+	/**
+	 * Called from a background thread to handle messages received from client.
+	 * Messages are processed one at a time. Each message should conform to the
+	 * CtoS_MSG format, omitting the end line character, as this is take care of
+	 * elsewhere. (CtoS_MSG :== (STROKE | SEL | BRD_REQ | BRD_DEL | BRD_ALL |
+	 * USER_REQ) N)
+	 * 
+	 * @param message
+	 *            a message received over network
+	 */
+	private void handleRequest(String message) {
+		
 	}
 
 	/**

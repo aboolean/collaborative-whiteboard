@@ -50,10 +50,10 @@ public class MasterBoard {
 
 		// initializes queue for strokes to be made
 		strokeQueue = new PriorityBlockingQueue<WhiteLine>();
-		
+
 		// begins processing queued strokes
-		strokeThread = new Thread(new Runnable(){
-			public void run(){
+		strokeThread = new Thread(new Runnable() {
+			public void run() {
 				processStrokes();
 			}
 		});
@@ -61,15 +61,17 @@ public class MasterBoard {
 	}
 
 	/**
-	 * Returns all the strokes made on the board thus far. No strokes are
-	 * allowed to be made until the method returns.
+	 * Notifies the specified user of all previously made strokes.
 	 * 
-	 * @return the strokes on the board as a WhiteLine array
+	 * @param newEditor
+	 *            a User to receive strokes
 	 */
-	public WhiteLine[] getAllStrokes() {
+	private void resendAllStrokes(User newEditor) {
 		// lock on strokes so not changes can be made
 		synchronized (strokes) {
-			return strokes.toArray(new WhiteLine[strokes.size()]);
+			for (WhiteLine line : strokes) {
+				newEditor.notifyStroke(line);
+			}
 		}
 	}
 
@@ -161,6 +163,7 @@ public class MasterBoard {
 		// lock on users guarantees no strokes made at this time
 		synchronized (users) {
 			users.add(user);
+			this.resendAllStrokes(user);
 		}
 	}
 
