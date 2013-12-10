@@ -1,8 +1,27 @@
 package server;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import data.*;
 
 public class WhiteboardServer {
+	private final List<User> users;
+	private final List<MasterBoard> boards;
+
+	/*
+	 * Invariants: - boards is always sorted by ID number - users is always
+	 * sorted by ID number
+	 */
+
+	public WhiteboardServer(int listeningPort) {
+		// initialize users and boards
+		// users = Collections.synchronizedList(new ArrayList<User>());
+		users = new ArrayList<User>();
+		boards = new ArrayList<MasterBoard>();
+	}
 
 	/**
 	 * Returns the board corresponding to the provided boardID. If this board
@@ -13,7 +32,16 @@ public class WhiteboardServer {
 	 * @return the MasterBoard or null
 	 */
 	public MasterBoard fetchBoard(int boardID) {
-		return null;
+		MasterBoard selectedBoard = null;
+		synchronized (boards) {
+			for (MasterBoard board : boards) {
+				if(board.getID() == boardID){
+					selectedBoard = board;
+					break;
+				}
+			}
+		}
+		return selectedBoard;
 	}
 
 	/**
@@ -25,7 +53,15 @@ public class WhiteboardServer {
 	 *            the identification number of an active MasterBoard
 	 */
 	public void deleteBoard(int boardID) {
-
+		synchronized (boards) {
+			for (MasterBoard board : boards) {
+				if(board.getID() == boardID){
+					boards.remove(board);
+					board.terminateBoard();
+					break;
+				}
+			}
+		}
 	}
 
 	/**
@@ -36,7 +72,11 @@ public class WhiteboardServer {
 	 *            the User to be notified
 	 */
 	public void resendAllBoard(User user) {
-
+		synchronized (boards) {
+			for(MasterBoard board: boards){
+				user.notifyBoard(board);
+			}
+		}
 	}
 
 	/**
@@ -48,6 +88,8 @@ public class WhiteboardServer {
 	 *            the name of the board in the NAME :== [^N]+ format
 	 */
 	public void makeNewBoard(String name) {
-
+		synchronized (boards){
+			boards.add(new MasterBoard(name));
+		}
 	}
 }
