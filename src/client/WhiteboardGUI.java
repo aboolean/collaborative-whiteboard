@@ -92,6 +92,9 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 	private final Socket socket;
 	private final PrintWriter out;
 	private final BufferedReader in;
+	private Socket acquiredSocket;
+	private PrintWriter acquiredOut;
+	private BufferedReader acquiredIn;
 	private final ArrayList<ClientBoard> clientBoards = new ArrayList<ClientBoard>();
 	private int lastSelection = 0;
 	// begin with no board selected
@@ -99,90 +102,21 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 	public WhiteboardGUI() throws UnknownHostException, IOException {
 
-		// Prompt User for IP Address
-		String addressInput = "0.0.0.0";
-		String portInput = "55000";
-
-		Socket acquiredSocket;
-		PrintWriter acquiredOut;
-		BufferedReader acquiredIn;
-
-		while (true) {
-			// IP in format [0,255].[0,255].[0,255].[0,255]
-			String addressPattern = "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
-			// Port in range [49152,65535]
-			String portPattern = "(49(1(5[2-9]|[6-9][0-9])|[2-9][0-9]{2})|5[0-9]{4}|6([0-4][0-9]{3}|5([0-4][0-9]{2}|5([0-2][0-9]|3[0-5]))))";
-
-			JTextField addressField = new JTextField();
-			JTextField portField = new JTextField();
-			Object[] message = { "IP Address:", addressField, "Port:",
-					portField };
-
-			int buttonPressed = JOptionPane.showConfirmDialog(null, message,
-					"Connect", JOptionPane.OK_CANCEL_OPTION);
-
-			if (buttonPressed == JOptionPane.OK_OPTION) {
-				addressInput = addressField.getText();
-				portInput = portField.getText();
-				if (addressInput == null
-						|| !addressInput.matches(addressPattern)) {
-					JOptionPane.showMessageDialog(new JFrame(),
-							"An invalid IP address was entered.",
-							"Incorrect Address", JOptionPane.ERROR_MESSAGE);
-					continue;
-				} else if (portInput == null || !portInput.matches(portPattern)) {
-					JOptionPane
-							.showMessageDialog(
-									new JFrame(),
-									"An invalid port number was entered. Please re-enter a number within the range [49152,65535].",
-									"Incorrect Port", JOptionPane.ERROR_MESSAGE);
-					continue;
-				} // else correct
-			} else {
-				System.exit(0);
-			}
-
-			try {
-				acquiredSocket = new Socket(
-						InetAddress.getByName(addressInput), Integer.valueOf(portInput));
-				acquiredOut = new PrintWriter(acquiredSocket.getOutputStream(),
-						true);
-				acquiredIn = new BufferedReader(new InputStreamReader(
-						acquiredSocket.getInputStream()));
-				break;
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(new JFrame(),
-						"The specified destination was unreachable.",
-						"Connection Error", JOptionPane.ERROR_MESSAGE);
-				continue;
-			}
-
-		}
-
-		// required for final declaration (cannot occur in loop)
+		// Prompt User for Address and Begin Connection
+		startConnection();
 		socket = acquiredSocket;
 		out = acquiredOut;
 		in = acquiredIn;
 
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					for (String line = in.readLine(); line != null; line = in
-							.readLine()) {
-						// for now, just print the line -- will handle
-						// eventually
-						System.out.println(line);
-					}
-
-				} catch (IOException e) {
-					e.printStackTrace();
-				} finally {
-
-				}
-			}
-		});
-		thread.start();
+		// prompt the client for a username, and then instantiate the User
+		// object
+		String username = JOptionPane.showInputDialog("Username:");
+		if (username == null || username.equals("")) {
+			out.println("user_req");
+		} else if (username.matches("[A-Za-z]([A-Za-z0-9]?)+")) {
+			out.println("user_req " + username);
+		}
+		currentUser = new JLabel("Your Username: " + username);
 
 		// set up the layout
 		this.setLayout(new GridBagLayout());
@@ -199,10 +133,6 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 		allBoards = new JTable(tableModelWhiteboards);
 		allBoards.setPreferredSize(new Dimension(0, 200));
-
-		// sends the initialization BRD_ALL request to receive all the currently
-		// active boards; prompts server to send a stream of BRD_INFO messages
-		out.println("board_all");
 
 		// Add a listener which sends a SEL message to the server when a board
 		// in the list is selected.
@@ -311,16 +241,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		c.gridy = 6;
 		this.add(thicknessSlider, c);
 
-		// prompt the client for a username, and then instantiate the User
-		// object
-		String username = JOptionPane.showInputDialog("Username:");
-		if (username == null || username.equals("")) {
-			out.println("user_req");
-		} else if (username.matches("[A-Za-z]([A-Za-z0-9]?)+")) {
-			out.println("user_req " + username);
-		}
-		currentUser = new JLabel("Your Username: " + username);
-
+		// Display current username.
 		c.gridx = 0;
 		c.gridy = 7;
 		this.add(currentUser, c);
@@ -440,6 +361,32 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		c.gridy = 7;
 		this.add(clear, c);
 
+		Thread incomingMessageThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					for (String line = in.readLine(); line != null; line = in
+							.readLine()) {
+						// for now, just print the line -- will handle
+						// eventually
+						System.out.println(line);
+					}
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+//					socket.close();
+//					in.close();
+//					out.close();
+				}
+			}
+		});
+		incomingMessageThread.start();
+
+		// sends the initialization BRD_ALL request to receive all the currently
+		// active boards; prompts server to send a stream of BRD_INFO messages
+		out.println("board_all");
+
 		this.pack();
 
 	}
@@ -541,6 +488,64 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		DrawingController controller = new DrawingController();
 		cv.addMouseListener(controller);
 		cv.addMouseMotionListener(controller);
+	}
+
+	private void startConnection() {
+		String addressInput = "0.0.0.0";
+		String portInput = "55000";
+
+		while (true) {
+			// IP in format [0,255].[0,255].[0,255].[0,255]
+			String addressPattern = "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
+			// Port in range [49152,65535]
+			String portPattern = "(49(1(5[2-9]|[6-9][0-9])|[2-9][0-9]{2})|5[0-9]{4}|6([0-4][0-9]{3}|5([0-4][0-9]{2}|5([0-2][0-9]|3[0-5]))))";
+
+			JTextField addressField = new JTextField();
+			JTextField portField = new JTextField();
+			Object[] message = { "IP Address:", addressField, "Port:",
+					portField };
+
+			int buttonPressed = JOptionPane.showConfirmDialog(null, message,
+					"Connect", JOptionPane.OK_CANCEL_OPTION);
+
+			if (buttonPressed == JOptionPane.OK_OPTION) {
+				addressInput = addressField.getText();
+				portInput = portField.getText();
+				if (addressInput == null
+						|| !addressInput.matches(addressPattern)) {
+					JOptionPane.showMessageDialog(new JFrame(),
+							"An invalid IP address was entered.",
+							"Incorrect Address", JOptionPane.ERROR_MESSAGE);
+					continue;
+				} else if (portInput == null || !portInput.matches(portPattern)) {
+					JOptionPane
+							.showMessageDialog(
+									new JFrame(),
+									"An invalid port number was entered. Please re-enter a number within the range [49152,65535].",
+									"Incorrect Port", JOptionPane.ERROR_MESSAGE);
+					continue;
+				} // else correct
+			} else {
+				System.exit(0);
+			}
+
+			try {
+				acquiredSocket = new Socket(
+						InetAddress.getByName(addressInput),
+						Integer.valueOf(portInput));
+				acquiredOut = new PrintWriter(acquiredSocket.getOutputStream(),
+						true);
+				acquiredIn = new BufferedReader(new InputStreamReader(
+						acquiredSocket.getInputStream()));
+				break;
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(new JFrame(),
+						"The specified destination was unreachable.",
+						"Connection Error", JOptionPane.ERROR_MESSAGE);
+				continue;
+			}
+
+		}
 	}
 
 	/**
