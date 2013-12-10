@@ -89,11 +89,11 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
      */
     private final Socket socket;
     private final PrintWriter out;
+    private final BufferedReader in;
     private final ArrayList<ClientBoard> clientBoards = new ArrayList<ClientBoard>();
     private int lastSelection = 0;
-
     // begin with no board selected
-    private ClientBoard currentBoard = new ClientBoard("Hello", 39);
+    private ClientBoard currentBoard = null;
 
     public WhiteboardGUI() throws UnknownHostException, IOException {
 
@@ -102,6 +102,27 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
         socket = new Socket(InetAddress.getByName(ipAddress), 55000);
         out = new PrintWriter(socket.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    for (String line = in.readLine(); line != null; line = in
+                            .readLine()) {
+                        // for now, just print the line -- will handle eventually
+                        System.out.println(line);
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+
+                }
+            }
+        });
+        thread.start();
 
         // set up the layout
         this.setLayout(new GridBagLayout());
@@ -179,7 +200,6 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
                 int n = JOptionPane.showConfirmDialog(null,
                         "Are you sure you want to delete this board?",
                         "Delete Current Board", JOptionPane.YES_NO_OPTION);
-                // yes -> n = 0; no -> n = 1
                 if (n == 0) {
                     out.println("board " + currentBoard.getID());
                     deleteWhiteboard("board " + currentBoard.getID());
@@ -470,8 +490,13 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
          * When mouse button is pressed down, start drawing.
          */
         public void mousePressed(MouseEvent e) {
-            lastX = e.getX();
-            lastY = e.getY();
+            if (currentBoard == null) {
+                JOptionPane.showMessageDialog(null,
+                        "Please select a board before drawing.");
+            } else {
+                lastX = e.getX();
+                lastY = e.getY();
+            }
         }
 
         /**
