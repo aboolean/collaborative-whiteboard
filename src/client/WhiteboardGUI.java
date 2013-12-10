@@ -418,13 +418,11 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
             int y = e.getY();
 
             Color strokeColor;
-            int strokeThick;
+            int strokeThick = (int) thickness;
             if (eraseMode) {
                 strokeColor = Color.white;
-                strokeThick = 10;
             } else {
                 strokeColor = drawingColor;
-                strokeThick = (int) thickness;
             }
             WhiteLine line = new WhiteLine(lastX, lastY, x, y, strokeColor,
                     strokeThick);
@@ -450,25 +448,6 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         public void mouseExited(MouseEvent e) {
         }
     }
-
-    // private void createListeningThread() {
-    // Thread listeningThread = new Thread(new Runnable() {
-    //
-    // @Override
-    // public void run() {
-    // while (true) {
-    // try {
-    // String str = (String) user.getQ().take();
-    // System.out.println(str);
-    // } catch (InterruptedException e) {
-    // e.printStackTrace();
-    // }
-    //
-    // }
-    // }
-    // });
-    // listeningThread.start();
-    // }
 
     public static void main(final String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
