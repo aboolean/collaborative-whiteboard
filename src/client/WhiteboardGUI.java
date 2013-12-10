@@ -79,10 +79,10 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
     /*
      * Communication-related fields.
      */
-    
-    
+
     public WhiteboardGUI() {
-        
+
+        // set up the layout
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         Insets padding = new Insets(10, 10, 10, 10);
@@ -194,11 +194,12 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         c.gridx = 0;
         c.gridy = 6;
         this.add(thicknessSlider, c);
-        
-        String username = JOptionPane
-                .showInputDialog("Username:");
+
+        // prompt the client for a username, and then instantiate the User
+        // object
+        String username = JOptionPane.showInputDialog("Username:");
         currentUser = new JLabel("Your Username: " + username);
-        
+
         c.gridx = 0;
         c.gridy = 7;
         this.add(currentUser, c);
@@ -312,7 +313,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
                 canvas.clear();
                 canvas.push();
                 // send BRD_CLR message
-                //createListeningThread();
+                // createListeningThread();
             }
         });
         c.gridx = 4;
@@ -358,7 +359,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
             tableModelEditors.addRow(new Object[] { msg[i] });
         }
     }
-    
+
     /**
      * Custom TableCellRenderer which colors the colorPalette JTable according
      * to the colors 2D Array.
@@ -450,26 +451,24 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         }
     }
 
-//    private void createListeningThread() {
-//        Thread listeningThread = new Thread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                while (true) {
-//                    try {
-//                        String str = (String) user.getQ().take();
-//                        System.out.println(str);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                }
-//            }
-//        });
-//        listeningThread.start();
-//    }
-    
-    
+    // private void createListeningThread() {
+    // Thread listeningThread = new Thread(new Runnable() {
+    //
+    // @Override
+    // public void run() {
+    // while (true) {
+    // try {
+    // String str = (String) user.getQ().take();
+    // System.out.println(str);
+    // } catch (InterruptedException e) {
+    // e.printStackTrace();
+    // }
+    //
+    // }
+    // }
+    // });
+    // listeningThread.start();
+    // }
 
     public static void main(final String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
