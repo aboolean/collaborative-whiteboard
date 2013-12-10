@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -59,7 +60,8 @@ public class WhiteboardServer {
 	 */
 	public String getIP() {
 		try {
-			return serverSocket.getInetAddress().getLocalHost()
+			serverSocket.getInetAddress();
+			return InetAddress.getLocalHost()
 					.getHostAddress();
 		} catch (UnknownHostException e) {
 			return null;
@@ -235,6 +237,7 @@ public class WhiteboardServer {
 				users.remove(newUser);
 			}
 
+			
 			System.out.println("Uninstantiated user at <"
 					+ socket.getInetAddress().getLocalHost().getHostAddress()
 					+ "> disconnected.");
