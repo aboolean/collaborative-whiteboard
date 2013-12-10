@@ -17,10 +17,10 @@
 
 \subsubsection{Methods}
 \begin{itemize}
-\item \texttt{WhiteLine[] allStrokes()} - Returns all the strokes that have been made on the board thus far by locking on \texttt{strokes} list.
+%\item \texttt{WhiteLine[] allStrokes()} - Returns all the strokes that have been made on the board thus far by locking on \texttt{strokes} list.
 \item \texttt{void makeStroke(WhiteLine stroke)} - Adds the new \texttt{stroke} while locking on the \texttt{strokes} list. Proceeds to call \texttt{incorporateStroke()} on each user while locking on the \texttt{users} list.
 \item \texttt{void clearBoard()} - Clears all strokes from the board while locking on the \texttt{strokes} list. Proveeds to call \texttt{notifyClear()} on each user while locking on the \texttt{users} list.
-\item \texttt{void addUser(User user)} - Adds the new \texttt{user} while locking on the \texttt{users} list.
+\item \texttt{void addUser(User user)} - Adds the new \texttt{user} while locking on the \texttt{users} list. Then proceeds to send all existing strokes to the new \texttt{user}.
 \item \texttt{void removeUser(User user)} - Removes the user \texttt{user} while locking on the \texttt{users} list.
 \item \texttt{void removeAllUsers()} - This method is called by the \texttt{WhiteboardServer} after the board is removed from its global list of available boards but before all \texttt{users} are notified of the board's deletion. The the \texttt{users} list within the \texttt{MasterBoard} is cleared.
 \item \texttt{String getUserList()} - Returns an alphabetized, space-delimited list of current editors while locking on the \texttt{users} list.
@@ -28,7 +28,7 @@
 \item \texttt{int getID()} - Returns the unique identification number of the board.
 \item \texttt{String toString()} - Returns the properties of the board in the form of a \texttt{BOARD\_INFO} message.
 \item \texttt{boolean equals(Object other)} - Compares boards for equality on the basis of ID number.
-\item \texttt{int hashCode()} - Returns the identification number of board added to 2^{25}.
+\item \texttt{int hashCode()} - Returns the identification number of board added to $2^{25}$.
 \end{itemize}
 
 \subsubsection{In Action}
@@ -57,13 +57,14 @@ Each instance of \texttt{User} represents a separate client connected to the ser
 \item \texttt{void forgetBoard(MasterBoard board)} - Queues a \texttt{BRD\_DEL} message to be sent to the client with priority. This method is called by the main \texttt{WhiteboardServer} on all \texttt{User} instances once the request to remove a whiteboard has been processed.
 \item \texttt{void notifyStroke(WhiteLine stroke)} - Queues a \texttt{STROKE} message to inform the client of a new stroke drawn on the current board.
 \item \texttt{void notifyClear()} - Queues a \texttt{BRD\_CLR} message to inform the client that the current board has been cleared.
+\texttt{void notifyEditors(String editorList)} - Queues a \texttt{BRD\_USERS} message to inform the client of a change in editors on the current board.
 \item \texttt{void handleRequest()} - Runs in a background thread and takes care of all incoming requests from the client. Appropriate actions are taken for each request, either with the \texttt{server} or on the \texttt{board}.
-\item \texttt{void selectBoard(int boardID)} - This method is called upon receiving a \texttt{SEL} command from the client. The user removes itself from the current board by calling \texttt{removeUser(this)} on the locked \texttt{board}, replacing \texttt{board} with on acquired from \texttt{server.getBoard(boardID)} and calling \texttt{addUser(this)} on the new reference. All queued \texttt{STROKE} are removed since they pertain to the old board. The method finally calls \texttt{board.allStrokes()} to queue all previously drawn strokes for the new board to be sent to the client.
+\item \texttt{void selectBoard(int boardID)} - This method is called upon receiving a \texttt{SEL} command from the client. The user removes itself from the current board by calling \texttt{removeUser(this)} on the locked \texttt{board}, replacing \texttt{board} with on acquired from \texttt{server.getBoard(boardID)} and calling \texttt{addUser(this)} on the new reference. All queued \texttt{STROKE} are removed since they pertain to the old board. By having called \texttt{addUser(this)}, all previously drawn strokes for the new board are queued to be sent to the client.
 \item \texttt{String getName()} - Returns the username of the connected client.
 \item \texttt{int getID()} - Returns the unique identification number of the connected client.
 \item \texttt{int compareTo(Object other)} - Compares users for ordering on the basis of usernames.
 \item \texttt{boolean equals(Object other)} - Compares users for equality on the basis of identification numbers.
-\item \texttt{int hashCode()} - Returns the identification number of the user added to 2^{26}.
+\item \texttt{int hashCode()} - Returns the identification number of the user added to $2^{26}$.
 \item \texttt{String toString()} - Returns the uername and ID number of the user in string format.
 \end{itemize}
 

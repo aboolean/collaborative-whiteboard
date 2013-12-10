@@ -1,5 +1,6 @@
 package data;
 
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +20,9 @@ public class MasterBoard {
 
 	private final ArrayList<WhiteLine> strokes;
 	private final ArrayList<User> users;
+
+	private final PriorityBlockingQueue<WhiteLine> strokeQueue;
+	private final Thread strokeThread;
 
 	/**
 	 * Constructs a MasterBoard object with the provided name. (NAME :==
@@ -43,18 +47,31 @@ public class MasterBoard {
 		// initialize strokes and users
 		strokes = new ArrayList<WhiteLine>();
 		users = new ArrayList<User>();
+
+		// initializes queue for strokes to be made
+		strokeQueue = new PriorityBlockingQueue<WhiteLine>();
+
+		// begins processing queued strokes
+		strokeThread = new Thread(new Runnable() {
+			public void run() {
+				processStrokes();
+			}
+		});
+		strokeThread.start();
 	}
 
 	/**
-	 * Returns all the strokes made on the board thus far. No strokes are
-	 * allowed to be made until the method returns.
+	 * Notifies the specified user of all previously made strokes.
 	 * 
-	 * @return the strokes on the board as a WhiteLine array
+	 * @param newEditor
+	 *            a User to receive strokes
 	 */
-	public WhiteLine[] getAllStrokes() {
+	private void resendAllStrokes(User newEditor) {
 		// lock on strokes so not changes can be made
 		synchronized (strokes) {
-			return strokes.toArray(new WhiteLine[strokes.size()]);
+			for (WhiteLine line : strokes) {
+				newEditor.notifyStroke(line);
+			}
 		}
 	}
 
@@ -67,23 +84,44 @@ public class MasterBoard {
 	 *            a WhiteLine to be added to this MasterBoard
 	 */
 	public void makeStroke(WhiteLine line) {
-		// locking on users guarantees no other strokes are sent to them
-		synchronized (users) {
-			// strokes are not added in any other place
-			synchronized (strokes) {
-				strokes.add(line);
+		strokeQueue.put(line);
+	}
 
-				// Interleaving is not a problem here, because "strokes" cannot
-				// be concurrently accessed or modified. The users cannot call
-				// getAllStrokes() while a change is being made, so they do not
-				// "miss" any updates or receive duplicates.
+	/**
+	 * Called in a background thread to process all queued strokes. The
+	 * BlockingQueue contains all strokes that should be reflected on the board.
+	 */
+	private void processStrokes() {
+		while (true) {
+			WhiteLine line;
+			try {
+				line = strokeQueue.take();
+				// locking on users guarantees no other strokes are sent to them
+				synchronized (users) {
+					// strokes are not added in any other place
+					synchronized (strokes) {
+						strokes.add(line);
 
-				for (User user : users) {
-					// Order is preserved because each user has only one board
-					// at a time and can only belong to one MasterBoard's
-					// (locked) "users" list at a time.
-					user.notifyStroke(line);
+						/*
+						 * Interleaving is not a problem here, because "strokes"
+						 * cannot be concurrently accessed or modified. The
+						 * users cannot call getAllStrokes() while a change is
+						 * being made, so they do not "miss" any updates or
+						 * receive duplicates.
+						 */
+
+						for (User user : users) {
+							/*
+							 * Order is preserved because each user has only one
+							 * board at a time and can only belong to one
+							 * MasterBoard's (locked) "users" list at a time.
+							 */
+							user.notifyStroke(line);
+						}
+					}
 				}
+			} catch (InterruptedException e) {
+				// thread stopped; do nothing
 			}
 		}
 	}
@@ -98,7 +136,8 @@ public class MasterBoard {
 		synchronized (users) {
 			// strokes cannot be modified or accessed during this time
 			synchronized (strokes) {
-				strokes.clear();
+				strokeQueue.clear(); // remove all strokes yet to be made
+				strokes.clear(); // remove all strokes already made
 			}
 
 			// Interleaving is not a problem here, because "strokes" cannot
@@ -123,7 +162,15 @@ public class MasterBoard {
 	public void addUser(User user) {
 		// lock on users guarantees no strokes made at this time
 		synchronized (users) {
+			// add user
 			users.add(user);
+			// resent all existing strokes
+			this.resendAllStrokes(user);
+			// send updated editors list to all connected
+			String newUserList = this.getUserList();
+			for (User editor : users) {
+				editor.notifyEditors(newUserList);
+			}
 		}
 	}
 
@@ -137,17 +184,26 @@ public class MasterBoard {
 	public void removeUser(User user) {
 		// lock on users guarantees no strokes made at this time
 		synchronized (users) {
+			// remove user
 			users.remove(user);
+			// send updated editors list to all connected
+			String newUserList = this.getUserList();
+			for (User editor : users) {
+				editor.notifyEditors(newUserList);
+			}
 		}
 	}
 
 	/**
-	 * Removes all editors of the board. All strokes made afterward are not
+	 * Called when the board is being deleted. Removes all editors of the board,
+	 * clears board and queued strokes. All strokes made afterward are not
 	 * forwarded, since the board is in the process of deletion.
 	 */
-	public void removeAllUsers() {
+	public void terminateBoard() {
 		synchronized (users) {
 			users.clear();
+			this.clearBoard(); // clears queued changes too
+			strokeThread.interrupt();
 		}
 	}
 

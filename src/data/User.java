@@ -1,8 +1,11 @@
 package data;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.net.Socket;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.*;
 
 import server.WhiteboardServer;
 
@@ -19,7 +22,7 @@ public class User implements Comparable<User> {
 	private static final AtomicInteger nextID = new AtomicInteger(0);
 
 	private final WhiteboardServer server;
-	private final MasterBoard board;
+	private MasterBoard board;
 	private final Socket socket;
 
 	/*
@@ -109,6 +112,13 @@ public class User implements Comparable<User> {
 		 * independently thread-safe, we know that a user change cannot occur
 		 * while strokes are being drawn.
 		 */
+
+		// no board selected (should never happen when method called)
+		if (board == null) {
+			return;
+		}
+
+		// generate STROKE message
 		String thickness = String.valueOf(Math.round(stroke.getThickness()
 				.getLineWidth()));
 		String coords = String.valueOf(stroke.getX1()) + " "
@@ -131,6 +141,88 @@ public class User implements Comparable<User> {
 	 */
 	public void notifyClear() {
 		outgoingMessageQueue.put("board_clear");
+	}
+
+	/**
+	 * Queues a BRD_USERS message to be sent to the client with priority. This
+	 * is called by the server when the list of editors of the current board has
+	 * changed.
+	 * 
+	 * @param editorList
+	 *            an alphabetized, space-delimited list of current editors
+	 */
+	public void notifyEditors(String editorList) {
+		outgoingMessageQueue.put("board_users " + editorList.trim());
+	}
+
+	/**
+	 * Selects the specified board as the one currently being edited. This User
+	 * removes itself as an editor of the current board before clearing all
+	 * queued outgoing STROKE message. The desired board is then requested from
+	 * the server. If it exists, this User adds itself as an editor and saves it
+	 * as it's current board; otherwise, no board is selected.
+	 * 
+	 * @param boardID
+	 *            the identification number of the desired board
+	 */
+	public void selectBoard(int boardID) {
+		// remove from previous board
+		board.removeUser(this); // notifyStroke no longer called from prev board
+		// clear STROKE notification queue
+		outgoingStrokeQueue.clear();
+		// use new board
+		board = server.fetchBoard(boardID);
+		// if new board exists, add self
+		// if deleted, user should soon receive deletion message
+		if (board != null) {
+			board.addUser(this); // all old strokes resent here by MasterBoard
+		}
+	}
+
+	/**
+	 * Called from a background thread to handle messages received from client.
+	 * Messages are processed one at a time. Each message should conform to the
+	 * CtoS_MSG format, omitting the end line character, as this is take care of
+	 * elsewhere. (CtoS_MSG :== (STROKE | SEL | BRD_REQ | BRD_DEL | BRD_ALL) N)
+	 * 
+	 * @param msg
+	 *            a message received over network
+	 * @throws RuntimeException
+	 *             unrecognized command received
+	 */
+	private void handleRequest(String msg) {
+		String[] t = msg.split("\\s"); // tokens
+
+		// STROKE
+		if (msg.matches("stroke \\d+ ([1-9]|10) \\d+ \\d+ \\d+ \\d+ \\d{1,3} \\d{1,3} \\d{1,3}")) {
+			int r = Integer.parseInt(t[7]), g = Integer.parseInt(t[8]), b = Integer
+					.parseInt(t[9]); // RGB values
+			Color color = new Color(r, g, b);
+			int thickness = Integer.parseInt(t[2]);
+			int x1 = Integer.parseInt(t[3]), y1 = Integer.parseInt(t[4]);
+			int x2 = Integer.parseInt(t[5]), y2 = Integer.parseInt(t[6]);
+			board.makeStroke(new WhiteLine(x1, y1, x2, y2, color, thickness));
+		}
+		// SEL
+		else if (msg.matches("select \\d+")) {
+			this.selectBoard(Integer.parseInt(t[1]));
+		}
+		// BRD_DEL
+		else if (msg.matches("del \\d+")) {
+			server.deleteBoard(Integer.parseInt(t[1]));
+		}
+		// BRD_ALL
+		else if (msg.matches("board_all")) {
+			server.resendAllBoard(this);
+		}
+		// BRD_REQ
+		else if (msg.matches("board_req .+")) {
+			String name = msg.substring(10); // everything after "board_req\\s"
+			server.makeNewBoard(name);
+		} else {
+			throw new RuntimeException(
+					"Unrecognized command received from client.");
+		}
 	}
 
 	/**
