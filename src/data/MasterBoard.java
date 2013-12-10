@@ -11,7 +11,7 @@ import java.util.Arrays;
  * MasterBoard is the central representation of a single collaborative white
  * board. It can be edited by several users.
  */
-public class MasterBoard {
+public class MasterBoard implements Comparable<MasterBoard> {
 	private final String name;
 	private final int id_num;
 	private static final AtomicInteger nextID = new AtomicInteger(0);
@@ -262,6 +262,18 @@ public class MasterBoard {
 	 */
 	public String toString() {
 		return "board " + String.valueOf(id_num) + " " + name;
+	}
+
+	/**
+	 * Compares this MasterBoard to other on the basis of identification numbers
+	 * using the standard conventions of compareTo.
+	 * 
+	 * @return +1 if this has greater ID number than other, -1 if lesser, 0 if
+	 *         equal
+	 */
+	public int compareTo(MasterBoard other) {
+		return this.id_num > other.id_num ? 1 : this.id_num < other.id_num ? -1
+				: 0;
 	}
 
 	/**
