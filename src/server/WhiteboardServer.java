@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,43 +38,45 @@ public class WhiteboardServer {
 	 * machine.
 	 * 
 	 * @param listeningPort
+	 *            The port accepting connections.
 	 * @throws IOException
+	 *             An occurred occurred over network connection.
 	 */
-	public WhiteboardServer() throws IOException {
+	public WhiteboardServer(int listeningPort) throws IOException {
 		// initialize users and boards
 		// users = Collections.synchronizedList(new ArrayList<User>());
 		users = new ArrayList<User>();
 		boards = new ArrayList<MasterBoard>();
 
-		serverSocket = new ServerSocket(55000);
-		String hostAddress = serverSocket.getInetAddress().getLocalHost()
-				.getHostAddress();
+		serverSocket = new ServerSocket(listeningPort);
+	}
 
-		// Dialog to display information about the server.
-		// Closes the server when button "Kill Server" is clicked.
-		JButton button = new JButton("Kill Server");
-		button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				System.exit(0);
-			}
-		});
-		final JOptionPane optionPane = new JOptionPane(
-				"WhiteboardServer running.\nPORT: "
-						+ serverSocket.getLocalPort() + "\nADDRESS: "
-						+ hostAddress, JOptionPane.INFORMATION_MESSAGE,
-				JOptionPane.DEFAULT_OPTION, null, new Object[] { button }, null);
+	/**
+	 * Returns the current IP address of the server. If none is available,
+	 * return null.
+	 * 
+	 * @return the string representation of the IP address or null
+	 */
+	public String getIP() {
+		try {
+			return serverSocket.getInetAddress().getLocalHost()
+					.getHostAddress();
+		} catch (UnknownHostException e) {
+			return null;
+		}
+	}
 
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				final JDialog dialog = new JDialog();
-				dialog.setModal(true);
-				dialog.setContentPane(optionPane);
-				dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-				dialog.pack();
-				dialog.setVisible(true);
-			}
-		});
+	/**
+	 * Returns the port the server is listening on. If a port is not bound,
+	 * returns null.
+	 * 
+	 * @return the string representation of the port number or null
+	 */
+	public String getPort() {
+		int port = serverSocket.getLocalPort();
+		if (port < 0) // not yet bound
+			return null;
+		return String.valueOf(port);
 	}
 
 	/**
@@ -222,7 +225,7 @@ public class WhiteboardServer {
 			System.out.println("User \'" + newUser.getName()
 					+ "\' instantiated.");
 
-		} catch (IOException e) {
+		} finally {
 			out.close();
 			in.close();
 			socket.close();
@@ -231,13 +234,51 @@ public class WhiteboardServer {
 			synchronized (users) {
 				users.remove(newUser);
 			}
+
+			System.out.println("Uninstantiated user at <"
+					+ socket.getInetAddress().getLocalHost().getHostAddress()
+					+ "> disconnected.");
 		}
 	}
 
 	public static void main(String[] args) {
+		WhiteboardServer server = null;
 		try {
-			WhiteboardServer server = new WhiteboardServer();
+			server = new WhiteboardServer(55000);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+		// Dialog to display information about the server.
+		// Closes the server when button "Kill Server" is clicked.
+		JButton button = new JButton("Kill Server");
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
+		final JOptionPane optionPane = new JOptionPane(
+				"WhiteboardServer running.\nPORT: " + server.getPort()
+						+ "\nADDRESS: " + server.getIP(),
+				JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION,
+				null, new Object[] { button }, null);
+
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				final JDialog dialog = new JDialog();
+				dialog.setModal(true);
+				dialog.setContentPane(optionPane);
+				dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+				dialog.pack();
+				dialog.setVisible(true);
+			}
+		});
+
+		try {
 			server.welcomeNewUsers();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
