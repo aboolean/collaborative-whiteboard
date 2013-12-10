@@ -162,8 +162,15 @@ public class MasterBoard {
 	public void addUser(User user) {
 		// lock on users guarantees no strokes made at this time
 		synchronized (users) {
+			// add user
 			users.add(user);
+			// resent all existing strokes
 			this.resendAllStrokes(user);
+			// send updated editors list to all connected
+			String newUserList = this.getUserList();
+			for (User editor : users) {
+				editor.notifyEditors(newUserList);
+			}
 		}
 	}
 
@@ -177,7 +184,13 @@ public class MasterBoard {
 	public void removeUser(User user) {
 		// lock on users guarantees no strokes made at this time
 		synchronized (users) {
+			// remove user
 			users.remove(user);
+			// send updated editors list to all connected
+			String newUserList = this.getUserList();
+			for (User editor : users) {
+				editor.notifyEditors(newUserList);
+			}
 		}
 	}
 
@@ -189,7 +202,7 @@ public class MasterBoard {
 	public void terminateBoard() {
 		synchronized (users) {
 			users.clear();
-			this.clearBoard();
+			this.clearBoard(); // clears queued changes too
 			strokeThread.interrupt();
 		}
 	}
