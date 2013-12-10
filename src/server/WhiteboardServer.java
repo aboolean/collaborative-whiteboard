@@ -1,5 +1,7 @@
 package server;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,6 +13,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -42,9 +46,27 @@ public class WhiteboardServer {
 
 		serverSocket = new ServerSocket(55000);
 		String hostAddress = serverSocket.getInetAddress().getLocalHost().getHostAddress();
-		JOptionPane.showMessageDialog(new JFrame(),
-				"WhiteboardServer running.\nPORT: 55000\nADDRESS: "
-						+ hostAddress);
+
+        // Dialog to display information about the server. Closes the server
+        // when button is clicked.
+        JButton button = new JButton("Kill Server");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                System.exit(0);
+            }
+        });
+        final JOptionPane optionPane = new JOptionPane(
+                "WhiteboardServer running.\nPORT: "
+                        + serverSocket.getLocalPort() + "\nADDRESS: "
+                        + hostAddress, JOptionPane.INFORMATION_MESSAGE,
+                JOptionPane.DEFAULT_OPTION, null, new Object[] { button }, null);
+        final JDialog dialog = new JDialog();
+        dialog.setModal(true);
+        dialog.setContentPane(optionPane);
+        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        dialog.pack();
+        dialog.setVisible(true);
 	}
 
 	/**
@@ -184,4 +206,5 @@ public class WhiteboardServer {
 			e.printStackTrace();
 		}
 	}
+
 }

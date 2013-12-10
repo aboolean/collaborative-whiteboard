@@ -9,7 +9,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -60,7 +62,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
     private final JToggleButton eraseToggle;
     private final JButton clear;
     private final ClientView canvas;
-    Socket socket = new Socket();
+    private final Socket socket;
 
     /*
      * Drawing-related fields.
@@ -80,7 +82,12 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
      * Communication-related fields.
      */
 
-    public WhiteboardGUI() {
+    public WhiteboardGUI() throws UnknownHostException, IOException {
+
+        String ipAddress = JOptionPane
+                .showInputDialog("Connect to IP Address:");
+
+        socket = new Socket(InetAddress.getByName(ipAddress), 55000);
 
         // set up the layout
         this.setLayout(new GridBagLayout());
@@ -417,18 +424,20 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
             int x = e.getX();
             int y = e.getY();
 
-            Color strokeColor;
-            int strokeThick = (int) thickness;
-            if (eraseMode) {
-                strokeColor = Color.white;
-            } else {
-                strokeColor = drawingColor;
+            if ( canvas.inBounds(x, y) && canvas.inBounds(lastX, lastY) ) {
+                Color strokeColor;
+                int strokeThick = (int) thickness;
+                if (eraseMode) {
+                    strokeColor = Color.white;
+                } else {
+                    strokeColor = drawingColor;
+                }
+                WhiteLine line = new WhiteLine(lastX, lastY, x, y, strokeColor,
+                        strokeThick);
+                canvas.drawLine(line);
+                canvas.push();
+                // send STROKE message
             }
-            WhiteLine line = new WhiteLine(lastX, lastY, x, y, strokeColor,
-                    strokeThick);
-            canvas.drawLine(line);
-            canvas.push();
-            // send STROKE message
             lastX = x;
             lastY = y;
         }
@@ -452,9 +461,16 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
     public static void main(final String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                WhiteboardGUI main = new WhiteboardGUI();
+                WhiteboardGUI main;
+                try {
+                    main = new WhiteboardGUI();
+                    main.setVisible(true);
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-                main.setVisible(true);
             }
         });
     }
