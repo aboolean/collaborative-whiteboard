@@ -52,6 +52,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
     };
     private final JLabel sliderLabel;
     private final JSlider thicknessSlider;
+    private final JLabel currentUser;
     private final JTable colorPalette;
     private final JButton moreColors;
     private final JColorChooser colorChooser;
@@ -59,8 +60,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
     private final JButton clear;
     private final ClientView canvas;
     Socket socket = new Socket();
-    private final User user = new User("username", socket,
-            new WhiteboardServer());
+    private final User user;
 
     /*
      * Drawing-related fields.
@@ -82,6 +82,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
     
     
     public WhiteboardGUI() {
+        
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         Insets padding = new Insets(10, 10, 10, 10);
@@ -193,6 +194,15 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         c.gridx = 0;
         c.gridy = 6;
         this.add(thicknessSlider, c);
+        
+        String username = JOptionPane
+                .showInputDialog("Username:");
+        currentUser = new JLabel("Your Username: " + username);
+        user = new User(username, socket, new WhiteboardServer());
+        
+        c.gridx = 0;
+        c.gridy = 7;
+        this.add(currentUser, c);
 
         // Create the ClientView that acts as a canvas for the client to draw
         // on.
@@ -303,7 +313,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
                 canvas.clear();
                 canvas.push();
                 // send BRD_CLR message
-                createListeningThread();
+                //createListeningThread();
             }
         });
         c.gridx = 4;
@@ -349,7 +359,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
             tableModelEditors.addRow(new Object[] { msg[i] });
         }
     }
-
+    
     /**
      * Custom TableCellRenderer which colors the colorPalette JTable according
      * to the colors 2D Array.
@@ -441,24 +451,24 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         }
     }
 
-    private void createListeningThread() {
-        Thread listeningThread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        String str = (String) user.getQ().take();
-                        System.out.println(str);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-        });
-        listeningThread.start();
-    }
+//    private void createListeningThread() {
+//        Thread listeningThread = new Thread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//                while (true) {
+//                    try {
+//                        String str = (String) user.getQ().take();
+//                        System.out.println(str);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                }
+//            }
+//        });
+//        listeningThread.start();
+//    }
     
     
 
