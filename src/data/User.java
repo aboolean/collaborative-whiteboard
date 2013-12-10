@@ -2,8 +2,13 @@ package data;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.*;
 
@@ -20,10 +25,14 @@ public class User implements Comparable<User> {
 	private final String username;
 	private final int id_num;
 	private static final AtomicInteger nextID = new AtomicInteger(0);
+	private boolean started = false;
 
 	private final WhiteboardServer server;
 	private MasterBoard board;
 	private final Socket socket;
+
+	private Thread inThread;
+	private Thread outThread;
 
 	/*
 	 * There are two queues maintained for
@@ -53,7 +62,7 @@ public class User implements Comparable<User> {
 			this.username = "user" + String.valueOf(id_num);
 		else
 			this.username = username;
-		
+
 		// connection and main server
 		this.socket = socket;
 		this.server = server;
@@ -71,6 +80,33 @@ public class User implements Comparable<User> {
 		 */
 		outgoingMessageQueue = new PriorityBlockingQueue<String>();
 		outgoingStrokeQueue = new PriorityBlockingQueue<String>();
+	}
+
+	/**
+	 * Opens incoming and outgoing communication stream and begins threads to
+	 * send and receive messages. This must be called to initiate communication
+	 * after construction.
+	 * 
+	 * @throws IOException
+	 *             error encountered on opening streams
+	 */
+	public void beginConnection() throws IOException {
+		if (started)
+			return;
+
+		// open streams
+		BufferedReader in = new BufferedReader(new InputStreamReader(
+				socket.getInputStream()));
+		PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+
+		// begin processing incoming and outgoing messages in background
+		inThread = new Thread(new IncomingMessageDelegate(this, in));
+		outThread = new Thread(new OutgoingMessageDelegate(out));
+
+		inThread.start();
+		outThread.start();
+
+		started = true;
 	}
 
 	/**
@@ -138,7 +174,7 @@ public class User implements Comparable<User> {
 		String stroke_msg = "stroke " + String.valueOf(board.getID()) + " "
 				+ thickness + " " + coords + " " + color;
 
-		outgoingMessageQueue.put(stroke_msg);
+		outgoingStrokeQueue.put(stroke_msg);
 	}
 
 	/**
@@ -177,6 +213,14 @@ public class User implements Comparable<User> {
 		board.removeUser(this); // notifyStroke no longer called from prev board
 		// clear STROKE notification queue
 		outgoingStrokeQueue.clear();
+		// wait until queue is empty (send old board strokes)
+		while (!outgoingMessageQueue.isEmpty()) {
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				// do nothing; User should never be interrupted
+			}
+		}
 		// use new board
 		board = server.fetchBoard(boardID);
 		// if new board exists, add self
@@ -223,9 +267,11 @@ public class User implements Comparable<User> {
 			server.resendAllBoard(this);
 		}
 		// BRD_REQ
-		else if (msg.matches("board_req .+")) {
-			String name = msg.substring(10); // everything after "board_req\\s"
-			server.makeNewBoard(name);
+		else if (msg.matches("board_req( \\S+)?")) {
+			if (msg.equals("board_req"))
+				server.makeNewBoard("");
+			else
+				server.makeNewBoard(msg.substring(10)); // extract name
 		} else {
 			throw new RuntimeException(
 					"Unrecognized command received from client.");
@@ -301,5 +347,79 @@ public class User implements Comparable<User> {
 	@Override
 	public String toString() {
 		return "user " + String.valueOf(id_num) + " " + username;
+	}
+
+	/**
+	 * Retrieves all incoming messages from the client and handles them
+	 * appropriately. If connection is interrupted, takes care of dissociating
+	 * from server and otherwise cleanly closing the connection.
+	 */
+	private class IncomingMessageDelegate implements Runnable {
+		private BufferedReader in;
+		private User parent;
+
+		public IncomingMessageDelegate(User parent, BufferedReader in) {
+			this.in = in;
+			this.parent = parent;
+		}
+
+		public void run() {
+			try {
+				processMessages();
+			} catch (IOException e) {
+				System.out.println("Connection interrupted.");
+			}
+		}
+
+		private void processMessages() throws IOException {
+			try {
+				for (String line = in.readLine(); line != null; line = in
+						.readLine()) {
+					if(inThread.isInterrupted())
+						break;
+					handleRequest(line);
+				}
+			} finally {
+				socket.close();
+				in.close();
+				if(board != null)
+					board.removeUser(parent);
+				server.deleteUser(parent);
+				outThread.interrupt();
+				inThread.interrupt();
+				System.out.println("User \'" + username + "\' disconnected.");
+			}
+		}
+	}
+
+	private class OutgoingMessageDelegate implements Runnable {
+		private PrintWriter out;
+
+		public OutgoingMessageDelegate(PrintWriter out) {
+			this.out = out;
+		}
+
+		public void run() {
+			try {
+				consumeQueues: while (true) {
+					while (outgoingMessageQueue.peek() != null) {
+						out.println(outgoingMessageQueue.take());
+					}
+					while (outgoingStrokeQueue.peek() != null) {
+						// switch back to message queue if nonempty
+						if (outgoingMessageQueue.peek() != null)
+							continue consumeQueues;
+						// does not block in event of clear
+						String stroke = outgoingStrokeQueue.poll();
+						if (stroke != null)
+							out.println(stroke);
+					}
+					// nothing in either queue
+					Thread.sleep(10);
+				}
+			} catch (InterruptedException e) {
+				// thread stopped
+			}
+		}
 	}
 }
