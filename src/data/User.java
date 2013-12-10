@@ -32,11 +32,13 @@ public class User implements Comparable<User> {
 	private final PriorityBlockingQueue<String> outgoingStrokeQueue;
 
 	/**
-	 * Constructs a new User corresponding to a single connected client.
+	 * Constructs a new User corresponding to a single connected client. The
+	 * name value of User is automatically selected if username is null; the
+	 * default value is the unique ID number appended to "user".
 	 * 
 	 * @param username
 	 *            the assigned user name of the client in the USER_NAME :==
-	 *            [A-Za-z0-9]+ format
+	 *            [A-Za-z0-9]+ format or null
 	 * @param socket
 	 *            the Socket connected to the client
 	 * @param server
@@ -46,8 +48,13 @@ public class User implements Comparable<User> {
 		// assign unique sequential ID number
 		id_num = nextID.getAndIncrement();
 
-		// basic properties
-		this.username = username;
+		// username assignment
+		if (username == null)
+			this.username = "user" + String.valueOf(id_num);
+		else
+			this.username = username;
+		
+		// connection and main server
 		this.socket = socket;
 		this.server = server;
 

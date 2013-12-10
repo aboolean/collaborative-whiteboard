@@ -29,11 +29,11 @@ The following grammar will facilitate the text-based communication between the c
 \texttt{BRD\_CLR :== "board\_clear" S BOARD\_ID}\\
 \texttt{BRD\_USERS :== "board\_users" S BOARD\_ID (S USER\_NAME)+}\\
 
-\texttt{USER\_REQ :== "user\_req" S USER\_NAME}\\
+\texttt{USER\_REQ :== "user\_req" (S USER\_NAME)?}\\
 \texttt{USER\_INIT :== "you\_are" S USER\_NAME}\\
 
 \texttt{NAME :== [$\char`\^ \backslash$r$\backslash$n]+}\\
-\texttt{USER\_NAME :== [A-Za-z0-9]+}\\
+\texttt{USER\_NAME :== [A-Za-z]([A-Za-z0-9]?)+}\\
 \texttt{BOARD\_ID :== INT}\\
 
 \texttt{INT :== [0-9]+}\\

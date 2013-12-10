@@ -41,7 +41,7 @@ public class WhiteboardServer {
 		boards = new ArrayList<MasterBoard>();
 
 		serverSocket = new ServerSocket(55000);
-		String hostAddress = serverSocket.getInetAddress().getHostAddress();
+		String hostAddress = serverSocket.getInetAddress().getLocalHost().getHostAddress();
 		JOptionPane.showMessageDialog(new JFrame(),
 				"WhiteboardServer running.\nPORT: 55000\nADDRESS: "
 						+ hostAddress);
@@ -118,12 +118,12 @@ public class WhiteboardServer {
 	}
 
 	public void welcomeNewUsers() throws IOException {
-		while(true) {
+		while (true) {
 			// blocks until client attempts to connect
 			final Socket socket = serverSocket.accept();
-			
-			Thread userInitThread = new Thread(new Runnable(){
-				public void run(){
+
+			Thread userInitThread = new Thread(new Runnable() {
+				public void run() {
 					try {
 						handleConnection(socket);
 					} catch (IOException e) {
@@ -134,20 +134,45 @@ public class WhiteboardServer {
 			userInitThread.start();
 		}
 	}
-	
-	public void handleConnection(Socket socket) throws IOException{
-		//TODO IP address
+
+	public void handleConnection(Socket socket) throws IOException {
+		// TODO IP address
 		System.out.println("New user connected from ");
-		
+
 		// initialize input and output streams
 		BufferedReader in = new BufferedReader(new InputStreamReader(
 				socket.getInputStream()));
 		PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-		
+
 		try {
-			in.readLine();
+			String user_req = in.readLine();
+			if (user_req == null
+					|| !user_req.matches("user_req( [A-Za-z]([A-Za-z0-9]?)+)?"))
+				return;
+
+			String username = null; // no username supplied
+			if (user_req.length() > 8)
+				username = user_req.substring(9); // extract username
+
+			synchronized (users) {
+				// check for duplicate username
+				for (User user : users) {
+					if (username == null)
+						break; // cases: no username supplied or duplicate found
+					if (user.getName().equals(username)) {
+						username = null;
+					}
+				}
+				
+				// create new instance and add to list
+				User newUser = new User(username, socket, this);
+				users.add(newUser);
+			}
+
 		} finally {
-			System.out.print("");
+			out.close();
+			in.close();
+			socket.close();
 		}
 	}
 
