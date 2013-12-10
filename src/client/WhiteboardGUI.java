@@ -119,7 +119,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 					portField };
 
 			int buttonPressed = JOptionPane.showConfirmDialog(null, message,
-					"Login", JOptionPane.OK_CANCEL_OPTION);
+					"Connect", JOptionPane.OK_CANCEL_OPTION);
 
 			if (buttonPressed == JOptionPane.OK_OPTION) {
 				addressInput = addressField.getText();

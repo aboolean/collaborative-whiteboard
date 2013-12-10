@@ -19,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import data.*;
@@ -245,9 +246,41 @@ public class WhiteboardServer {
 	}
 
 	public static void main(String[] args) {
+		// Prompt User for Port Number
+		String portInput = "55000";
+
+		while (true) {
+			// Port in range [49152,65535]
+			String portPattern = "(49(1(5[2-9]|[6-9][0-9])|[2-9][0-9]{2})|5[0-9]{4}|6([0-4][0-9]{3}|5([0-4][0-9]{2}|5([0-2][0-9]|3[0-5]))))";
+
+			JTextField addressField = new JTextField();
+			JTextField portField = new JTextField();
+			Object[] message = {"Port:",
+					portField };
+
+			int buttonPressed = JOptionPane.showConfirmDialog(null, message,
+					"Start", JOptionPane.OK_CANCEL_OPTION);
+
+			if (buttonPressed == JOptionPane.OK_OPTION) {
+				portInput = portField.getText();
+				if (portInput == null || !portInput.matches(portPattern)) {
+					JOptionPane
+							.showMessageDialog(
+									new JFrame(),
+									"An invalid port number was entered. Please re-enter a number within the range [49152,65535].",
+									"Incorrect Port", JOptionPane.ERROR_MESSAGE);
+					continue;
+				} else{
+					break; // correct port number
+				}
+			} else {
+				System.exit(0);
+			}
+		}
+		
 		WhiteboardServer server = null;
 		try {
-			server = new WhiteboardServer(55000);
+			server = new WhiteboardServer(Integer.parseInt(portInput));
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(0);
