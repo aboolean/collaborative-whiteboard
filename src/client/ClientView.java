@@ -18,7 +18,8 @@ import data.WhiteLine;
 
 public class ClientView extends JPanel {
 
-    public final int Y_SIZE = 600, X_SIZE = 800;
+    public final int Y_SIZE = 600;
+    public final int X_SIZE = 800;
     private Image buffer;
 
     /**
@@ -95,4 +96,19 @@ public class ClientView extends JPanel {
         g.setColor(line.getColor());
         g.drawLine(line.getX1(), line.getY1(), line.getX2(), line.getY2());
     }
+
+    /**
+     * Returns true if the x and y values are within the bounds of the
+     * whiteboard.
+     * 
+     * @param x
+     *            x value
+     * @param y
+     *            y value
+     * @return true if (x,y) is within the bounds of the whiteboard
+     */
+    public boolean inBounds(int x, int y) {
+        return (x > -1 && y > -1 && x < X_SIZE && y < Y_SIZE);
+    }
+
 }

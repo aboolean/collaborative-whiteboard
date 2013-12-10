@@ -45,7 +45,7 @@ public class WhiteboardServer {
         boards = new ArrayList<MasterBoard>();
 
         serverSocket = new ServerSocket(55000);
-        String hostAddress = serverSocket.getInetAddress().getHostAddress();
+        String hostAddress = serverSocket.getInetAddress().getLocalHost().getHostAddress();
 
         // Dialog to display information about the server. Closes the server
         // when button is clicked.
