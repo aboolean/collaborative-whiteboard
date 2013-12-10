@@ -45,28 +45,29 @@ public class WhiteboardServer {
 		boards = new ArrayList<MasterBoard>();
 
 		serverSocket = new ServerSocket(55000);
-		String hostAddress = serverSocket.getInetAddress().getLocalHost().getHostAddress();
+		String hostAddress = serverSocket.getInetAddress().getLocalHost()
+				.getHostAddress();
 
-        // Dialog to display information about the server. Closes the server
-        // when button is clicked.
-        JButton button = new JButton("Kill Server");
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                System.exit(0);
-            }
-        });
-        final JOptionPane optionPane = new JOptionPane(
-                "WhiteboardServer running.\nPORT: "
-                        + serverSocket.getLocalPort() + "\nADDRESS: "
-                        + hostAddress, JOptionPane.INFORMATION_MESSAGE,
-                JOptionPane.DEFAULT_OPTION, null, new Object[] { button }, null);
-        final JDialog dialog = new JDialog();
-        dialog.setModal(true);
-        dialog.setContentPane(optionPane);
-        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-        dialog.pack();
-        dialog.setVisible(true);
+		// Dialog to display information about the server. Closes the server
+		// when button is clicked.
+		JButton button = new JButton("Kill Server");
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
+		final JOptionPane optionPane = new JOptionPane(
+				"WhiteboardServer running.\nPORT: "
+						+ serverSocket.getLocalPort() + "\nADDRESS: "
+						+ hostAddress, JOptionPane.INFORMATION_MESSAGE,
+				JOptionPane.DEFAULT_OPTION, null, new Object[] { button }, null);
+		final JDialog dialog = new JDialog();
+		dialog.setModal(true);
+		dialog.setContentPane(optionPane);
+		dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		dialog.pack();
+		dialog.setVisible(true);
 	}
 
 	/**
@@ -176,6 +177,7 @@ public class WhiteboardServer {
 			if (user_req.length() > 8)
 				username = user_req.substring(9); // extract username
 
+			User newUser;
 			synchronized (users) {
 				// check for duplicate username
 				for (User user : users) {
@@ -185,11 +187,15 @@ public class WhiteboardServer {
 						username = null;
 					}
 				}
-				
+
 				// create new instance and add to list
-				User newUser = new User(username, socket, this);
+				newUser = new User(username, socket, this);
 				users.add(newUser);
 			}
+
+			// send new username to client
+			out.println("you_are " + newUser.getName());
+			out.flush();
 
 		} finally {
 			out.close();
