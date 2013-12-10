@@ -8,6 +8,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.IOException;
 import java.net.Socket;
 
 import javax.swing.*;
@@ -60,7 +61,6 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
     private final JButton clear;
     private final ClientView canvas;
     Socket socket = new Socket();
-    private final User user;
 
     /*
      * Drawing-related fields.
@@ -198,7 +198,6 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         String username = JOptionPane
                 .showInputDialog("Username:");
         currentUser = new JLabel("Your Username: " + username);
-        user = new User(username, socket, new WhiteboardServer());
         
         c.gridx = 0;
         c.gridy = 7;

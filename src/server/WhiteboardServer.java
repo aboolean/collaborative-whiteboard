@@ -1,5 +1,7 @@
 package server;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,17 +12,21 @@ import data.*;
 public class WhiteboardServer {
 	private final List<User> users;
 	private final List<MasterBoard> boards;
+	
+	private final ServerSocket serverSocket;
 
 	/*
 	 * Invariants: - boards is always sorted by ID number - users is always
 	 * sorted by ID number
 	 */
-
-	public WhiteboardServer(int listeningPort) {
+	
+	public WhiteboardServer(int listeningPort) throws IOException {
 		// initialize users and boards
 		// users = Collections.synchronizedList(new ArrayList<User>());
 		users = new ArrayList<User>();
 		boards = new ArrayList<MasterBoard>();
+		
+		serverSocket = new ServerSocket(listeningPort);
 	}
 
 	/**
