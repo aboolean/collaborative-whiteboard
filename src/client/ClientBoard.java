@@ -35,27 +35,17 @@ public class ClientBoard {
     public int getID() {
         return id_num;
     }
-
+    
     /**
-     * Compares two ID numbers of two ClientBoard objects.
+     * Compares this ClientBoard to other on the basis of identification numbers
+     * using the standard conventions of compareTo.
      * 
-     * @param other
-     *            the ClientBoard to be compared with
-     * @return Returns a negative integer if the ID of this ClientBoard is less
-     *         than the ID of the other ClientBoard, a positive integer if the
-     *         ID of this ClientBoard is greater than the ID of the other
-     *         ClientBoard, or 0 if the ID numbers of both ClientBoard objects
-     *         are equal.
-     * @throws ClassCastException
+     * @return +1 if this has greater ID number than other, -1 if lesser, 0 if
+     *         equal
      */
-    public int compareTo(Object other) throws ClassCastException {
-        if (!(other instanceof ClientBoard)) {
-            throw new ClassCastException();
-        } else {
-            ClientBoard cb = (ClientBoard) other;
-            return this.getID() - cb.getID();
-        }
-
+    public int compareTo(ClientBoard other){
+        return this.id_num > other.id_num ? 1 : this.id_num < other.id_num ? -1
+                : 0;
     }
 
     /**

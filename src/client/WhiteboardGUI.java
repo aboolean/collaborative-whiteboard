@@ -8,10 +8,15 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -27,6 +32,8 @@ import data.WhiteLine;
 
 @SuppressWarnings("serial")
 public class WhiteboardGUI extends JFrame implements ChangeListener {
+
+    int i = 0;
 
     private static final long serialVersionUID = 1L;
 
@@ -62,7 +69,6 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
     private final JToggleButton eraseToggle;
     private final JButton clear;
     private final ClientView canvas;
-    private final Socket socket;
 
     /*
      * Drawing-related fields.
@@ -81,6 +87,13 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
     /*
      * Communication-related fields.
      */
+    private final Socket socket;
+    private final PrintWriter out;
+    private final ArrayList<ClientBoard> clientBoards = new ArrayList<ClientBoard>();
+    private int lastSelection = 0;
+
+    // begin with no board selected
+    private ClientBoard currentBoard = new ClientBoard("Hello", 39);
 
     public WhiteboardGUI() throws UnknownHostException, IOException {
 
@@ -88,6 +101,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
                 .showInputDialog("Connect to IP Address:");
 
         socket = new Socket(InetAddress.getByName(ipAddress), 55000);
+        out = new PrintWriter(socket.getOutputStream(), true);
 
         // set up the layout
         this.setLayout(new GridBagLayout());
@@ -101,11 +115,13 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         this.add(whiteboardsLabel, c);
 
         // Create table containing all active boards.
-        tableModelWhiteboards.addRow(new Object[] { "01 - trojanHorse" });
-        tableModelWhiteboards.addRow(new Object[] { "02 - twoStrokeEngine" });
 
         allBoards = new JTable(tableModelWhiteboards);
         allBoards.setPreferredSize(new Dimension(0, 200));
+
+        // sends the initialization BRD_ALL request to receive all the currently
+        // active boards; prompts server to send a stream of BRD_INFO messages
+        out.println("board_all");
 
         // Add a listener which sends a SEL message to the server when a board
         // in the list is selected.
@@ -114,7 +130,12 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
-                        // send SEL message
+                        if (allBoards.getSelectedRow() > 0) {
+                            lastSelection = allBoards.getSelectedRow();
+                        }
+                        ClientBoard cb = clientBoards.get(lastSelection);
+                        currentBoard = cb;
+                        out.println("SEL " + cb.getID());
                     }
 
                 });
@@ -136,7 +157,11 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
                 // new board's name
                 String newBoard = JOptionPane
                         .showInputDialog("New board name:");
-                // Send BRD_REQ message
+                if (newBoard == null | newBoard.equals("")) {
+                    out.println("board_req");
+                } else if (newBoard.matches("[A-Za-z]([A-Za-z0-9]?)+")) {
+                    out.println("board_req " + newBoard);
+                }
             }
 
         });
@@ -155,7 +180,11 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
                         "Are you sure you want to delete this board?",
                         "Delete Current Board", JOptionPane.YES_NO_OPTION);
                 // yes -> n = 0; no -> n = 1
-                // Send BRD_DEL message
+                if (n == 0) {
+                    out.println("board " + currentBoard.getID());
+                    deleteWhiteboard("board " + currentBoard.getID());
+                    currentBoard = null;
+                }
             }
 
         });
@@ -205,6 +234,11 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
         // prompt the client for a username, and then instantiate the User
         // object
         String username = JOptionPane.showInputDialog("Username:");
+        if (username == null || username.equals("")) {
+            out.println("user_req");
+        } else if (username.matches("[A-Za-z]([A-Za-z0-9]?)+")) {
+            out.println("user_req " + username);
+        }
         currentUser = new JLabel("Your Username: " + username);
 
         c.gridx = 0;
@@ -319,8 +353,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
             public void actionPerformed(ActionEvent arg0) {
                 canvas.clear();
                 canvas.push();
-                // send BRD_CLR message
-                // createListeningThread();
+                out.println("board_clear " + currentBoard.getID());
             }
         });
         c.gridx = 4;
@@ -349,20 +382,44 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
      */
     private void addWhiteboard(String BRD_INFO) {
         String[] msg = BRD_INFO.split(" ");
+        ClientBoard clientBoard = new ClientBoard(msg[2],
+                Integer.parseInt(msg[1]));
+        clientBoards.add(clientBoard);
         int row = tableModelWhiteboards.getRowCount();
-        tableModelWhiteboards.addRow(new Object[] { String.valueOf(row) + " - "
-                + msg[2] });
+        tableModelWhiteboards.addRow(new Object[] { "0"
+                + String.valueOf(row + 1) + " - " + msg[2] });
+    }
+
+    /**
+     * Called when a BRD_DEL message has been received. Deletes this board from
+     * the list of active boards.
+     */
+    private void deleteWhiteboard(String BRD_DEL) {
+        String[] msg = BRD_DEL.split(" ");
+        int id = Integer.parseInt(msg[1]);
+        boolean success = false;
+        for (int i = 0; i < clientBoards.size(); i++) {
+            if (id == clientBoards.get(i).getID()) {
+                success = clientBoards.remove(clientBoards.get(i));
+            }
+        }
+        if (success) {
+            tableModelWhiteboards.setRowCount(0);
+            int size = clientBoards.size();
+            for (int i = 0; i < size; i++) {
+                addWhiteboard(clientBoards.get(i).toString());
+            }
+        }
     }
 
     /**
      * Called when a BRD_USERS message has been received. Updates the list of
      * active board editors with the usernames of all active users.
      */
-    private void addUser(String BRD_USERS) {
+    private void addUsers(String BRD_USERS) {
         String[] msg = BRD_USERS.split(" ");
         tableModelEditors.setRowCount(0);
         for (int i = 2; i < msg.length; i++) {
-            System.out.println(msg[i]);
             tableModelEditors.addRow(new Object[] { msg[i] });
         }
     }
@@ -424,7 +481,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
             int x = e.getX();
             int y = e.getY();
 
-            if ( canvas.inBounds(x, y) && canvas.inBounds(lastX, lastY) ) {
+            if (canvas.inBounds(x, y) && canvas.inBounds(lastX, lastY)) {
                 Color strokeColor;
                 int strokeThick = (int) thickness;
                 if (eraseMode) {
@@ -437,6 +494,11 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
                 canvas.drawLine(line);
                 canvas.push();
                 // send STROKE message
+                out.println("stroke " + currentBoard.getID() + " "
+                        + String.valueOf(strokeThick) + " " + lastX + " "
+                        + lastY + " " + x + " " + y + " "
+                        + strokeColor.getRed() + " " + strokeColor.getGreen()
+                        + " " + strokeColor.getBlue());
             }
             lastX = x;
             lastY = y;
