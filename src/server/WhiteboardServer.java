@@ -237,6 +237,13 @@ public class WhiteboardServer {
 		}
 	}
 
+	/**
+	 * Run after constructing this WhiteboardServer to begin accepting new users
+	 * on the specified listening port.
+	 * 
+	 * @throws IOException
+	 *             connection interrupted
+	 */
 	public void welcomeNewUsers() throws IOException {
 		while (true) {
 			// blocks until client attempts to connect
@@ -246,7 +253,8 @@ public class WhiteboardServer {
 					try {
 						handleConnection(socket);
 					} catch (IOException e) {
-						e.printStackTrace();
+						// uninstantiated user dropped; ignore
+						// connections closed in handleConnection
 					}
 				}
 			});
@@ -255,7 +263,18 @@ public class WhiteboardServer {
 		}
 	}
 
-	public void handleConnection(Socket socket) throws IOException {
+	/**
+	 * Called from within welcomeUsers() on a background thread to set up a new
+	 * user. Opens input and output streams on socket, completes username
+	 * handshake with client, and constructs User instance. Closes socket and
+	 * streams if connection interrupted.
+	 * 
+	 * @param socket
+	 *            a Socket connected to a client
+	 * @throws IOException
+	 *             connection interrupted
+	 */
+	private void handleConnection(Socket socket) throws IOException {
 		System.out.println("New connection from <"
 				+ socket.getRemoteSocketAddress().toString() + ">.");
 
@@ -270,7 +289,7 @@ public class WhiteboardServer {
 			String user_req = in.readLine();
 			if (user_req == null
 					|| !user_req.matches("user_req( [A-Za-z]([A-Za-z0-9]?)+)?"))
-				return;
+				throw new IOException(); // trip catch block
 
 			String username = null; // no username supplied
 			if (user_req.length() > 8)
@@ -302,10 +321,6 @@ public class WhiteboardServer {
 					+ "\' instantiated.");
 
 		} catch (IOException e) {
-			out.close();
-			in.close();
-			socket.close();
-
 			// may have failed on beginConnection();
 			synchronized (users) {
 				users.remove(newUser);
@@ -314,6 +329,10 @@ public class WhiteboardServer {
 			System.out.println("Uninstantiated user at <"
 					+ socket.getRemoteSocketAddress().toString()
 					+ "> disconnected.");
+			
+			out.close();
+			in.close();
+			socket.close();
 		}
 	}
 

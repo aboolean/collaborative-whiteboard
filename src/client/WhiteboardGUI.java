@@ -111,13 +111,14 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		// username init
 		// prompt client, send to server, receive confirmation
 		String username = JOptionPane.showInputDialog("Request Username:");
-		if (username.matches("[A-Za-z]([A-Za-z0-9]?)+")) {
+		if (username != null && username.matches("[A-Za-z]([A-Za-z0-9]?)+")) {
 			out.println("user_req " + username);
 		} else {
 			out.println("user_req");
 		}
 		String you_are = in.readLine();
-		if (you_are.matches("you_are [A-Za-z]([A-Za-z0-9]?)+"))
+		if (you_are != null
+				&& you_are.matches("you_are [A-Za-z]([A-Za-z0-9]?)+"))
 			currentUser = new JLabel("Your Username: " + you_are.substring(8));
 		else
 			throw new RuntimeException("Unkown message received from server.");
