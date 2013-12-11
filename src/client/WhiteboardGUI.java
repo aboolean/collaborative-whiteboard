@@ -32,7 +32,7 @@ import data.WhiteLine;
 
 @SuppressWarnings("serial")
 public class WhiteboardGUI extends JFrame implements ChangeListener {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	/*
@@ -99,9 +99,9 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 	public WhiteboardGUI() throws UnknownHostException, IOException {
 
 		this.setResizable(false);
-		
+
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		// Prompt User for Address and Begin Connection
 		startConnection();
 		socket = acquiredSocket;
@@ -210,6 +210,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 			}
 
 		});
+		c.gridx = 0;
 		c.gridy = 3;
 		this.add(deleteBoard, c);
 
@@ -218,7 +219,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 		boardEditorsLabel = new JLabel("Board Editors");
 		c.gridx = 0;
-		c.gridy = 3;
+		c.gridy = 4;
 		this.add(boardEditorsLabel, c);
 
 		// Create table listing all Users active on this whiteboard.
@@ -229,14 +230,14 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		JScrollPane boardEditorsScroll = new JScrollPane(boardEditors);
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
-		c.gridy = 4;
+		c.gridy = 5;
 		this.add(boardEditorsScroll, c);
 
 		// Slider which adjusts the stroke thickness.
 		sliderLabel = new JLabel("Stroke Thickness");
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
-		c.gridy = 5;
+		c.gridy = 6;
 		this.add(sliderLabel, c);
 
 		thicknessSlider = new JSlider(1, 10, 3);
@@ -248,12 +249,12 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		thicknessSlider.addChangeListener(this);
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
-		c.gridy = 6;
+		c.gridy = 7;
 		this.add(thicknessSlider, c);
 
 		// Display current username.
 		c.gridx = 0;
-		c.gridy = 7;
+		c.gridy = 8;
 		this.add(currentUser, c);
 
 		// Create the ClientView that acts as a canvas for the client to draw
@@ -263,7 +264,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 1;
 		c.gridy = 0;
-		c.gridheight = 7;
+		c.gridheight = 8;
 		c.gridwidth = 4;
 		this.add(canvas, c);
 
@@ -316,7 +317,8 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		});
 
 		c.gridx = 1;
-		c.gridy = 7;
+		c.gridy = 8;
+		c.insets = new Insets(10, 50, 20, 50);
 		c.gridheight = 1;
 		c.gridwidth = 1;
 		this.add(colorPalette, c);
@@ -338,7 +340,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 		});
 		c.gridx = 2;
-		c.gridy = 7;
+		c.gridy = 8;
 		this.add(moreColors, c);
 
 		// Button which toggles between drawing and erasing (drawing
@@ -353,7 +355,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 			}
 		});
 		c.gridx = 3;
-		c.gridy = 7;
+		c.gridy = 8;
 		this.add(eraseToggle, c);
 
 		// Button which clears the whiteboard and sends a BRD_CLR message.
@@ -366,7 +368,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 			}
 		});
 		c.gridx = 4;
-		c.gridy = 7;
+		c.gridy = 8;
 		this.add(clear, c);
 
 		SwingWorker<Void, Void> incomingMessageThread = new SwingWorker<Void, Void>() {
