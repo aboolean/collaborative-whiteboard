@@ -151,7 +151,7 @@ public class MasterBoard implements Comparable<MasterBoard> {
 
 			// inform users of change
 			for (User user : users) {
-				user.notifyClear();
+				user.notifyClear(id_num);
 			}
 		}
 	}

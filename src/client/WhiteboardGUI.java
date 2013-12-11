@@ -436,7 +436,10 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		}
 		// BRD_CLR
 		else if (msg.matches("board_clear \\d+")) {
-			return;
+			int boardID = Integer.parseInt(msg.split(" ")[1]);
+			if(boardID == currentBoard.getID()){
+				canvas.clear();
+			}
 		}
 		// BRD_DEL
 		else if (msg.matches("del \\d+")) {
