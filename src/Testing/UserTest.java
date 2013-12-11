@@ -4,6 +4,7 @@ package Testing;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 
 import org.junit.Test;
@@ -39,6 +40,17 @@ public class UserTest {
 	    assertEquals(noBoard, -1);
 	    assertEquals(mb.getUserList(), "user 2 testUser");
 	    assertEquals(currentBoard, mb.getID());
+	}
+	
+	@Test
+	public void userHandleRequestStroke() throws IOException {
+	    WhiteboardServer.main(new String[] {"arg1", "arg2", "arg3"});
+	    Socket socket = new Socket(InetAddress.getByName("18.189.24.133"), 55003);
+//	    User user = new User(null, socket, server);
+//	    server.makeNewBoard("anotherTestBoard");
+//	    user.selectBoard(1);
+	    
+	    //user.handleRequest("stroke 1 3 50 50 51 51 0 0 0");
 	}
 
 }
