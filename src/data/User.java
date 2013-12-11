@@ -108,6 +108,16 @@ public class User implements Comparable<User> {
 
 		started = true;
 	}
+	
+	/**
+     * Returns the ID of the currently selected board. Returns -1 if no board is
+     * currently selected.
+     * 
+     * @return the ID of the current board, or -1 if no board is selected
+     */
+    public int currentBoardID() {
+        return board == null ? -1 : board.getID();
+    }
 
 	/**
 	 * Queues a BRD_INFO message for the specified board to be sent to the

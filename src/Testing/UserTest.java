@@ -26,5 +26,27 @@ public class UserTest {
 		assertEquals("user1", user2.getName());
 		assertEquals(1, user2.getID());
 	}
+	
+	@Test
+	public void noNameOverlapTest()
+	{
+		// Create a new user with the default naming convention
+		// Attempt to create a second user with the same name
+		// Repeated username should be rejected and replaced with default
+	}
+	
+	public void userSelectBoard() throws IOException
+	{
+	    WhiteboardServer server = new WhiteboardServer(55002);
+	    server.makeNewBoard("testBoard");
+	    MasterBoard mb = server.fetchBoard(0);
+	    User user = new User("testUser", new Socket(), server);
+	    int noBoard = user.currentBoardID();
+	    user.selectBoard(0);
+	    int currentBoard = user.currentBoardID();
+	    assertEquals(noBoard, -1);
+	    assertEquals(mb.getUserList(), "user 2 testUser");
+	    assertEquals(currentBoard, mb.getID());
+	}
 
 }
