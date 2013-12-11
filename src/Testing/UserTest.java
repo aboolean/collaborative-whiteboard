@@ -17,9 +17,23 @@ import server.WhiteboardServer;
 import data.MasterBoard;
 import data.User;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class UserTest {
 
+/**
+ * 
+ * Testing Documentation: UserTest
+ * We begin testing with the construction of a simple, valid instance of User, and testing it's get() methods
+ * to ensure data was stored/can be retrieved correctly. This instance should be created without errors or
+ * exceptions. Next, we will test the naming process for users. Clients should be able to choose their own username,
+ * provided that name is not already in use. If this is the case, the client will be assigned a username as
+ * "user" + their user ID number. namingConventionTest takes care of this. Finally, we test the message passing
+ * between User and WhiteboardServer. We test all six possible messages the user could send to the server: STROKE,
+ * SEL, BRD_DEL, BRD_ALL, BRD_CLR, and BRD_REQ. Finally, we test the case where an invalid message is sent from a
+ * user to the server, in which case a UnsupportedOperationException should be thrown.
+ *
+ */
+
+public class UserTest
+{
     @Test
     public void newUserTest() throws IOException {
         // Test creating a new user with an input username, and one without a
@@ -33,7 +47,7 @@ public class UserTest {
         assertEquals("user1", user2.getName());
         assertEquals(1, user2.getID());
     }
-
+	
     /**
      * Create a new user with the default naming convention. Attempt to create a
      * second user with the same name. Repeated username should be rejected and
@@ -42,7 +56,7 @@ public class UserTest {
      * 
      */
     @Test
-    public void testNoNameOverlapTest() throws IOException {
+    public void namingConventionTest() throws IOException {
         Socket socket = new Socket();
         WhiteboardServer server = new WhiteboardServer(50004);
         User u1 = new User("user", socket, server);
@@ -51,7 +65,20 @@ public class UserTest {
         assertEquals("user", u1.getName());
         
     }
-
+    
+	@Test
+	public void noNameOverlapTest() throws IOException
+	{
+		// Create a new user with the default naming convention
+		// Attempt to create a second user with the same name
+		// Repeated username should be rejected and replaced with default
+		WhiteboardServer testServer = new WhiteboardServer(56000);
+		User user1 = new User("testUser1", new Socket(), testServer);
+		User user2 = new User(null, new Socket(), testServer);
+		
+		
+	}
+	
     /**
      * Tests the client's selection of a new board. This tests that the new User
      * begins with no board selected, that the newly selected board is informed
