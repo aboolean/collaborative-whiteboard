@@ -34,15 +34,32 @@ public class UserTest {
         assertEquals(1, user2.getID());
     }
 
+    /**
+     * Create a new user with the default naming convention. Attempt to create a
+     * second user with the same name. Repeated username should be rejected and
+     * replaced with default. Note that usernames are not case sensitive.
+     * @throws IOException 
+     * 
+     */
     @Test
-    public void noNameOverlapTest() {
-        // Create a new user with the default naming convention
-        // Attempt to create a second user with the same name
-        // Repeated username should be rejected and replaced with default
+    public void testNoNameOverlapTest() throws IOException {
+        Socket socket = new Socket();
+        WhiteboardServer server = new WhiteboardServer(50004);
+        User u1 = new User("user", socket, server);
+        User u2 = new User("USER", socket, server);
+        System.out.println(u2.getName());
+        assertEquals("user", u1.getName());
+        
     }
 
+    /**
+     * This test manually sends the client's messages to the server and ensures
+     * that the correct operations are completed.
+     * 
+     * @throws IOException
+     */
     @Test
-    public void userTestHandleRequest() throws IOException {
+    public void userTestHandleRequestCtoS() throws IOException {
         final WhiteboardServer server = new WhiteboardServer(50001);
         Thread runServer = new Thread(new Runnable() {
             public void run() {
@@ -65,6 +82,10 @@ public class UserTest {
         out.println("user_req Fred");
         String you_are_fred = in.readLine();
         assertEquals("you_are Fred", you_are_fred);
+        
+        // test duplicate usernames (case-sensitive)
+        out.println("user_req Fred");
+        System.out.println("# Users: " + server.getUserNames().length);
 
         // test BRD_REQ
         out.println("board_req new Board");
@@ -84,12 +105,11 @@ public class UserTest {
         assertArrayEquals(board_all_array,
                 new String[] { in.readLine(), in.readLine() });
 
+        // test BRD_DEL
         out.println("del 1");
-        in.readLine();
         out.println("board_all");
-        // runServer.interrupt();
-        // socket.close();
-        // user.handleRequest("stroke 1 3 50 50 51 51 0 0 0");
+        assertEquals("board 2 anotherOne", in.readLine());
+
     }
 
     /**
