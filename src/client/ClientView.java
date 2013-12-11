@@ -67,6 +67,7 @@ public class ClientView extends JPanel {
         final Graphics2D g = (Graphics2D) buffer.getGraphics();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
+        this.repaint();
     }
 
     /**

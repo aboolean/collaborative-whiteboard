@@ -1,6 +1,6 @@
 package data;
 
-import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +21,7 @@ public class MasterBoard implements Comparable<MasterBoard> {
 	private final ArrayList<WhiteLine> strokes;
 	private final ArrayList<User> users;
 
-	private final PriorityBlockingQueue<WhiteLine> strokeQueue;
+	private final LinkedBlockingQueue<WhiteLine> strokeQueue;
 	private final Thread strokeThread;
 
 	/**
@@ -49,7 +49,7 @@ public class MasterBoard implements Comparable<MasterBoard> {
 		users = new ArrayList<User>();
 
 		// initializes queue for strokes to be made
-		strokeQueue = new PriorityBlockingQueue<WhiteLine>();
+		strokeQueue = new LinkedBlockingQueue<WhiteLine>();
 
 		// begins processing queued strokes
 		strokeThread = new Thread(new Runnable() {
@@ -84,7 +84,11 @@ public class MasterBoard implements Comparable<MasterBoard> {
 	 *            a WhiteLine to be added to this MasterBoard
 	 */
 	public void makeStroke(WhiteLine line) {
-		strokeQueue.put(line);
+		try {
+			strokeQueue.put(line);
+		} catch (InterruptedException e) {
+			// thread interrupted
+		}
 	}
 
 	/**

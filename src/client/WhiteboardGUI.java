@@ -28,8 +28,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import server.WhiteboardServer;
-import data.User;
 import data.WhiteLine;
 
 @SuppressWarnings("serial")
@@ -153,9 +151,13 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 							if (allBoards.getSelectedRow() > -1) {
 								lastSelection = allBoards.getSelectedRow();
 							}
-							ClientBoard cb = clientBoards.get(lastSelection);
-							currentBoard = cb;
-							out.println("select " + String.valueOf(cb.getID()));
+							synchronized (canvas) {
+								currentBoard = clientBoards
+										.get(lastSelection);
+								out.println("select "
+										+ String.valueOf(currentBoard.getID()));
+								canvas.clear();
+							}
 						}
 
 					}
@@ -361,8 +363,6 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				canvas.clear();
-				canvas.push();
 				out.println("board_clear " + currentBoard.getID());
 			}
 		});
@@ -425,7 +425,17 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 		// STROKE
 		if (msg.matches("stroke \\d+ ([1-9]|10) \\d+ \\d+ \\d+ \\d+ \\d{1,3} \\d{1,3} \\d{1,3}")) {
-			return;
+			String[] t = msg.split(" ");
+			int r = Integer.parseInt(t[7]), g = Integer.parseInt(t[8]), b = Integer
+					.parseInt(t[9]); // RGB values
+			Color color = new Color(r, g, b);
+			int thickness = Integer.parseInt(t[2]);
+			int x1 = Integer.parseInt(t[3]), y1 = Integer.parseInt(t[4]);
+			int x2 = Integer.parseInt(t[5]), y2 = Integer.parseInt(t[6]);
+			if (Integer.parseInt(t[1]) == currentBoard.getID()) {
+				canvas.drawLine(new WhiteLine(x1, y1, x2, y2, color, thickness));
+				canvas.push();
+			}
 		}
 		// BRD_CLR
 		else if (msg.matches("board_clear \\d+")) {

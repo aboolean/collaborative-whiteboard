@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.*;
@@ -37,8 +37,8 @@ public class User implements Comparable<User> {
 	/*
 	 * There are two queues maintained for
 	 */
-	private final PriorityBlockingQueue<String> outgoingMessageQueue;
-	private final PriorityBlockingQueue<String> outgoingStrokeQueue;
+	private final LinkedBlockingQueue<String> outgoingMessageQueue;
+	private final LinkedBlockingQueue<String> outgoingStrokeQueue;
 
 	/**
 	 * Constructs a new User corresponding to a single connected client. The
@@ -78,8 +78,8 @@ public class User implements Comparable<User> {
 		 * readily. The 'outgoingMessageQueue' is meant to contain all other
 		 * messages.
 		 */
-		outgoingMessageQueue = new PriorityBlockingQueue<String>();
-		outgoingStrokeQueue = new PriorityBlockingQueue<String>();
+		outgoingMessageQueue = new LinkedBlockingQueue<String>();
+		outgoingStrokeQueue = new LinkedBlockingQueue<String>();
 	}
 
 	/**
@@ -137,7 +137,11 @@ public class User implements Comparable<User> {
 			info_msg = "board " + String.valueOf(board.getID()) + " "
 					+ board.getName();
 
-		outgoingMessageQueue.put(info_msg);
+		try {
+			outgoingMessageQueue.put(info_msg);
+		} catch (InterruptedException e) {
+			// thread interrupted
+		}
 	}
 
 	/**
@@ -151,7 +155,11 @@ public class User implements Comparable<User> {
 	public void forgetBoard(MasterBoard board) {
 		String del_msg = "del " + String.valueOf(board.getID());
 
-		outgoingMessageQueue.put(del_msg);
+		try {
+			outgoingMessageQueue.put(del_msg);
+		} catch (InterruptedException e) {
+			// thread interrupted
+		}
 	}
 
 	/**
@@ -190,7 +198,11 @@ public class User implements Comparable<User> {
 		String stroke_msg = "stroke " + String.valueOf(board.getID()) + " "
 				+ thickness + " " + coords + " " + color;
 
-		outgoingStrokeQueue.put(stroke_msg);
+		try {
+			outgoingStrokeQueue.put(stroke_msg);
+		} catch (InterruptedException e) {
+			// thread interrupted
+		}
 	}
 
 	/**
@@ -199,7 +211,11 @@ public class User implements Comparable<User> {
 	 * board has been cleared.
 	 */
 	public void notifyClear() {
-		outgoingMessageQueue.put("board_clear");
+		try {
+			outgoingMessageQueue.put("board_clear");
+		} catch (InterruptedException e) {
+			// thread interrupted
+		}
 	}
 
 	/**
@@ -211,8 +227,12 @@ public class User implements Comparable<User> {
 	 *            an alphabetized, space-delimited list of current editors
 	 */
 	public void notifyEditors(String editorList) {
-		outgoingMessageQueue.put("board_users " + String.valueOf(board.getID())
-				+ " " + editorList);
+		try {
+			outgoingMessageQueue.put("board_users "
+					+ String.valueOf(board.getID()) + " " + editorList);
+		} catch (InterruptedException e) {
+			// thread interrupted
+		}
 	}
 
 	/**
@@ -272,7 +292,7 @@ public class User implements Comparable<User> {
 			int thickness = Integer.parseInt(t[2]);
 			int x1 = Integer.parseInt(t[3]), y1 = Integer.parseInt(t[4]);
 			int x2 = Integer.parseInt(t[5]), y2 = Integer.parseInt(t[6]);
-			if(board != null)
+			if (board != null)
 				board.makeStroke(new WhiteLine(x1, y1, x2, y2, color, thickness));
 		}
 		// SEL
@@ -388,7 +408,7 @@ public class User implements Comparable<User> {
 			try {
 				processMessages();
 			} catch (IOException e) {
-				System.out.println("Connection interrupted.");
+				// connection interrupted
 			}
 		}
 
@@ -434,8 +454,9 @@ public class User implements Comparable<User> {
 							continue consumeQueues;
 						// does not block in event of clear
 						String stroke = outgoingStrokeQueue.poll();
-						if (stroke != null)
+						if (stroke != null) {
 							out.println(stroke);
+						}
 					}
 					// nothing in either queue
 					Thread.sleep(10);
