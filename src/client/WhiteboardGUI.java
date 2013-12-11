@@ -31,7 +31,7 @@ import javax.swing.table.TableCellRenderer;
 import data.WhiteLine;
 
 @SuppressWarnings("serial")
-public class WhiteboardGUI extends JFrame implements ChangeListener {
+public class WhiteboardGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
@@ -247,7 +247,15 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		thicknessSlider.setSnapToTicks(true);
 		thicknessSlider.setPaintTicks(true);
 		thicknessSlider.setPaintLabels(true);
-		thicknessSlider.addChangeListener(this);
+		thicknessSlider.addChangeListener(new ChangeListener() {
+		    @Override
+		    public void stateChanged(ChangeEvent e) {
+		        JSlider source = (JSlider) e.getSource();
+		        if (!source.getValueIsAdjusting()) {
+		            thickness = source.getValue();
+		        }
+		    }
+		});
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
 		c.gridy = 7;
@@ -482,17 +490,6 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		}
 	}
 
-	/**
-	 * Listens to the thickness slider and adjusts the thickness field
-	 * accordingly.
-	 */
-	@Override
-	public void stateChanged(ChangeEvent e) {
-		JSlider source = (JSlider) e.getSource();
-		if (!source.getValueIsAdjusting()) {
-			thickness = source.getValue();
-		}
-	}
 
 	/**
 	 * Called when a BRD_INFO message has been received. Adds this new board to
