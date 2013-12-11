@@ -151,13 +151,10 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 							if (allBoards.getSelectedRow() > -1) {
 								lastSelection = allBoards.getSelectedRow();
 							}
-							synchronized (canvas) {
-								currentBoard = clientBoards
-										.get(lastSelection);
-								out.println("select "
-										+ String.valueOf(currentBoard.getID()));
-								canvas.clear();
-							}
+							currentBoard = clientBoards.get(lastSelection);
+							canvas.clear();
+							out.println("select "
+									+ String.valueOf(currentBoard.getID()));
 						}
 
 					}
