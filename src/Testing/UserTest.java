@@ -26,5 +26,13 @@ public class UserTest {
 		assertEquals("user1", user2.getName());
 		assertEquals(1, user2.getID());
 	}
+	
+	@Test
+	public void noNameOverlapTest()
+	{
+		// Create a new user with the default naming convention
+		// Attempt to create a second user with the same name
+		// Repeated username should be rejected and replaced with default
+	}
 
 }
