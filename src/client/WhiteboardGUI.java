@@ -162,7 +162,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 1;
-		this.add(allBoards, c);
+		this.add(allBoardsScroll, c);
 
 		c.insets = new Insets(0, 10, 0, 0);
 		c.fill = GridBagConstraints.NONE;
