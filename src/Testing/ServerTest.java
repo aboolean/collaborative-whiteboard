@@ -16,13 +16,16 @@ import server.WhiteboardServer;
 
 /**
  * @category no_didit
- *
+ * 
  */
 public class ServerTest {
 
     /**
      * This test manually sends the client's messages to the server and ensures
-     * that the correct operations are completed.
+     * that the correct operations are completed. Note that for these operations
+     * to pass, all the datatype methods which depend on server interaction must
+     * function properly. This test serves as a verification of functionality
+     * for both communication and datatype methods.
      * 
      * @throws IOException
      */
@@ -40,12 +43,12 @@ public class ServerTest {
             }
         });
         runServer.start();
-        
+
         // instantiate two clients
-        Socket socket1 = new Socket(InetAddress.getLocalHost().getHostAddress(),
-                50001);
-        Socket socket2 = new Socket(InetAddress.getLocalHost().getHostAddress(),
-                50001);
+        Socket socket1 = new Socket(
+                InetAddress.getLocalHost().getHostAddress(), 50001);
+        Socket socket2 = new Socket(
+                InetAddress.getLocalHost().getHostAddress(), 50001);
         BufferedReader in1 = new BufferedReader(new InputStreamReader(
                 socket1.getInputStream()));
         PrintWriter out1 = new PrintWriter(socket1.getOutputStream(), true);
@@ -56,7 +59,7 @@ public class ServerTest {
         // test USER_REQ
         out1.println("user_req Fred");
         assertEquals("you_are Fred", in1.readLine());
-        
+
         // test duplicate usernames (case-sensitive)
         out2.println("user_req FRED");
         assertEquals("you_are user1", in2.readLine());
@@ -64,8 +67,12 @@ public class ServerTest {
 
         // test BRD_REQ
         out1.println("board_req new Board");
-        String newBoard = in1.readLine();
-        assertEquals("board 0 new Board", newBoard);
+        String newBoard1 = in1.readLine();
+        String newBoard2 = in2.readLine();
+        assertEquals("board 0 new Board", newBoard1);
+
+        // both clients receive the message
+        assertEquals(newBoard2, newBoard1);
 
         // test BRD_ALL
         out1.println("board_all");
@@ -84,7 +91,11 @@ public class ServerTest {
         out1.println("del 0");
         in1.readLine();
         out1.println("board_all");
+        out2.println("board_all");
+
+        // both clients have their board deleted
         assertEquals("board 1 anotherOne", in1.readLine());
+        assertEquals("board 1 anotherOne", in2.readLine());
 
     }
 
