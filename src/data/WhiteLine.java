@@ -42,10 +42,10 @@ public class WhiteLine {
 		if (x1 < 0 || x2 >= X_SIZE)
 			throw new IllegalArgumentException(
 					"The specified 'x2' value was out of bounds.");
-		if (x1 < 0 || y1 >= Y_SIZE)
+		if (y1 < 0 || y1 >= Y_SIZE)
 			throw new IllegalArgumentException(
 					"The specified 'y1' value was out of bounds.");
-		if (x1 < 0 || y2 >= Y_SIZE)
+		if (y1 < 0 || y2 >= Y_SIZE)
 			throw new IllegalArgumentException(
 					"The specified 'y2' value was out of bounds.");
 		if (thickness < 0 || thickness > 10)

@@ -18,6 +18,13 @@ import data.MasterBoard;
 import data.User;
 
 
+/**
+ * 
+ * Testing Documentation: UserTest
+ * 
+ *
+ */
+
 public class UserTest
 {
     @Test

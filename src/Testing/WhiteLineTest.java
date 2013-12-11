@@ -10,6 +10,13 @@ import org.junit.Test;
 
 import data.WhiteLine;
 
+/**
+ * 
+ * Testing Documentation: WhiteLineTest
+ * The tests for WhiteLine are short and succinct, as it is a very basic class (compared to User and MasterBoard)
+ * We will test 
+ */
+
 public class WhiteLineTest {
 
 	@Test
@@ -23,6 +30,27 @@ public class WhiteLineTest {
 		assertEquals(testLine.getY2(), 500);
 		assertEquals(testLine.getColor(), Color.blue);
 		assertEquals(testLine.getThickness(), new BasicStroke(7));
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void xOutOfBoundsTest() throws IOException
+	{
+		// Test construction where x-coordinates are not valid (0 <= x < X_SIZE)
+		WhiteLine testLine = new WhiteLine(150, 75, 850, 450, Color.red, 2);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void yOutOfBoundsTest() throws IOException
+	{
+		// Test construction where y-coordinates are not valid (0 <= y < Y_SIZE)
+		WhiteLine testLine = new WhiteLine(150, -74, 50, 450, Color.red, 2);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void invalidThicknessTest() throws IOException
+	{
+		// Test construction when an invalid thickness parameter is used
+		WhiteLine testLine = new WhiteLine(200, 175, 400, 550, Color.green, -3);
 	}
 	
 	@Test
@@ -81,20 +109,6 @@ public class WhiteLineTest {
 		assertEquals(testLine6.getY2(), 599);
 		assertEquals(testLine6.getColor(), Color.black);
 		assertEquals(testLine6.getThickness(), new BasicStroke(7));
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void invalidConstructorTest() throws IOException
-	{
-		// Test construction where x- or y- coordinates are not valid (0 <= x < X_SIZE and 0 <= y <= Y_SIZE)
-		WhiteLine testLine = new WhiteLine(150, 75, 850, 450, Color.red, 2);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void invalidThicknessTest() throws IOException
-	{
-		// Test construction when an invalid thickness parameter is used
-		WhiteLine testLine = new WhiteLine(200, 175, 400, 550, Color.green, -3);
 	}
 	
 	@Test
