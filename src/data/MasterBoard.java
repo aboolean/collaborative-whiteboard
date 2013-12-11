@@ -263,6 +263,17 @@ public class MasterBoard implements Comparable<MasterBoard> {
 	public String toString() {
 		return "board " + String.valueOf(id_num) + " " + name;
 	}
+	
+	/**
+	 * Checks if the board's instance of StrokeThread is active & running
+	 * Used primarily for testing purposes
+	 * 
+	 * @return true if thread is running, false if it is not
+	 */
+	public boolean isThreadActive()
+	{
+		return strokeThread.isAlive();
+	}
 
 	/**
 	 * Compares this MasterBoard to other on the basis of identification numbers
