@@ -51,8 +51,60 @@ public class WhiteboardServer {
 		boards = new ArrayList<MasterBoard>();
 
 		serverSocket = new ServerSocket(listeningPort);
-		
-		System.out.println("Server running. | IP: <" + getIP() + "> | PORT: " + getPort());
+
+		System.out.println("Server running. | IP: <" + getIP() + "> | PORT: "
+				+ getPort());
+	}
+
+	/**
+	 * Used primarily for testing to return an integer array of board ID
+	 * numbers.
+	 * 
+	 * @return an integer array of identification numbers
+	 */
+	public int[] getBoardIDNumbers() {
+		int[] id;
+		synchronized (boards) {
+			id = new int[boards.size()];
+			for (int i = 0; i < boards.size(); i++) {
+				id[i] = boards.get(i).getID();
+			}
+		}
+		return id;
+	}
+
+	/**
+	 * Used primarily for testing to return a String array of names for
+	 * connected users.
+	 * 
+	 * @return a String array of connected usernames
+	 */
+	public String[] getUserNames() {
+		String[] names;
+		synchronized (users) {
+			names = new String[users.size()];
+			for (int i = 0; i < boards.size(); i++) {
+				names[i] = users.get(i).getName();
+			}
+			return names;
+		}
+	}
+
+	/**
+	 * Used primarily for testing to return an integer array of identification
+	 * numbers for connected users.
+	 * 
+	 * @return an integer array of connected user ID numbers
+	 */
+	public int[] getUserIDNumbers() {
+		int[] id;
+		synchronized (users) {
+			id = new int[users.size()];
+			for (int i = 0; i < boards.size(); i++) {
+				id[i] = users.get(i).getID();
+			}
+			return id;
+		}
 	}
 
 	/**
