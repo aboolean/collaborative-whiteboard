@@ -425,8 +425,6 @@ public class User implements Comparable<User> {
 						.readLine()) {
 					if (inThread.isInterrupted())
 						break;
-					// TODO: remove print
-					System.out.println(line);
 					handleRequest(line);
 				}
 			} finally {
