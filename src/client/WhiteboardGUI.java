@@ -371,14 +371,14 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		c.gridy = 8;
 		this.add(clear, c);
 
-		SwingWorker<Void, Void> incomingMessageThread = new SwingWorker<Void, Void>() {
+		SwingWorker<Void, String> incomingMessageThread = new SwingWorker<Void, String>() {
 
 			@Override
-			public Void doInBackground() {
+			protected Void doInBackground() {
 				try {
 					for (String line = in.readLine(); line != null; line = in
 							.readLine()) {
-						handleMessage(line);
+						publish(line);
 					}
 
 				} catch (IOException e) {
@@ -395,9 +395,12 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 				return null;
 			}
 
+			// GUI changes in event dispatch thread only
 			@Override
-			public void done() {
-
+			protected void process(java.util.List<String> messages) {
+				for (String msg : messages) {
+					handleMessage(msg);
+				}
 			}
 		};
 
@@ -417,6 +420,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 	 * 
 	 * @param msg
 	 *            a formatted string message from server
+	 * @return a WhiteLine object or null
 	 * @throws UnsupportedOperationException
 	 *             unrecognized command received
 	 */
@@ -475,7 +479,6 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 			throw new UnsupportedOperationException(
 					"Unrecognized command received from server.");
 		}
-
 	}
 
 	/**
@@ -531,14 +534,14 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 			}
 			// currently editing deleted board
 			if (currentBoard != null && currentBoard.getID() == boardID) {
+				canvas.clear();
+				allBoards.clearSelection();
 				JOptionPane
 						.showMessageDialog(
 								new JFrame(),
 								"The board you were editing was deleted by another\nuser. Please select another board to continue.",
 								"Board Deleted", JOptionPane.ERROR_MESSAGE);
 				currentBoard = null;
-				canvas.clear();
-				allBoards.clearSelection();
 			}
 		}
 	}
