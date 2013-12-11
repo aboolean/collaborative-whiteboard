@@ -108,16 +108,16 @@ public class User implements Comparable<User> {
 
 		started = true;
 	}
-	
+
 	/**
-     * Returns the ID of the currently selected board. Returns -1 if no board is
-     * currently selected.
-     * 
-     * @return the ID of the current board, or -1 if no board is selected
-     */
-    public int currentBoardID() {
-        return board == null ? -1 : board.getID();
-    }
+	 * Returns the ID of the currently selected board. Returns -1 if no board is
+	 * currently selected.
+	 * 
+	 * @return the ID of the current board, or -1 if no board is selected
+	 */
+	public int currentBoardID() {
+		return board == null ? -1 : board.getID();
+	}
 
 	/**
 	 * Queues a BRD_INFO message for the specified board to be sent to the
@@ -128,8 +128,14 @@ public class User implements Comparable<User> {
 	 *            the new MasterBoard available for use
 	 */
 	public void notifyBoard(MasterBoard board) {
-		String info_msg = "board " + String.valueOf(board.getID()) + " "
-				+ board.getName();
+		String name = board.getName();
+		String info_msg;
+
+		if (name == null || name.equals(""))
+			info_msg = "board " + String.valueOf(board.getID());
+		else
+			info_msg = "board " + String.valueOf(board.getID()) + " "
+					+ board.getName();
 
 		outgoingMessageQueue.put(info_msg);
 	}
@@ -205,7 +211,8 @@ public class User implements Comparable<User> {
 	 *            an alphabetized, space-delimited list of current editors
 	 */
 	public void notifyEditors(String editorList) {
-		outgoingMessageQueue.put("board_users " + editorList.trim());
+		outgoingMessageQueue.put("board_users " + String.valueOf(board.getID())
+				+ " " + editorList);
 	}
 
 	/**
@@ -388,7 +395,7 @@ public class User implements Comparable<User> {
 			try {
 				for (String line = in.readLine(); line != null; line = in
 						.readLine()) {
-					if(inThread.isInterrupted())
+					if (inThread.isInterrupted())
 						break;
 					// TODO: remove print
 					System.out.println(line);
@@ -397,7 +404,7 @@ public class User implements Comparable<User> {
 			} finally {
 				socket.close();
 				in.close();
-				if(board != null)
+				if (board != null)
 					board.removeUser(parent);
 				server.deleteUser(parent);
 				outThread.interrupt();

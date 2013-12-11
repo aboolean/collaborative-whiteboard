@@ -164,13 +164,13 @@ public class MasterBoard implements Comparable<MasterBoard> {
 		synchronized (users) {
 			// add user
 			users.add(user);
-			// resent all existing strokes
-			this.resendAllStrokes(user);
 			// send updated editors list to all connected
 			String newUserList = this.getUserList();
 			for (User editor : users) {
 				editor.notifyEditors(newUserList);
 			}
+			// resent all existing strokes
+			this.resendAllStrokes(user);
 		}
 	}
 
@@ -226,11 +226,11 @@ public class MasterBoard implements Comparable<MasterBoard> {
 		// join string
 		StringBuilder output = new StringBuilder();
 		for (int i = 0; i < editors.length; i++) {
-			output.append(editors[i].toString());
+			output.append(editors[i].getName());
 			if (i != editors.length - 1)
 				output.append(" ");
 		}
-
+		
 		return output.toString();
 	}
 

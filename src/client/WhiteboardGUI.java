@@ -146,12 +146,12 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 					@Override
 					public void valueChanged(ListSelectionEvent e) {
-						if (allBoards.getSelectedRow() > 0) {
+						if (allBoards.getSelectedRow() > -1) {
 							lastSelection = allBoards.getSelectedRow();
 						}
 						ClientBoard cb = clientBoards.get(lastSelection);
 						currentBoard = cb;
-						out.println("SEL " + cb.getID());
+						out.println("select " + String.valueOf(cb.getID()));
 					}
 
 				});
@@ -215,13 +215,9 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		this.add(boardEditorsLabel, c);
 
 		// Create table listing all Users active on this whiteboard.
-		tableModelEditors.addRow(new Object[] { "apollo" });
-		tableModelEditors.addRow(new Object[] { "zeus" });
-		tableModelEditors.addRow(new Object[] { "athena" });
-		tableModelEditors.addRow(new Object[] { "juno" });
-
 		boardEditors = new JTable(tableModelEditors);
 		boardEditors.setRowSelectionAllowed(false);
+		boardEditors.setPreferredSize(new Dimension(0,100));
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
 		c.gridy = 4;
@@ -421,32 +417,43 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 		// STROKE
 		if (msg.matches("stroke \\d+ ([1-9]|10) \\d+ \\d+ \\d+ \\d+ \\d{1,3} \\d{1,3} \\d{1,3}")) {
-
+			return;
 		}
 		// BRD_CLR
 		else if (msg.matches("board_clear \\d+")) {
-
+			return;
 		}
 		// BRD_DEL
 		else if (msg.matches("del \\d+")) {
-
+			return;
 		}
 		// BRD_USERS
-		else if (msg.matches("board_users \\d+( [A-Za-z][A-Za-z0-9]?)*")) {
-
+		else if (msg.matches("board_users \\d+( [A-Za-z][A-Za-z0-9]*)*")) {
+			msg = msg.substring(12); // trim command
+			System.out.println("ORigi" + msg);
+			int id = Integer.parseInt(msg.substring(0, msg.indexOf(" ")));
+			System.out.println("ID:"+ String.valueOf(id));
+			if (msg.matches("board_users \\d+")) { // no users
+				if (id == currentBoard.getID())
+					updateUsers("");
+			} else {
+				msg = msg.substring(msg.indexOf(" ") + 1); // trim id off
+				System.out.println("NAME:" + msg);
+				if (id == currentBoard.getID())
+					updateUsers(msg);
+			}
 		}
 		// BRD_INFO
 		else if (msg.matches("board \\d+( [^\r\n]+)?")) {
-			if (msg.matches("board \\d+")) {
+			if (msg.matches("board \\d+")) { // nameless
 				addWhiteboard("", Integer.parseInt(msg.substring(6)));
 			} else {
 				// remove command and extract ID + name
 				msg = msg.substring(6);
-				int id = Integer.parseInt(msg.substring(0, msg.indexOf("")));
-				String name = msg.substring(msg.indexOf(""));
+				int id = Integer.parseInt(msg.substring(0, msg.indexOf(" ")));
+				String name = msg.substring(msg.indexOf(" "));
 				addWhiteboard(name, id);
 			}
-
 		} else {
 			throw new UnsupportedOperationException(
 					"Unrecognized command received from server.");
@@ -479,8 +486,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		ClientBoard clientBoard = new ClientBoard(name, id_num);
 		clientBoards.add(clientBoard);
 		int row = tableModelWhiteboards.getRowCount();
-		NumberFormat rowFormat = new DecimalFormat("%03d");
-		tableModelWhiteboards.addRow(new Object[] { rowFormat.format(row - 1)
+		tableModelWhiteboards.addRow(new Object[] { String.format("%03d", row)
 				+ " - " + name });
 	}
 
@@ -501,10 +507,9 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		}
 		if (success) {
 			tableModelWhiteboards.setRowCount(0);
-			NumberFormat rowFormat = new DecimalFormat("%03d");
 			for (int i = 0; i < clientBoards.size(); i++) {
-				tableModelWhiteboards.addRow(new Object[] { rowFormat.format(i)
-						+ " - " + clientBoards.get(i).getName() });
+				tableModelWhiteboards.addRow(new Object[] { String.format(
+						"%03d", i) + " - " + clientBoards.get(i).getName() });
 			}
 		}
 	}
@@ -518,9 +523,13 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 	 *            current board
 	 */
 	private void updateUsers(String editors) {
+		if(editors == null || editors.equals("")){
+			tableModelEditors.setRowCount(0);
+			return;
+		}
 		String[] msg = editors.split(" ");
 		tableModelEditors.setRowCount(0);
-		for (int i = 2; i < msg.length; i++) {
+		for (int i = 0; i < msg.length; i++) {
 			tableModelEditors.addRow(new Object[] { msg[i] });
 		}
 	}
