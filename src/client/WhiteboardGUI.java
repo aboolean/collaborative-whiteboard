@@ -32,9 +32,7 @@ import data.WhiteLine;
 
 @SuppressWarnings("serial")
 public class WhiteboardGUI extends JFrame implements ChangeListener {
-
-	int i = 0;
-
+	
 	private static final long serialVersionUID = 1L;
 
 	/*
@@ -100,6 +98,10 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 	public WhiteboardGUI() throws UnknownHostException, IOException {
 
+		this.setResizable(false);
+		
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		// Prompt User for Address and Begin Connection
 		startConnection();
 		socket = acquiredSocket;
@@ -417,8 +419,6 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 	 *             unrecognized command received
 	 */
 	private void handleMessage(String msg) {
-		System.out.println(msg);
-		// TODO: remove print
 
 		// STROKE
 		if (msg.matches("stroke \\d+ ([1-9]|10) \\d+ \\d+ \\d+ \\d+ \\d{1,3} \\d{1,3} \\d{1,3}")) {
