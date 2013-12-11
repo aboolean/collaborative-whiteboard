@@ -108,8 +108,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 		// username init
 		// prompt client, send to server, receive confirmation
-		String username = JOptionPane
-				.showInputDialog("Please enter an alphanumeric username, else one will be generated automatically.");
+		String username = JOptionPane.showInputDialog("Request Username:");
 		if (username.matches("[A-Za-z]([A-Za-z0-9]?)+")) {
 			out.println("user_req " + username);
 		} else {
@@ -150,11 +149,11 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 						if (!e.getValueIsAdjusting()) {
 							if (allBoards.getSelectedRow() > -1) {
 								lastSelection = allBoards.getSelectedRow();
+								currentBoard = clientBoards.get(lastSelection);
+								canvas.clear();
+								out.println("select "
+										+ String.valueOf(currentBoard.getID()));
 							}
-							currentBoard = clientBoards.get(lastSelection);
-							canvas.clear();
-							out.println("select "
-									+ String.valueOf(currentBoard.getID()));
 						}
 
 					}
@@ -197,13 +196,14 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int n = JOptionPane.showConfirmDialog(null,
+				int option = JOptionPane.showConfirmDialog(null,
 						"Are you sure you want to delete this board?",
 						"Delete Current Board", JOptionPane.YES_NO_OPTION);
-				if (n == 0) {
-					out.println("board " + currentBoard.getID());
-					// TODO: send BRD_DEL to server
+				if (currentBoard != null && option == JOptionPane.OK_OPTION) {
+					allBoards.clearSelection();
+					out.println("del " + String.valueOf(currentBoard.getID()));
 					currentBoard = null;
+					canvas.clear();
 				}
 			}
 
@@ -437,13 +437,13 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		// BRD_CLR
 		else if (msg.matches("board_clear \\d+")) {
 			int boardID = Integer.parseInt(msg.split(" ")[1]);
-			if(boardID == currentBoard.getID()){
+			if (boardID == currentBoard.getID()) {
 				canvas.clear();
 			}
 		}
 		// BRD_DEL
 		else if (msg.matches("del \\d+")) {
-			return;
+			deleteWhiteboard(Integer.parseInt(msg.split(" ")[1]));
 		}
 		// BRD_USERS
 		else if (msg.matches("board_users \\d+( [A-Za-z][A-Za-z0-9]*)*")) {
@@ -516,15 +516,27 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		boolean success = false;
 		for (int i = 0; i < clientBoards.size(); i++) {
 			if (boardID == clientBoards.get(i).getID()) {
-				// check if already exists
 				success = clientBoards.remove(clientBoards.get(i));
+				break;
 			}
 		}
 		if (success) {
+			// re-populate board list
 			tableModelWhiteboards.setRowCount(0);
 			for (int i = 0; i < clientBoards.size(); i++) {
 				tableModelWhiteboards.addRow(new Object[] { String.format(
 						"%03d", i) + " - " + clientBoards.get(i).getName() });
+			}
+			// currently editing deleted board
+			if (currentBoard != null && currentBoard.getID() == boardID) {
+				JOptionPane
+						.showMessageDialog(
+								new JFrame(),
+								"The board you were editing was deleted by another\nuser. Please select another board to continue.",
+								"Board Deleted", JOptionPane.ERROR_MESSAGE);
+				currentBoard = null;
+				canvas.clear();
+				allBoards.clearSelection();
 			}
 		}
 	}
