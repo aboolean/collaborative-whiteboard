@@ -210,7 +210,10 @@ public class User implements Comparable<User> {
 	 */
 	public void selectBoard(int boardID) {
 		// remove from previous board
-		board.removeUser(this); // notifyStroke no longer called from prev board
+		if (board != null) {
+			// notifyStroke no longer called from prev board
+			board.removeUser(this);
+		}
 		// clear STROKE notification queue
 		outgoingStrokeQueue.clear();
 		// wait until queue is empty (send old board strokes)
