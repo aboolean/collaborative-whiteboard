@@ -60,24 +60,33 @@ public class UserTest {
         BufferedReader in = new BufferedReader(new InputStreamReader(
                 socket.getInputStream()));
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+
+        // test USER_REQ
         out.println("user_req Fred");
         String you_are_fred = in.readLine();
         assertEquals("you_are Fred", you_are_fred);
 
+        // test BRD_REQ
         out.println("board_req new Board");
         String newBoard = in.readLine();
         assertEquals("board 1 new Board", newBoard);
-        
+
+        // test BRD_ALL
         out.println("board_all");
         String board_all = in.readLine();
         assertEquals("board 1 new Board", board_all);
-        
+
         out.println("board_req anotherOne");
-        System.out.println(in.readLine());
+        in.readLine();
         out.println("board_all");
-        System.out.println(in.readLine());
-        
-        
+        String[] board_all_array = new String[] { "board 1 new Board",
+                "board 2 anotherOne", };
+        assertArrayEquals(board_all_array,
+                new String[] { in.readLine(), in.readLine() });
+
+        out.println("del 1");
+        in.readLine();
+        out.println("board_all");
         // runServer.interrupt();
         // socket.close();
         // user.handleRequest("stroke 1 3 50 50 51 51 0 0 0");
@@ -96,12 +105,10 @@ public class UserTest {
         WhiteboardServer server = new WhiteboardServer(50002);
         server.makeNewBoard("testBoard");
         MasterBoard mb = server.fetchBoard(0);
-        System.out.println(mb);
         User user = new User("testUser", new Socket(), server);
         int noBoard = user.currentBoardID();
         user.selectBoard(0);
         int currentBoardID = user.currentBoardID();
-        System.out.println(mb.getUserList());
         assertEquals(noBoard, -1);
         assertEquals(mb.getUserList(), "testUser");
         assertEquals(currentBoardID, mb.getID());
