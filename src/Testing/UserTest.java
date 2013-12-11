@@ -12,8 +12,8 @@ import server.WhiteboardServer;
 import data.MasterBoard;
 import data.User;
 
-public class UserTest {
-
+public class UserTest
+{
 	@Test
 	public void newUserTest() throws IOException
 	{
@@ -28,11 +28,16 @@ public class UserTest {
 	}
 	
 	@Test
-	public void noNameOverlapTest()
+	public void noNameOverlapTest() throws IOException
 	{
 		// Create a new user with the default naming convention
 		// Attempt to create a second user with the same name
 		// Repeated username should be rejected and replaced with default
+		WhiteboardServer testServer = new WhiteboardServer(56000);
+		User user1 = new User("testUser1", new Socket(), testServer);
+		User user2 = new User(null, new Socket(), testServer);
+		
+		
 	}
 	
 	public void userSelectBoard() throws IOException
