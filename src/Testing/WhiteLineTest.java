@@ -11,10 +11,15 @@ import org.junit.Test;
 import data.WhiteLine;
 
 /**
- * 
  * Testing Documentation: WhiteLineTest
  * The tests for WhiteLine are short and succinct, as it is a very basic class (compared to User and MasterBoard)
- * We will test 
+ * Begin by testing the construction of a valid instance of WhiteLine - this should obviously construct successfully
+ * and throw no exceptions. Next we test a variety of invalid constructions of WhiteLine, including x-values, y-values,
+ * and thickness values that are outside of the allowable range. Each of these tests should run into an exception when
+ * attempting to construct the given WhiteLine. Next, we test boundary conditions, by attempting to draw WhiteLines
+ * around the border of the canvas (essentially forming a rectangle with 4 instances of WhiteLine). These should
+ * construct successfully as we have chosen to draw them along the inside edge of the canvas. Finally, we test the
+ * remaining method, toString, to ensure that it outputs WhiteLine's properties appropriately.
  */
 
 public class WhiteLineTest {

@@ -21,7 +21,14 @@ import data.User;
 /**
  * 
  * Testing Documentation: UserTest
- * 
+ * We begin testing with the construction of a simple, valid instance of User, and testing it's get() methods
+ * to ensure data was stored/can be retrieved correctly. This instance should be created without errors or
+ * exceptions. Next, we will test the naming process for users. Clients should be able to choose their own username,
+ * provided that name is not already in use. If this is the case, the client will be assigned a username as
+ * "user" + their user ID number. namingConventionTest takes care of this. Finally, we test the message passing
+ * between User and WhiteboardServer. We test all six possible messages the user could send to the server: STROKE,
+ * SEL, BRD_DEL, BRD_ALL, BRD_CLR, and BRD_REQ. Finally, we test the case where an invalid message is sent from a
+ * user to the server, in which case a UnsupportedOperationException should be thrown.
  *
  */
 
@@ -49,7 +56,7 @@ public class UserTest
      * 
      */
     @Test
-    public void testNoNameOverlapTest() throws IOException {
+    public void namingConventionTest() throws IOException {
         Socket socket = new Socket();
         WhiteboardServer server = new WhiteboardServer(50004);
         User u1 = new User("user", socket, server);

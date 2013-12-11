@@ -12,6 +12,22 @@ import server.WhiteboardServer;
 import data.MasterBoard;
 import data.User;
 
+/**
+ * Testing Documentation: MasterboardTest
+ * We begin by testing a basic valid implementation of Masterboard, to ensure proper construction. No errors
+ * or exceptions should be thrown during its construction. Next, we test an invalid construction case, in
+ * particular when the name is not within the defined regex ("[A-Za-z0-9]+"). This test should throw an error
+ * as it attempts to construct the Masterboard. Next, we will test the assignment of ID numbers by creating a
+ * number of valid Masterboard instances. We should be able to predict the ID numbers of these Masterboards,
+ * as ID numbers are given out in progressive order, beginning at 0. Further, we test the class's toString
+ * method to ensure data is stored/retreived correctly. Next, we test the ability to add/remove multiple users
+ *  to a particular MasterBoard (this is basically the point of the whole project!). Finally, we test the
+ *  Masterboards ability to take in various commands and apply them, either to itself (e.g. in the case of 
+ *  deletion) or to clients' local copies of the board (e.g. passing along a new stroke). These tests essentially
+ *  consist of applying each of Masterboard's methods and testing that the proper outcome arises.
+ * 
+ */
+
 public class MasterboardTest {
 
 	@Test
