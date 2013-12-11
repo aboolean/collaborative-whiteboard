@@ -29,7 +29,15 @@ public class UserTest {
 	}
 	
 	@Test
-	public void userSelectBoard() throws IOException {
+	public void noNameOverlapTest()
+	{
+		// Create a new user with the default naming convention
+		// Attempt to create a second user with the same name
+		// Repeated username should be rejected and replaced with default
+	}
+	
+	public void userSelectBoard() throws IOException
+	{
 	    WhiteboardServer server = new WhiteboardServer(55002);
 	    server.makeNewBoard("testBoard");
 	    MasterBoard mb = server.fetchBoard(0);

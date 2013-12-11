@@ -48,12 +48,12 @@ public class MasterboardTest {
 	@Test
 	public void toStringTest()
 	{
-		//Test string representation of MasterBoard	
+		//Test string representation of MasterBoard
 		MasterBoard testBoard = new MasterBoard("testingBoard");
 		String expected = "board 3 testingBoard";
 		assertEquals(expected, testBoard.toString());
 	}
-	
+
 	@Test
 	public void addUserTest() throws IOException
 	{
@@ -63,16 +63,15 @@ public class MasterboardTest {
 		
 		testBoard.addUser(user1);
 		assert(testBoard.getUserList().contains(user1.getName()));
-		
 	}
-	
+
 	@Test
 	public void removeUserTest() throws IOException
 	{
-		// Test successfully adding new users to an active board
+		// Test successfully removing users from an active board
 		MasterBoard testBoard = new MasterBoard("testingBoard");
-		User user1 = new User("user1", new Socket(), new WhiteboardServer(55000));
-		
+		User user1 = new User("user1", new Socket(), new WhiteboardServer(55001));
+
 		testBoard.addUser(user1);
 		assert(testBoard.getUserList().contains(user1.getName()));
 		testBoard.removeUser(user1);
