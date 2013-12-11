@@ -137,7 +137,10 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		// Create table containing all active boards.
 
 		allBoards = new JTable(tableModelWhiteboards);
-		allBoards.setPreferredSize(new Dimension(0, 200));
+		allBoards.setRowSelectionAllowed(true);
+		allBoards.setPreferredScrollableViewportSize(new Dimension(0, 200));
+		allBoards.setFillsViewportHeight(true);
+		JScrollPane allBoardsScroll = new JScrollPane(allBoards);
 
 		// Add a listener which sends a SEL message to the server when a board
 		// in the list is selected.
@@ -217,11 +220,13 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		// Create table listing all Users active on this whiteboard.
 		boardEditors = new JTable(tableModelEditors);
 		boardEditors.setRowSelectionAllowed(false);
-		boardEditors.setPreferredSize(new Dimension(0,100));
+		boardEditors.setPreferredScrollableViewportSize(new Dimension(0, 100));
+		boardEditors.setFillsViewportHeight(true);
+		JScrollPane boardEditorsScroll = new JScrollPane(boardEditors);
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
 		c.gridy = 4;
-		this.add(boardEditors, c);
+		this.add(boardEditorsScroll, c);
 
 		// Slider which adjusts the stroke thickness.
 		sliderLabel = new JLabel("Stroke Thickness");
@@ -430,15 +435,12 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		// BRD_USERS
 		else if (msg.matches("board_users \\d+( [A-Za-z][A-Za-z0-9]*)*")) {
 			msg = msg.substring(12); // trim command
-			System.out.println("ORigi" + msg);
 			int id = Integer.parseInt(msg.substring(0, msg.indexOf(" ")));
-			System.out.println("ID:"+ String.valueOf(id));
 			if (msg.matches("board_users \\d+")) { // no users
 				if (id == currentBoard.getID())
 					updateUsers("");
 			} else {
 				msg = msg.substring(msg.indexOf(" ") + 1); // trim id off
-				System.out.println("NAME:" + msg);
 				if (id == currentBoard.getID())
 					updateUsers(msg);
 			}
@@ -523,7 +525,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 	 *            current board
 	 */
 	private void updateUsers(String editors) {
-		if(editors == null || editors.equals("")){
+		if (editors == null || editors.equals("")) {
 			tableModelEditors.setRowCount(0);
 			return;
 		}
@@ -638,13 +640,8 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		 * When mouse button is pressed down, start drawing.
 		 */
 		public void mousePressed(MouseEvent e) {
-			if (currentBoard == null) {
-				JOptionPane.showMessageDialog(null,
-						"Please select a board before drawing.");
-			} else {
-				lastX = e.getX();
-				lastY = e.getY();
-			}
+			lastX = e.getX();
+			lastY = e.getY();
 		}
 
 		/**
@@ -654,7 +651,10 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 			int x = e.getX();
 			int y = e.getY();
 
-			if (canvas.inBounds(x, y) && canvas.inBounds(lastX, lastY)) {
+			if (currentBoard == null) {
+				JOptionPane.showMessageDialog(null,
+						"Please select a board before drawing.");
+			} else if (canvas.inBounds(x, y) && canvas.inBounds(lastX, lastY)) {
 				Color strokeColor;
 				int strokeThick = (int) thickness;
 				if (eraseMode) {

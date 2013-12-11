@@ -272,7 +272,8 @@ public class User implements Comparable<User> {
 			int thickness = Integer.parseInt(t[2]);
 			int x1 = Integer.parseInt(t[3]), y1 = Integer.parseInt(t[4]);
 			int x2 = Integer.parseInt(t[5]), y2 = Integer.parseInt(t[6]);
-			board.makeStroke(new WhiteLine(x1, y1, x2, y2, color, thickness));
+			if(board != null)
+				board.makeStroke(new WhiteLine(x1, y1, x2, y2, color, thickness));
 		}
 		// SEL
 		else if (msg.matches("select \\d+")) {
