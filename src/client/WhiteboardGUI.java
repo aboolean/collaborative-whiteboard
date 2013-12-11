@@ -28,14 +28,10 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import server.WhiteboardServer;
-import data.User;
 import data.WhiteLine;
 
 @SuppressWarnings("serial")
 public class WhiteboardGUI extends JFrame implements ChangeListener {
-
-	int i = 0;
 
 	private static final long serialVersionUID = 1L;
 
@@ -102,6 +98,10 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 	public WhiteboardGUI() throws UnknownHostException, IOException {
 
+		this.setResizable(false);
+
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 		// Prompt User for Address and Begin Connection
 		startConnection();
 		socket = acquiredSocket;
@@ -110,8 +110,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 		// username init
 		// prompt client, send to server, receive confirmation
-		String username = JOptionPane
-				.showInputDialog("Please enter an alphanumeric username, else one will be generated automatically.");
+		String username = JOptionPane.showInputDialog("Request Username:");
 		if (username.matches("[A-Za-z]([A-Za-z0-9]?)+")) {
 			out.println("user_req " + username);
 		} else {
@@ -137,7 +136,10 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		// Create table containing all active boards.
 
 		allBoards = new JTable(tableModelWhiteboards);
-		allBoards.setPreferredSize(new Dimension(0, 200));
+		allBoards.setRowSelectionAllowed(true);
+		allBoards.setPreferredScrollableViewportSize(new Dimension(0, 200));
+		allBoards.setFillsViewportHeight(true);
+		JScrollPane allBoardsScroll = new JScrollPane(allBoards);
 
 		// Add a listener which sends a SEL message to the server when a board
 		// in the list is selected.
@@ -146,12 +148,16 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 					@Override
 					public void valueChanged(ListSelectionEvent e) {
-						if (allBoards.getSelectedRow() > 0) {
-							lastSelection = allBoards.getSelectedRow();
+						if (!e.getValueIsAdjusting()) {
+							if (allBoards.getSelectedRow() > -1) {
+								lastSelection = allBoards.getSelectedRow();
+								currentBoard = clientBoards.get(lastSelection);
+								canvas.clear();
+								out.println("select "
+										+ String.valueOf(currentBoard.getID()));
+							}
 						}
-						ClientBoard cb = clientBoards.get(lastSelection);
-						currentBoard = cb;
-						out.println("SEL " + cb.getID());
+
 					}
 
 				});
@@ -159,7 +165,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 1;
-		this.add(allBoards, c);
+		this.add(allBoardsScroll, c);
 
 		c.insets = new Insets(0, 10, 0, 0);
 		c.fill = GridBagConstraints.NONE;
@@ -192,17 +198,19 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int n = JOptionPane.showConfirmDialog(null,
+				int option = JOptionPane.showConfirmDialog(null,
 						"Are you sure you want to delete this board?",
 						"Delete Current Board", JOptionPane.YES_NO_OPTION);
-				if (n == 0) {
-					out.println("board " + currentBoard.getID());
-					// TODO: send BRD_DEL to server
+				if (currentBoard != null && option == JOptionPane.OK_OPTION) {
+					allBoards.clearSelection();
+					out.println("del " + String.valueOf(currentBoard.getID()));
 					currentBoard = null;
+					canvas.clear();
 				}
 			}
 
 		});
+		c.gridx = 0;
 		c.gridy = 3;
 		this.add(deleteBoard, c);
 
@@ -211,27 +219,25 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 		boardEditorsLabel = new JLabel("Board Editors");
 		c.gridx = 0;
-		c.gridy = 3;
+		c.gridy = 4;
 		this.add(boardEditorsLabel, c);
 
 		// Create table listing all Users active on this whiteboard.
-		tableModelEditors.addRow(new Object[] { "apollo" });
-		tableModelEditors.addRow(new Object[] { "zeus" });
-		tableModelEditors.addRow(new Object[] { "athena" });
-		tableModelEditors.addRow(new Object[] { "juno" });
-
 		boardEditors = new JTable(tableModelEditors);
 		boardEditors.setRowSelectionAllowed(false);
+		boardEditors.setPreferredScrollableViewportSize(new Dimension(0, 100));
+		boardEditors.setFillsViewportHeight(true);
+		JScrollPane boardEditorsScroll = new JScrollPane(boardEditors);
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
-		c.gridy = 4;
-		this.add(boardEditors, c);
+		c.gridy = 5;
+		this.add(boardEditorsScroll, c);
 
 		// Slider which adjusts the stroke thickness.
 		sliderLabel = new JLabel("Stroke Thickness");
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
-		c.gridy = 5;
+		c.gridy = 6;
 		this.add(sliderLabel, c);
 
 		thicknessSlider = new JSlider(1, 10, 3);
@@ -243,12 +249,12 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		thicknessSlider.addChangeListener(this);
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
-		c.gridy = 6;
+		c.gridy = 7;
 		this.add(thicknessSlider, c);
 
 		// Display current username.
 		c.gridx = 0;
-		c.gridy = 7;
+		c.gridy = 8;
 		this.add(currentUser, c);
 
 		// Create the ClientView that acts as a canvas for the client to draw
@@ -258,7 +264,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 1;
 		c.gridy = 0;
-		c.gridheight = 7;
+		c.gridheight = 8;
 		c.gridwidth = 4;
 		this.add(canvas, c);
 
@@ -311,7 +317,8 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		});
 
 		c.gridx = 1;
-		c.gridy = 7;
+		c.gridy = 8;
+		c.insets = new Insets(10, 50, 20, 50);
 		c.gridheight = 1;
 		c.gridwidth = 1;
 		this.add(colorPalette, c);
@@ -333,7 +340,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 		});
 		c.gridx = 2;
-		c.gridy = 7;
+		c.gridy = 8;
 		this.add(moreColors, c);
 
 		// Button which toggles between drawing and erasing (drawing
@@ -348,7 +355,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 			}
 		});
 		c.gridx = 3;
-		c.gridy = 7;
+		c.gridy = 8;
 		this.add(eraseToggle, c);
 
 		// Button which clears the whiteboard and sends a BRD_CLR message.
@@ -357,23 +364,21 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				canvas.clear();
-				canvas.push();
 				out.println("board_clear " + currentBoard.getID());
 			}
 		});
 		c.gridx = 4;
-		c.gridy = 7;
+		c.gridy = 8;
 		this.add(clear, c);
 
-		SwingWorker<Void, Void> incomingMessageThread = new SwingWorker<Void, Void>() {
+		SwingWorker<Void, String> incomingMessageThread = new SwingWorker<Void, String>() {
 
 			@Override
-			public Void doInBackground() {
+			protected Void doInBackground() {
 				try {
 					for (String line = in.readLine(); line != null; line = in
 							.readLine()) {
-						handleMessage(line);
+						publish(line);
 					}
 
 				} catch (IOException e) {
@@ -390,9 +395,12 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 				return null;
 			}
 
+			// GUI changes in event dispatch thread only
 			@Override
-			public void done() {
-
+			protected void process(java.util.List<String> messages) {
+				for (String msg : messages) {
+					handleMessage(msg);
+				}
 			}
 		};
 
@@ -412,46 +420,65 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 	 * 
 	 * @param msg
 	 *            a formatted string message from server
+	 * @return a WhiteLine object or null
 	 * @throws UnsupportedOperationException
 	 *             unrecognized command received
 	 */
 	private void handleMessage(String msg) {
-		System.out.println(msg);
-		// TODO: remove print
 
 		// STROKE
 		if (msg.matches("stroke \\d+ ([1-9]|10) \\d+ \\d+ \\d+ \\d+ \\d{1,3} \\d{1,3} \\d{1,3}")) {
-
+			String[] t = msg.split(" ");
+			int r = Integer.parseInt(t[7]), g = Integer.parseInt(t[8]), b = Integer
+					.parseInt(t[9]); // RGB values
+			Color color = new Color(r, g, b);
+			int thickness = Integer.parseInt(t[2]);
+			int x1 = Integer.parseInt(t[3]), y1 = Integer.parseInt(t[4]);
+			int x2 = Integer.parseInt(t[5]), y2 = Integer.parseInt(t[6]);
+			if (Integer.parseInt(t[1]) == currentBoard.getID()) {
+				canvas.drawLine(new WhiteLine(x1, y1, x2, y2, color, thickness));
+				canvas.push();
+			}
 		}
 		// BRD_CLR
 		else if (msg.matches("board_clear \\d+")) {
-
+			int boardID = Integer.parseInt(msg.split(" ")[1]);
+			if (boardID == currentBoard.getID()) {
+				canvas.clear();
+			}
 		}
 		// BRD_DEL
 		else if (msg.matches("del \\d+")) {
-
+			deleteWhiteboard(Integer.parseInt(msg.split(" ")[1]));
 		}
 		// BRD_USERS
-		else if (msg.matches("board_users \\d+( [A-Za-z][A-Za-z0-9]?)*")) {
-
+		else if (msg.matches("board_users \\d+( [A-Za-z][A-Za-z0-9]*)*")) {
+			msg = msg.substring(12); // trim command
+			int id = Integer.parseInt(msg.substring(0, msg.indexOf(" ")));
+			if (msg.matches("board_users \\d+")) { // no users
+				if (id == currentBoard.getID())
+					updateUsers("");
+			} else {
+				msg = msg.substring(msg.indexOf(" ") + 1); // trim id off
+				if (id == currentBoard.getID())
+					updateUsers(msg);
+			}
 		}
 		// BRD_INFO
 		else if (msg.matches("board \\d+( [^\r\n]+)?")) {
-			if (msg.matches("board \\d+")) {
+			if (msg.matches("board \\d+")) { // nameless
 				addWhiteboard("", Integer.parseInt(msg.substring(6)));
 			} else {
 				// remove command and extract ID + name
 				msg = msg.substring(6);
-				int id = Integer.parseInt(msg.substring(0, msg.indexOf("")));
-				String name = msg.substring(msg.indexOf(""));
+				int id = Integer.parseInt(msg.substring(0, msg.indexOf(" ")));
+				String name = msg.substring(msg.indexOf(" "));
 				addWhiteboard(name, id);
 			}
-
 		} else {
 			throw new UnsupportedOperationException(
 					"Unrecognized command received from server.");
 		}
-
 	}
 
 	/**
@@ -479,8 +506,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		ClientBoard clientBoard = new ClientBoard(name, id_num);
 		clientBoards.add(clientBoard);
 		int row = tableModelWhiteboards.getRowCount();
-		NumberFormat rowFormat = new DecimalFormat("%03d");
-		tableModelWhiteboards.addRow(new Object[] { rowFormat.format(row - 1)
+		tableModelWhiteboards.addRow(new Object[] { String.format("%03d", row)
 				+ " - " + name });
 	}
 
@@ -495,16 +521,27 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		boolean success = false;
 		for (int i = 0; i < clientBoards.size(); i++) {
 			if (boardID == clientBoards.get(i).getID()) {
-				// check if already exists
 				success = clientBoards.remove(clientBoards.get(i));
+				break;
 			}
 		}
 		if (success) {
+			// re-populate board list
 			tableModelWhiteboards.setRowCount(0);
-			NumberFormat rowFormat = new DecimalFormat("%03d");
 			for (int i = 0; i < clientBoards.size(); i++) {
-				tableModelWhiteboards.addRow(new Object[] { rowFormat.format(i)
-						+ " - " + clientBoards.get(i).getName() });
+				tableModelWhiteboards.addRow(new Object[] { String.format(
+						"%03d", i) + " - " + clientBoards.get(i).getName() });
+			}
+			// currently editing deleted board
+			if (currentBoard != null && currentBoard.getID() == boardID) {
+				canvas.clear();
+				allBoards.clearSelection();
+				JOptionPane
+						.showMessageDialog(
+								new JFrame(),
+								"The board you were editing was deleted by another\nuser. Please select another board to continue.",
+								"Board Deleted", JOptionPane.ERROR_MESSAGE);
+				currentBoard = null;
 			}
 		}
 	}
@@ -518,9 +555,13 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 	 *            current board
 	 */
 	private void updateUsers(String editors) {
+		if (editors == null || editors.equals("")) {
+			tableModelEditors.setRowCount(0);
+			return;
+		}
 		String[] msg = editors.split(" ");
 		tableModelEditors.setRowCount(0);
-		for (int i = 2; i < msg.length; i++) {
+		for (int i = 0; i < msg.length; i++) {
 			tableModelEditors.addRow(new Object[] { msg[i] });
 		}
 	}
@@ -629,13 +670,8 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		 * When mouse button is pressed down, start drawing.
 		 */
 		public void mousePressed(MouseEvent e) {
-			if (currentBoard == null) {
-				JOptionPane.showMessageDialog(null,
-						"Please select a board before drawing.");
-			} else {
-				lastX = e.getX();
-				lastY = e.getY();
-			}
+			lastX = e.getX();
+			lastY = e.getY();
 		}
 
 		/**
@@ -645,7 +681,10 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 			int x = e.getX();
 			int y = e.getY();
 
-			if (canvas.inBounds(x, y) && canvas.inBounds(lastX, lastY)) {
+			if (currentBoard == null) {
+				JOptionPane.showMessageDialog(null,
+						"Please select a board before drawing.");
+			} else if (canvas.inBounds(x, y) && canvas.inBounds(lastX, lastY)) {
 				Color strokeColor;
 				int strokeThick = (int) thickness;
 				if (eraseMode) {

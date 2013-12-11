@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.*;
@@ -37,8 +37,8 @@ public class User implements Comparable<User> {
 	/*
 	 * There are two queues maintained for
 	 */
-	private final PriorityBlockingQueue<String> outgoingMessageQueue;
-	private final PriorityBlockingQueue<String> outgoingStrokeQueue;
+	private final LinkedBlockingQueue<String> outgoingMessageQueue;
+	private final LinkedBlockingQueue<String> outgoingStrokeQueue;
 
 	/**
 	 * Constructs a new User corresponding to a single connected client. The
@@ -78,8 +78,8 @@ public class User implements Comparable<User> {
 		 * readily. The 'outgoingMessageQueue' is meant to contain all other
 		 * messages.
 		 */
-		outgoingMessageQueue = new PriorityBlockingQueue<String>();
-		outgoingStrokeQueue = new PriorityBlockingQueue<String>();
+		outgoingMessageQueue = new LinkedBlockingQueue<String>();
+		outgoingStrokeQueue = new LinkedBlockingQueue<String>();
 	}
 
 	/**
@@ -108,16 +108,16 @@ public class User implements Comparable<User> {
 
 		started = true;
 	}
-	
+
 	/**
-     * Returns the ID of the currently selected board. Returns -1 if no board is
-     * currently selected.
-     * 
-     * @return the ID of the current board, or -1 if no board is selected
-     */
-    public int currentBoardID() {
-        return board == null ? -1 : board.getID();
-    }
+	 * Returns the ID of the currently selected board. Returns -1 if no board is
+	 * currently selected.
+	 * 
+	 * @return the ID of the current board, or -1 if no board is selected
+	 */
+	public int currentBoardID() {
+		return board == null ? -1 : board.getID();
+	}
 
 	/**
 	 * Queues a BRD_INFO message for the specified board to be sent to the
@@ -128,10 +128,20 @@ public class User implements Comparable<User> {
 	 *            the new MasterBoard available for use
 	 */
 	public void notifyBoard(MasterBoard board) {
-		String info_msg = "board " + String.valueOf(board.getID()) + " "
-				+ board.getName();
+		String name = board.getName();
+		String info_msg;
 
-		outgoingMessageQueue.put(info_msg);
+		if (name == null || name.equals(""))
+			info_msg = "board " + String.valueOf(board.getID());
+		else
+			info_msg = "board " + String.valueOf(board.getID()) + " "
+					+ board.getName();
+
+		try {
+			outgoingMessageQueue.put(info_msg);
+		} catch (InterruptedException e) {
+			// thread interrupted
+		}
 	}
 
 	/**
@@ -145,7 +155,11 @@ public class User implements Comparable<User> {
 	public void forgetBoard(MasterBoard board) {
 		String del_msg = "del " + String.valueOf(board.getID());
 
-		outgoingMessageQueue.put(del_msg);
+		try {
+			outgoingMessageQueue.put(del_msg);
+		} catch (InterruptedException e) {
+			// thread interrupted
+		}
 	}
 
 	/**
@@ -184,7 +198,11 @@ public class User implements Comparable<User> {
 		String stroke_msg = "stroke " + String.valueOf(board.getID()) + " "
 				+ thickness + " " + coords + " " + color;
 
-		outgoingStrokeQueue.put(stroke_msg);
+		try {
+			outgoingStrokeQueue.put(stroke_msg);
+		} catch (InterruptedException e) {
+			// thread interrupted
+		}
 	}
 
 	/**
@@ -192,8 +210,12 @@ public class User implements Comparable<User> {
 	 * called by the server on all editors of a board to notify them that the
 	 * board has been cleared.
 	 */
-	public void notifyClear() {
-		outgoingMessageQueue.put("board_clear");
+	public void notifyClear(int id_num) {
+		try {
+			outgoingMessageQueue.put("board_clear " + String.valueOf(id_num));
+		} catch (InterruptedException e) {
+			// thread interrupted
+		}
 	}
 
 	/**
@@ -205,7 +227,12 @@ public class User implements Comparable<User> {
 	 *            an alphabetized, space-delimited list of current editors
 	 */
 	public void notifyEditors(String editorList) {
-		outgoingMessageQueue.put("board_users " + editorList.trim());
+		try {
+			outgoingMessageQueue.put("board_users "
+					+ String.valueOf(board.getID()) + " " + editorList);
+		} catch (InterruptedException e) {
+			// thread interrupted
+		}
 	}
 
 	/**
@@ -261,11 +288,13 @@ public class User implements Comparable<User> {
 		if (msg.matches("stroke \\d+ ([1-9]|10) \\d+ \\d+ \\d+ \\d+ \\d{1,3} \\d{1,3} \\d{1,3}")) {
 			int r = Integer.parseInt(t[7]), g = Integer.parseInt(t[8]), b = Integer
 					.parseInt(t[9]); // RGB values
+			int boardID = Integer.parseInt(t[1]);
 			Color color = new Color(r, g, b);
 			int thickness = Integer.parseInt(t[2]);
 			int x1 = Integer.parseInt(t[3]), y1 = Integer.parseInt(t[4]);
 			int x2 = Integer.parseInt(t[5]), y2 = Integer.parseInt(t[6]);
-			board.makeStroke(new WhiteLine(x1, y1, x2, y2, color, thickness));
+			if (board != null && board.getID() == boardID)
+				board.makeStroke(new WhiteLine(x1, y1, x2, y2, color, thickness));
 		}
 		// SEL
 		else if (msg.matches("select \\d+")) {
@@ -278,6 +307,12 @@ public class User implements Comparable<User> {
 		// BRD_ALL
 		else if (msg.matches("board_all")) {
 			server.resendAllBoard(this);
+		}
+		// BRD_CLR
+		else if (msg.matches("board_clear \\d+")) {
+			int boardID = Integer.parseInt(t[1]);
+			if (board != null && board.getID() == boardID)
+				board.clearBoard();
 		}
 		// BRD_REQ
 		else if (msg.matches("board_req( .+)?")) {
@@ -380,7 +415,7 @@ public class User implements Comparable<User> {
 			try {
 				processMessages();
 			} catch (IOException e) {
-				System.out.println("Connection interrupted.");
+				// connection interrupted
 			}
 		}
 
@@ -388,16 +423,14 @@ public class User implements Comparable<User> {
 			try {
 				for (String line = in.readLine(); line != null; line = in
 						.readLine()) {
-					if(inThread.isInterrupted())
+					if (inThread.isInterrupted())
 						break;
-					// TODO: remove print
-					System.out.println(line);
 					handleRequest(line);
 				}
 			} finally {
 				socket.close();
 				in.close();
-				if(board != null)
+				if (board != null)
 					board.removeUser(parent);
 				server.deleteUser(parent);
 				outThread.interrupt();
@@ -426,8 +459,9 @@ public class User implements Comparable<User> {
 							continue consumeQueues;
 						// does not block in event of clear
 						String stroke = outgoingStrokeQueue.poll();
-						if (stroke != null)
+						if (stroke != null) {
 							out.println(stroke);
+						}
 					}
 					// nothing in either queue
 					Thread.sleep(10);

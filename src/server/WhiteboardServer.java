@@ -178,15 +178,26 @@ public class WhiteboardServer {
 	 *            the identification number of an active MasterBoard
 	 */
 	public void deleteBoard(int boardID) {
+		MasterBoard delBoard = null;
 		synchronized (boards) {
 			for (MasterBoard board : boards) {
 				if (board.getID() == boardID) {
 					boards.remove(board);
-					board.terminateBoard();
+					delBoard = board;
 					break;
 				}
 			}
 		}
+
+		if (delBoard != null) {
+			delBoard.terminateBoard();
+			synchronized (users) {
+				for (User user : users) {
+					user.forgetBoard(delBoard);
+				}
+			}
+		}
+
 	}
 
 	/**
@@ -214,13 +225,13 @@ public class WhiteboardServer {
 	 */
 	public void makeNewBoard(String name) {
 		MasterBoard newBoard = new MasterBoard(name);
-		
+
 		synchronized (boards) {
 			boards.add(newBoard);
 		}
-		
-		synchronized(users){
-			for(User user: users){
+
+		synchronized (users) {
+			for (User user : users) {
 				user.notifyBoard(newBoard);
 			}
 		}
@@ -270,7 +281,9 @@ public class WhiteboardServer {
 				for (User user : users) {
 					if (username == null)
 						break; // cases: no username supplied or duplicate found
-					if (user.getName().equals(username)) {
+					// check against existing username, case insensitive
+					if (user.getName().toLowerCase()
+							.equals(username.toLowerCase())) {
 						username = null;
 					}
 				}
@@ -317,7 +330,7 @@ public class WhiteboardServer {
 			Object[] message = { "Port:", portField };
 
 			int buttonPressed = JOptionPane.showConfirmDialog(null, message,
-					"Start", JOptionPane.OK_CANCEL_OPTION);
+					"Start Server", JOptionPane.OK_CANCEL_OPTION);
 
 			if (buttonPressed == JOptionPane.OK_OPTION) {
 				portInput = portField.getText();

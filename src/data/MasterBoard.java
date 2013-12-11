@@ -1,6 +1,6 @@
 package data;
 
-import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +21,7 @@ public class MasterBoard implements Comparable<MasterBoard> {
 	private final ArrayList<WhiteLine> strokes;
 	private final ArrayList<User> users;
 
-	private final PriorityBlockingQueue<WhiteLine> strokeQueue;
+	private final LinkedBlockingQueue<WhiteLine> strokeQueue;
 	private final Thread strokeThread;
 
 	/**
@@ -49,7 +49,7 @@ public class MasterBoard implements Comparable<MasterBoard> {
 		users = new ArrayList<User>();
 
 		// initializes queue for strokes to be made
-		strokeQueue = new PriorityBlockingQueue<WhiteLine>();
+		strokeQueue = new LinkedBlockingQueue<WhiteLine>();
 
 		// begins processing queued strokes
 		strokeThread = new Thread(new Runnable() {
@@ -84,7 +84,11 @@ public class MasterBoard implements Comparable<MasterBoard> {
 	 *            a WhiteLine to be added to this MasterBoard
 	 */
 	public void makeStroke(WhiteLine line) {
-		strokeQueue.put(line);
+		try {
+			strokeQueue.put(line);
+		} catch (InterruptedException e) {
+			// thread interrupted
+		}
 	}
 
 	/**
@@ -147,7 +151,7 @@ public class MasterBoard implements Comparable<MasterBoard> {
 
 			// inform users of change
 			for (User user : users) {
-				user.notifyClear();
+				user.notifyClear(id_num);
 			}
 		}
 	}
@@ -164,13 +168,13 @@ public class MasterBoard implements Comparable<MasterBoard> {
 		synchronized (users) {
 			// add user
 			users.add(user);
-			// resent all existing strokes
-			this.resendAllStrokes(user);
 			// send updated editors list to all connected
 			String newUserList = this.getUserList();
 			for (User editor : users) {
 				editor.notifyEditors(newUserList);
 			}
+			// resent all existing strokes
+			this.resendAllStrokes(user);
 		}
 	}
 
@@ -226,11 +230,11 @@ public class MasterBoard implements Comparable<MasterBoard> {
 		// join string
 		StringBuilder output = new StringBuilder();
 		for (int i = 0; i < editors.length; i++) {
-			output.append(editors[i].toString());
+			output.append(editors[i].getName());
 			if (i != editors.length - 1)
 				output.append(" ");
 		}
-
+		
 		return output.toString();
 	}
 
