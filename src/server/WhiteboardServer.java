@@ -270,7 +270,8 @@ public class WhiteboardServer {
 				for (User user : users) {
 					if (username == null)
 						break; // cases: no username supplied or duplicate found
-					if (user.getName().equals(username)) {
+					// check against existing username, case insensitive
+					if (user.getName().toLowerCase().equals(username.toLowerCase())) {
 						username = null;
 					}
 				}

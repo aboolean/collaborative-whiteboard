@@ -210,9 +210,9 @@ public class User implements Comparable<User> {
 	 * called by the server on all editors of a board to notify them that the
 	 * board has been cleared.
 	 */
-	public void notifyClear() {
+	public void notifyClear(int id_num) {
 		try {
-			outgoingMessageQueue.put("board_clear");
+			outgoingMessageQueue.put("board_clear " + String.valueOf(id_num));
 		} catch (InterruptedException e) {
 			// thread interrupted
 		}
@@ -288,11 +288,12 @@ public class User implements Comparable<User> {
 		if (msg.matches("stroke \\d+ ([1-9]|10) \\d+ \\d+ \\d+ \\d+ \\d{1,3} \\d{1,3} \\d{1,3}")) {
 			int r = Integer.parseInt(t[7]), g = Integer.parseInt(t[8]), b = Integer
 					.parseInt(t[9]); // RGB values
+			int boardID = Integer.parseInt(t[1]);
 			Color color = new Color(r, g, b);
 			int thickness = Integer.parseInt(t[2]);
 			int x1 = Integer.parseInt(t[3]), y1 = Integer.parseInt(t[4]);
 			int x2 = Integer.parseInt(t[5]), y2 = Integer.parseInt(t[6]);
-			if (board != null)
+			if (board != null && board.getID() == boardID)
 				board.makeStroke(new WhiteLine(x1, y1, x2, y2, color, thickness));
 		}
 		// SEL
@@ -306,6 +307,12 @@ public class User implements Comparable<User> {
 		// BRD_ALL
 		else if (msg.matches("board_all")) {
 			server.resendAllBoard(this);
+		}
+		// BRD_CLR
+		else if (msg.matches("board_clear \\d+")) {
+			int boardID = Integer.parseInt(t[1]);
+			if (board != null && board.getID() == boardID)
+				board.clearBoard();
 		}
 		// BRD_REQ
 		else if (msg.matches("board_req( .+)?")) {
