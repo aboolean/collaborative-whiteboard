@@ -108,16 +108,21 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		out = acquiredOut;
 		in = acquiredIn;
 
-		// prompt the client for a username, and then instantiate the User
-		// object
-		String username = JOptionPane.showInputDialog("Username:");
-		if (username == null || username.equals("")) {
-			out.println("user_req");
-		} else if (username.matches("[A-Za-z]([A-Za-z0-9]?)+")) {
+		// username init 
+		// prompt client, send to server, receive confirmation
+		String username = JOptionPane
+				.showInputDialog("Please enter an alphanumeric username, else one will be generated automatically.");
+		if (username.matches("[A-Za-z]([A-Za-z0-9]?)+")) {
 			out.println("user_req " + username);
+		} else {
+			out.println("user_req");
 		}
-		currentUser = new JLabel("Your Username: " + username);
-
+		String you_are = in.readLine();
+		if (you_are.matches("you_are [A-Za-z]([A-Za-z0-9]?)+"))
+			currentUser = new JLabel("Your Username: " + you_are.substring(8));
+		else
+			throw new RuntimeException("Unkown message received from server.");
+		
 		// set up the layout
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -361,27 +366,34 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		c.gridy = 7;
 		this.add(clear, c);
 
-		Thread incomingMessageThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					for (String line = in.readLine(); line != null; line = in
-							.readLine()) {
-						// for now, just print the line -- will handle
-						// eventually
-						System.out.println(line);
-					}
-
-				} catch (IOException e) {
-					e.printStackTrace();
-				} finally {
-//					socket.close();
-//					in.close();
-//					out.close();
-				}
-			}
-		});
-		incomingMessageThread.start();
+//		Thread incomingMessageThread = new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+//				try {
+//					for (String line = in.readLine(); line != null; line = in
+//							.readLine()) {
+//						// for now, just print the line -- will handle
+//						// eventually
+//						System.out.println(line);
+//					}
+//
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				} finally {
+//					JOptionPane
+//							.showMessageDialog(
+//									new JFrame(),
+//									"Server connection lost. Please restart application.",
+//									"Connection Lost",
+//									JOptionPane.ERROR_MESSAGE);
+//					System.exit(0);
+//					// socket.close();
+//					// in.close();
+//					// out.close();
+//				}
+//			}
+//		});
+//		incomingMessageThread.start();
 
 		// sends the initialization BRD_ALL request to receive all the currently
 		// active boards; prompts server to send a stream of BRD_INFO messages
@@ -533,10 +545,10 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 				acquiredSocket = new Socket(
 						InetAddress.getByName(addressInput),
 						Integer.valueOf(portInput));
-				acquiredOut = new PrintWriter(acquiredSocket.getOutputStream(),
-						true);
 				acquiredIn = new BufferedReader(new InputStreamReader(
 						acquiredSocket.getInputStream()));
+				acquiredOut = new PrintWriter(acquiredSocket.getOutputStream(),
+						true);
 				break;
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(new JFrame(),

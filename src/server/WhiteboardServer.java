@@ -51,6 +51,8 @@ public class WhiteboardServer {
 		boards = new ArrayList<MasterBoard>();
 
 		serverSocket = new ServerSocket(listeningPort);
+		
+		System.out.println("Server running. | IP: <" + getIP() + "> | PORT: " + getPort());
 	}
 
 	/**
@@ -62,8 +64,7 @@ public class WhiteboardServer {
 	public String getIP() {
 		try {
 			serverSocket.getInetAddress();
-			return InetAddress.getLocalHost()
-					.getHostAddress();
+			return InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
 			return null;
 		}
@@ -238,7 +239,6 @@ public class WhiteboardServer {
 				users.remove(newUser);
 			}
 
-			
 			System.out.println("Uninstantiated user at <"
 					+ socket.getInetAddress().getLocalHost().getHostAddress()
 					+ "> disconnected.");
@@ -255,29 +255,31 @@ public class WhiteboardServer {
 
 			JTextField addressField = new JTextField();
 			JTextField portField = new JTextField();
-			Object[] message = {"Port:",
-					portField };
+			Object[] message = { "Port:", portField };
 
 			int buttonPressed = JOptionPane.showConfirmDialog(null, message,
 					"Start", JOptionPane.OK_CANCEL_OPTION);
 
 			if (buttonPressed == JOptionPane.OK_OPTION) {
 				portInput = portField.getText();
-				if (portInput == null || !portInput.matches(portPattern)) {
+				if (portInput == null || portInput.equals("")) {
+					portInput = "55000";
+					break;
+				} else if (!portInput.matches(portPattern)) {
 					JOptionPane
 							.showMessageDialog(
 									new JFrame(),
 									"An invalid port number was entered. Please re-enter a number within the range [49152,65535].",
 									"Incorrect Port", JOptionPane.ERROR_MESSAGE);
 					continue;
-				} else{
+				} else {
 					break; // correct port number
 				}
 			} else {
 				System.exit(0);
 			}
 		}
-		
+
 		WhiteboardServer server = null;
 		try {
 			server = new WhiteboardServer(Integer.parseInt(portInput));

@@ -267,7 +267,7 @@ public class User implements Comparable<User> {
 			server.resendAllBoard(this);
 		}
 		// BRD_REQ
-		else if (msg.matches("board_req( \\S+)?")) {
+		else if (msg.matches("board_req( .+)?")) {
 			if (msg.equals("board_req"))
 				server.makeNewBoard("");
 			else
