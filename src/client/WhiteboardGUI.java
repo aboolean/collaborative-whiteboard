@@ -149,12 +149,15 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 
 					@Override
 					public void valueChanged(ListSelectionEvent e) {
-						if (allBoards.getSelectedRow() > -1) {
-							lastSelection = allBoards.getSelectedRow();
+						if (!e.getValueIsAdjusting()) {
+							if (allBoards.getSelectedRow() > -1) {
+								lastSelection = allBoards.getSelectedRow();
+							}
+							ClientBoard cb = clientBoards.get(lastSelection);
+							currentBoard = cb;
+							out.println("select " + String.valueOf(cb.getID()));
 						}
-						ClientBoard cb = clientBoards.get(lastSelection);
-						currentBoard = cb;
-						out.println("select " + String.valueOf(cb.getID()));
+
 					}
 
 				});
