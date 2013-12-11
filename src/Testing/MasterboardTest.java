@@ -50,10 +50,12 @@ public class MasterboardTest {
         MasterBoard testBoard = new MasterBoard("oh look \n new line");
     }
     
+    /* 
+     * Test that class successfully assigns ID numbers in progressive fashion
+     */
     @Test
     public void sequentialIDTest()
     {
-        // Test that class successfully assigns ID numbers in progressive fashion
         MasterBoard testBoard1 = new MasterBoard("testingBoard1");
         MasterBoard testBoard2 = new MasterBoard("testingBoard2");
         MasterBoard testBoard3 = new MasterBoard("testingBoard3");
@@ -62,17 +64,21 @@ public class MasterboardTest {
         assertEquals(testBoard2.getID()+1, testBoard3.getID());
     }
     
+    /*
+     * Test string representation of MasterBoard
+     */
     @Test
     public void toStringTest()
     {
-        //Test string representation of MasterBoard
         MasterBoard testBoard = new MasterBoard("testingBoard");
         String expected = "board " + testBoard.getID() + " testingBoard";
         assertEquals(expected, testBoard.toString());
     }
 
-    /* Test when board is deleted. User list and queued changes should be cleared,
-            and the board's strokeThread should be terminated.*/
+    /*
+     *  Test when board is deleted. User list and queued changes should be cleared, and
+     *  the board's strokeThread should be terminated.
+     */
     @Test
     public void deleteTest()
     {
