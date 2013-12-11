@@ -34,53 +34,22 @@ public class UserTest {
         assertEquals(1, user2.getID());
     }
 
+    /**
+     * Create a new user with the default naming convention. Attempt to create a
+     * second user with the same name. Repeated username should be rejected and
+     * replaced with default. Note that usernames are not case sensitive.
+     * @throws IOException 
+     * 
+     */
     @Test
-    public void noNameOverlapTest() {
-        // Create a new user with the default naming convention
-        // Attempt to create a second user with the same name
-        // Repeated username should be rejected and replaced with default
-    }
-
-    @Test
-    public void userTestHandleRequest() throws IOException {
-        final WhiteboardServer server = new WhiteboardServer(50001);
-        Thread runServer = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    server.welcomeNewUsers();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        });
-        runServer.start();
-        Socket socket = new Socket(InetAddress.getLocalHost().getHostAddress(),
-                50001);
-        BufferedReader in = new BufferedReader(new InputStreamReader(
-                socket.getInputStream()));
-        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-        out.println("user_req Fred");
-        String you_are_fred = in.readLine();
-        assertEquals("you_are Fred", you_are_fred);
-
-        out.println("board_req new Board");
-        String newBoard = in.readLine();
-        assertEquals("board 1 new Board", newBoard);
+    public void testNoNameOverlapTest() throws IOException {
+        Socket socket = new Socket();
+        WhiteboardServer server = new WhiteboardServer(50004);
+        User u1 = new User("user", socket, server);
+        User u2 = new User("USER", socket, server);
+        System.out.println(u2.getName());
+        assertEquals("user", u1.getName());
         
-        out.println("board_all");
-        String board_all = in.readLine();
-        assertEquals("board 1 new Board", board_all);
-        
-        out.println("board_req anotherOne");
-        System.out.println(in.readLine());
-        out.println("board_all");
-        System.out.println(in.readLine());
-        
-        
-        // runServer.interrupt();
-        // socket.close();
-        // user.handleRequest("stroke 1 3 50 50 51 51 0 0 0");
     }
 
     /**
@@ -96,12 +65,10 @@ public class UserTest {
         WhiteboardServer server = new WhiteboardServer(50002);
         server.makeNewBoard("testBoard");
         MasterBoard mb = server.fetchBoard(0);
-        System.out.println(mb);
         User user = new User("testUser", new Socket(), server);
         int noBoard = user.currentBoardID();
         user.selectBoard(0);
         int currentBoardID = user.currentBoardID();
-        System.out.println(mb.getUserList());
         assertEquals(noBoard, -1);
         assertEquals(mb.getUserList(), "testUser");
         assertEquals(currentBoardID, mb.getID());
