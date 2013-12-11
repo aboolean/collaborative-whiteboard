@@ -26,7 +26,7 @@ public class UserTest {
         // given name
         User user1 = new User("testUser", new Socket(), new WhiteboardServer(
                 55000));
-        User user2 = new User(null, new Socket(), new WhiteboardServer(55001));
+        User user2 = new User(null, new Socket(), new WhiteboardServer(50000));
 
         assertEquals("testUser", user1.getName());
         assertEquals(0, user1.getID());
@@ -42,8 +42,8 @@ public class UserTest {
     }
 
     @Test
-    public void userHandleRequestStroke() throws IOException {
-        final WhiteboardServer server = new WhiteboardServer(55003);
+    public void userTestHandleRequest() throws IOException {
+        final WhiteboardServer server = new WhiteboardServer(50001);
         Thread runServer = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -56,7 +56,7 @@ public class UserTest {
         });
         runServer.start();
         Socket socket = new Socket(InetAddress.getLocalHost().getHostAddress(),
-                55003);
+                50001);
         BufferedReader in = new BufferedReader(new InputStreamReader(
                 socket.getInputStream()));
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -66,7 +66,17 @@ public class UserTest {
 
         out.println("board_req new Board");
         String newBoard = in.readLine();
-        assertEquals("board 0 new Board", newBoard);
+        assertEquals("board 1 new Board", newBoard);
+        
+        out.println("board_all");
+        String board_all = in.readLine();
+        assertEquals("board 1 new Board", board_all);
+        
+        out.println("board_req anotherOne");
+        System.out.println(in.readLine());
+        out.println("board_all");
+        System.out.println(in.readLine());
+        
         
         // runServer.interrupt();
         // socket.close();
@@ -83,12 +93,13 @@ public class UserTest {
      */
     @Test
     public void userSelectBoard() throws IOException {
-        WhiteboardServer server = new WhiteboardServer(55002);
+        WhiteboardServer server = new WhiteboardServer(50002);
         server.makeNewBoard("testBoard");
-        MasterBoard mb = server.fetchBoard(1);
+        MasterBoard mb = server.fetchBoard(0);
+        System.out.println(mb);
         User user = new User("testUser", new Socket(), server);
         int noBoard = user.currentBoardID();
-        user.selectBoard(1);
+        user.selectBoard(0);
         int currentBoardID = user.currentBoardID();
         System.out.println(mb.getUserList());
         assertEquals(noBoard, -1);
