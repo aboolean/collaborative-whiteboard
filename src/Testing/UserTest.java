@@ -64,6 +64,10 @@ public class UserTest {
         String you_are_fred = in.readLine();
         assertEquals("you_are Fred", you_are_fred);
 
+        out.println("board_req new Board");
+        String newBoard = in.readLine();
+        assertEquals("board 0 new Board", newBoard);
+        
         // runServer.interrupt();
         // socket.close();
         // user.handleRequest("stroke 1 3 50 50 51 51 0 0 0");
@@ -81,13 +85,14 @@ public class UserTest {
     public void userSelectBoard() throws IOException {
         WhiteboardServer server = new WhiteboardServer(55002);
         server.makeNewBoard("testBoard");
-        MasterBoard mb = server.fetchBoard(0);
+        MasterBoard mb = server.fetchBoard(1);
         User user = new User("testUser", new Socket(), server);
         int noBoard = user.currentBoardID();
-        user.selectBoard(0);
+        user.selectBoard(1);
         int currentBoardID = user.currentBoardID();
+        System.out.println(mb.getUserList());
         assertEquals(noBoard, -1);
-        assertEquals(mb.getUserList(), "user 3 testUser");
+        assertEquals(mb.getUserList(), "testUser");
         assertEquals(currentBoardID, mb.getID());
     }
 }
