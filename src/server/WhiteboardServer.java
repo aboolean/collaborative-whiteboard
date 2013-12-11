@@ -213,8 +213,16 @@ public class WhiteboardServer {
 	 *            the name of the board in the NAME :== [^N]+ format
 	 */
 	public void makeNewBoard(String name) {
+		MasterBoard newBoard = new MasterBoard(name);
+		
 		synchronized (boards) {
-			boards.add(new MasterBoard(name));
+			boards.add(newBoard);
+		}
+		
+		synchronized(users){
+			for(User user: users){
+				user.notifyBoard(newBoard);
+			}
 		}
 	}
 
@@ -238,8 +246,7 @@ public class WhiteboardServer {
 
 	public void handleConnection(Socket socket) throws IOException {
 		System.out.println("New connection from <"
-				+ socket.getInetAddress().getLocalHost().getHostAddress()
-				+ ">.");
+				+ socket.getRemoteSocketAddress().toString() + ">.");
 
 		// initialize input and output streams
 		BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -281,7 +288,7 @@ public class WhiteboardServer {
 			System.out.println("User \'" + newUser.getName()
 					+ "\' instantiated.");
 
-		} finally {
+		} catch (IOException e) {
 			out.close();
 			in.close();
 			socket.close();
@@ -292,7 +299,7 @@ public class WhiteboardServer {
 			}
 
 			System.out.println("Uninstantiated user at <"
-					+ socket.getInetAddress().getLocalHost().getHostAddress()
+					+ socket.getRemoteSocketAddress().toString()
 					+ "> disconnected.");
 		}
 	}

@@ -36,9 +36,9 @@ public class MasterBoard implements Comparable<MasterBoard> {
 	 */
 	public MasterBoard(String name) {
 		// check 'name' paramter
-		if (!name.matches("[A-Za-z0-9 ]+"))
+		if (!name.matches("([^\n\r]+)?"))
 			throw new IllegalArgumentException(
-					"The provided 'name' is not in the NAME :== [A-Za-z0-9 ]+ Format.");
+					"The provided 'name' is not in the NAME :== ([^\n\r]+)? Format.");
 
 		// assign name and ID
 		id_num = nextID.getAndIncrement(); // assigns next ID number atomically
@@ -263,15 +263,14 @@ public class MasterBoard implements Comparable<MasterBoard> {
 	public String toString() {
 		return "board " + String.valueOf(id_num) + " " + name;
 	}
-	
+
 	/**
-	 * Checks if the board's instance of StrokeThread is active & running
-	 * Used primarily for testing purposes
+	 * Checks if the board's instance of StrokeThread is active & running Used
+	 * primarily for testing purposes
 	 * 
 	 * @return true if thread is running, false if it is not
 	 */
-	public boolean isThreadActive()
-	{
+	public boolean isThreadActive() {
 		return strokeThread.isAlive();
 	}
 

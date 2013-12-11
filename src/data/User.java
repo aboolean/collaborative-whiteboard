@@ -241,7 +241,7 @@ public class User implements Comparable<User> {
 	 * 
 	 * @param msg
 	 *            a message received over network
-	 * @throws RuntimeException
+	 * @throws UnsupportedOperationException
 	 *             unrecognized command received
 	 */
 	private void handleRequest(String msg) {
@@ -276,7 +276,7 @@ public class User implements Comparable<User> {
 			else
 				server.makeNewBoard(msg.substring(10)); // extract name
 		} else {
-			throw new RuntimeException(
+			throw new UnsupportedOperationException(
 					"Unrecognized command received from client.");
 		}
 	}
@@ -380,6 +380,8 @@ public class User implements Comparable<User> {
 						.readLine()) {
 					if(inThread.isInterrupted())
 						break;
+					// TODO: remove print
+					System.out.println(line);
 					handleRequest(line);
 				}
 			} finally {

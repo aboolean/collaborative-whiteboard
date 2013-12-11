@@ -108,7 +108,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		out = acquiredOut;
 		in = acquiredIn;
 
-		// username init 
+		// username init
 		// prompt client, send to server, receive confirmation
 		String username = JOptionPane
 				.showInputDialog("Please enter an alphanumeric username, else one will be generated automatically.");
@@ -122,7 +122,7 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 			currentUser = new JLabel("Your Username: " + you_are.substring(8));
 		else
 			throw new RuntimeException("Unkown message received from server.");
-		
+
 		// set up the layout
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -173,10 +173,10 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 				// new board's name
 				String newBoard = JOptionPane
 						.showInputDialog("New board name:");
-				if (newBoard == null | newBoard.equals("")) {
-					out.println("board_req");
-				} else if (newBoard.matches("[A-Za-z]([A-Za-z0-9]?)+")) {
+				if (newBoard.matches("[^\n\r]+")) {
 					out.println("board_req " + newBoard);
+				} else {
+					out.println("board_req");
 				}
 			}
 
@@ -366,40 +366,91 @@ public class WhiteboardGUI extends JFrame implements ChangeListener {
 		c.gridy = 7;
 		this.add(clear, c);
 
-//		Thread incomingMessageThread = new Thread(new Runnable() {
-//			@Override
-//			public void run() {
-//				try {
-//					for (String line = in.readLine(); line != null; line = in
-//							.readLine()) {
-//						// for now, just print the line -- will handle
-//						// eventually
-//						System.out.println(line);
-//					}
-//
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				} finally {
-//					JOptionPane
-//							.showMessageDialog(
-//									new JFrame(),
-//									"Server connection lost. Please restart application.",
-//									"Connection Lost",
-//									JOptionPane.ERROR_MESSAGE);
-//					System.exit(0);
-//					// socket.close();
-//					// in.close();
-//					// out.close();
-//				}
-//			}
-//		});
-//		incomingMessageThread.start();
+		SwingWorker<Void, Void> incomingMessageThread = new SwingWorker<Void, Void>() {
+
+			@Override
+			public Void doInBackground() {
+				try {
+					for (String line = in.readLine(); line != null; line = in
+							.readLine()) {
+						handleMessage(line);
+					}
+
+				} catch (IOException e) {
+					// Connection Interrupted; handled in finally clause
+				} finally {
+					JOptionPane
+							.showMessageDialog(
+									new JFrame(),
+									"Server connection lost. Please restart application.",
+									"Connection Lost",
+									JOptionPane.ERROR_MESSAGE);
+					System.exit(0);
+				}
+				return null;
+			}
+
+			@Override
+			public void done() {
+
+			}
+		};
+
+		incomingMessageThread.execute();
 
 		// sends the initialization BRD_ALL request to receive all the currently
 		// active boards; prompts server to send a stream of BRD_INFO messages
 		out.println("board_all");
 
 		this.pack();
+
+	}
+
+	/**
+	 * Called by a background thread to handle messages received from the
+	 * server.
+	 * 
+	 * @param msg
+	 *            a formatted string message from server
+	 * @throws UnsupportedOperationException
+	 *             unrecognized command received
+	 */
+	private void handleMessage(String msg) {
+		System.out.println(msg);
+		// TODO: remove print
+
+		// STROKE
+		if (msg.matches("stroke \\d+ ([1-9]|10) \\d+ \\d+ \\d+ \\d+ \\d{1,3} \\d{1,3} \\d{1,3}")) {
+
+		}
+		// BRD_CLR
+		else if (msg.matches("board_clear \\d+")) {
+
+		}
+		// BRD_DEL
+		else if (msg.matches("del \\d+")) {
+
+		}
+		// BRD_USERS
+		else if (msg.matches("board_users \\d+( [A-Za-z][A-Za-z0-9]?)*")) {
+
+		}
+		// BRD_INFO
+		else if (msg.matches("board \\d+( [^\r\n]+)?")) {
+			if (msg.matches("board \\d+")) {
+				addWhiteboard("", Integer.parseInt(msg.substring(6)));
+			} else {
+				// remove command and extract ID + name
+				msg = msg.substring(6);
+				int id = Integer.parseInt(msg.substring(0, msg.indexOf("")));
+				String name = msg.substring(msg.indexOf(""));
+				addWhiteboard(name, id);
+			}
+
+		} else {
+			throw new UnsupportedOperationException(
+					"Unrecognized command received from server.");
+		}
 
 	}
 
