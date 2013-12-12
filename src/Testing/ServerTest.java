@@ -18,7 +18,8 @@ import server.WhiteboardServer;
  * @category no_didit
  * 
  */
-public class ServerTest {
+public class ServerTest
+{
 
     /**
      * This test manually sends the client's messages to the server and ensures
@@ -98,5 +99,4 @@ public class ServerTest {
         assertEquals("board 1 anotherOne", in2.readLine());
 
     }
-
 }
