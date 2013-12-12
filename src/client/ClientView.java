@@ -16,10 +16,25 @@ import javax.swing.JPanel;
 
 import data.WhiteLine;
 
+/*
+#####################################
+###### Thread Safety Arguments ######
+#####################################
+Changed from main Swing thread and background SwingWorker thread. However, these changes are guaranteed to be thread-safe
+because of the SwingWorker environment and it's interaction with the
+Event Dispatch Thread (EDT).
+
+######################################
+######## Preserved Invariants ########
+######################################
+- X_SIZE and Y_SIZE immutable
+- 'buffer' always contains current image
+- JPanel has all changes made before last call to push() or last clear()
+*/
+
 /**
  * ClientView represents a drawing surface that allows the user to draw on it
  * freehand, with the mouse.
- *
  */
 
 public class ClientView extends JPanel {

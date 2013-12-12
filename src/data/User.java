@@ -14,6 +14,40 @@ import java.util.regex.*;
 
 import server.WhiteboardServer;
 
+/*
+#####################################
+###### Thread Safety Arguments ######
+#####################################
+- ID number generation is atomic and experiences no dangerous
+interleaving.
+- 'board' does not require a lock because it is only modified in a
+single thread
+- input and output streams are confined to individual threads
+- handleRequest() only called from the IncomingMessageDelegate thread, so only one
+incoming request is processed at a time
+- BlockingQueues (thread-safe) 'outgoingMessageQueue' and 'outgoingStrokeQueue'
+used in a producer-consumer pattern. Messages are put on these queues
+when methods called or from handleRequest(). These messages are consumed
+from the single OutgoingMessageDelegate thread.
+
+######################################
+######## Preserved Invariants ########
+######################################
+- name and id_num are immutable; name is not null
+- id_num is unique for each generated instance
+- references to server and socket are final
+- beginConnection() can only be called once
+- 'board' is either a board being edited on the client side or it is
+null if no board selected (always reflects client-side state)
+- 'outgoingStrokeQueue' only contains STROKE messages for the current
+'board' instance (cleared upon selecting another board)
+- 'outgoingMessageQueue' is never cleared
+- this User is always an editor on the 'board' instance
+- socket is connected to client, else streams have been closed and threads have
+been stopped
+- messages sent to client in the order changes are made
+ */
+
 /**
  * Each instance of User represents a unique connected client. This class
  * facilitates the communication with the client over the network and process
@@ -21,6 +55,7 @@ import server.WhiteboardServer;
  * relevant client attributes.
  */
 public class User implements Comparable<User> {
+
 	// basic attributes
 	private final String username;
 	private final int id_num;
@@ -35,7 +70,11 @@ public class User implements Comparable<User> {
 	private Thread outThread;
 
 	/*
-	 * There are two queues maintained for
+	 * The User maintains two queues of messages that need to be sent to the
+	 * client over the network. The 'outgoingStrokeQueue' is dedicated to
+	 * sending STROKE messages to the client. To accommodate for fast board
+	 * switching, this board is segregated so that it can be cleared readily.
+	 * The 'outgoingMessageQueue' is meant to contain all other messages.
 	 */
 	private final LinkedBlockingQueue<String> outgoingMessageQueue;
 	private final LinkedBlockingQueue<String> outgoingStrokeQueue;
@@ -70,14 +109,6 @@ public class User implements Comparable<User> {
 		// no white board selected
 		board = null;
 
-		/*
-		 * The User maintains two queues of messages that need to be sent to the
-		 * client over the network. The 'outgoingStrokeQueue' is dedicated to
-		 * sending STROKE messages to the client. To accommodate for fast board
-		 * switching, this board is segregated so that it can be cleared
-		 * readily. The 'outgoingMessageQueue' is meant to contain all other
-		 * messages.
-		 */
 		outgoingMessageQueue = new LinkedBlockingQueue<String>();
 		outgoingStrokeQueue = new LinkedBlockingQueue<String>();
 	}

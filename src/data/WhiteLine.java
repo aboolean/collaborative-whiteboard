@@ -1,5 +1,20 @@
 package data;
 
+/*
+#####################################
+###### Thread Safety Arguments ######
+#####################################
+Although WhiteLine instances are exchanged between threads, the 
+immutability of the datatype guarantees it is thread-safe.
+
+######################################
+######## Preserved Invariants ########
+######################################
+WhiteLine is immutable. Each property is individual unchangeable --
+Color and BasicStroke are themselves immutable -- and each property is
+declared as final.
+ */
+
 /**
  * WhiteLine objects represent single drawn strokes (lines) on a white board and
  * are immutable. They are used both on the client and server sides to this end.
@@ -127,7 +142,8 @@ public class WhiteLine {
 	@Override
 	public String toString() {
 		// convert properties to Strings
-		String thick = String.valueOf(Math.round(this.thickness.getLineWidth()));
+		String thick = String
+				.valueOf(Math.round(this.thickness.getLineWidth()));
 		String color = String.valueOf(this.color.getRed()) + " "
 				+ String.valueOf(this.color.getGreen()) + " "
 				+ String.valueOf(this.color.getBlue());

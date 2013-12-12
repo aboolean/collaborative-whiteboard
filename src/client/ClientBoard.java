@@ -1,12 +1,17 @@
 package client;
 
-/**
- * Invariants:
- * 
- * Instances of the ClientBoard class are immutable. 
- * 
- *
- */
+/*
+#####################################
+###### Thread Safety Arguments ######
+#####################################
+- accessed from single background thread in GUI
+
+######################################
+######## Preserved Invariants ########
+######################################
+- immutable data class
+- name and id_num are final
+*/
 
 /**
  * ClientBoard is the client-side representation of a whiteboard. It couples a

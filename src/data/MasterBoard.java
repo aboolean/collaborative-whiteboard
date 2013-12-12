@@ -5,7 +5,35 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-//TODO: concurrency strategy and invariants
+/*
+#####################################
+###### Thread Safety Arguments ######
+#####################################
+- Lists 'strokes' and 'users' locked every time they are accessed.
+Fine-grain locking occurs with individual synchronized statements.
+Deadlock is avoided by locking on one list at a time or always locking
+on 'users' first.
+- BlockingQueue (thread-safe) used in a producer-consumer pattern. New
+strokes are put on this queue when makeStroke is called and taken from a
+single background thread.
+- ID number generation is atomic and experiences no dangerous
+interleaving.
+
+######################################
+######## Preserved Invariants ########
+######################################
+- name and id_num are immutable; name is not null
+- id_num is unique for each generated instance
+- nextID always corresponds to id_num for next instance
+- X_SIZE and Y_SIZE immutable
+- Lists 'strokes' and 'users' are declared as final; references cannot
+change although contents can
+- queue and thread are final
+- strokes always in order of received STROKE messages
+- strokes contains what has been drawn and already sent to all users
+- users contains only editors of the this board (these User instances
+have 'this' as their current 'board' property)
+ */
 
 /**
  * MasterBoard is the central representation of a single collaborative white

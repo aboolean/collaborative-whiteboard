@@ -24,6 +24,33 @@ import javax.swing.SwingUtilities;
 
 import data.*;
 
+/*
+#####################################
+###### Thread Safety Arguments ######
+#####################################
+- Lists 'boards' and 'users' locked every time they are accessed.
+Fine-grain locking occurs with individual synchronized statements.
+Deadlock is avoided by locking on one list at a time or always locking
+on 'users' first.
+- In instances of sequential (non-nested) locking, interleaving is not
+destructive due to the operation involved. (adding and removing boards)
+- 'serverSocket' confined to single thread
+- Individual client Socket instances confined to individual threads
+until passed into User object, which is itself thread-safe in its
+handling of the Socket.
+
+######################################
+######## Preserved Invariants ########
+######################################
+- Lists 'boards' and 'users' are declared as final; references cannot
+change although contents can
+- 'serverSocket' is final; server is bound to single port
+- elements of 'boards' ordered by boardID
+- elements of 'users' ordered by userID
+- 'boards' contains active boards only
+- 'users' contains connected clients only
+*/
+
 public class WhiteboardServer {
 	private final List<User> users;
 	private final List<MasterBoard> boards;
@@ -46,7 +73,6 @@ public class WhiteboardServer {
 	 */
 	public WhiteboardServer(int listeningPort) throws IOException {
 		// initialize users and boards
-		// users = Collections.synchronizedList(new ArrayList<User>());
 		users = new ArrayList<User>();
 		boards = new ArrayList<MasterBoard>();
 

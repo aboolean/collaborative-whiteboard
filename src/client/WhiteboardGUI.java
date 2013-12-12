@@ -32,7 +32,11 @@ import data.WhiteLine;
 
 
 /*
- * GUI testing strategy: Specified below is the expected behavior of the
+ * ######################################
+ * ######## GUI Testing Strategy ########
+ * ######################################
+ * 
+ * Specified below is the expected behavior of the
  * client's GUI window. All behavior below was tested and confirmed to be
  * functional.
  * 
@@ -486,7 +490,6 @@ public class WhiteboardGUI extends JFrame {
 	 * 
 	 * @param msg
 	 *            a formatted string message from server
-	 * @return a WhiteLine object or null
 	 * @throws UnsupportedOperationException
 	 *             unrecognized command received
 	 */
