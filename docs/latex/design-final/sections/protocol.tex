@@ -33,7 +33,7 @@ The following grammar will facilitate the text-based communication between the c
 \texttt{USER\_INIT :== "you\_are" S USER\_NAME}\\
 
 \texttt{NAME :== [$\char`\^ \backslash$r$\backslash$n]+}\\
-\texttt{USER\_NAME :== [A-Za-z]([A-Za-z0-9]?)+}\\
+\texttt{USER\_NAME :== [A-Za-z][A-Za-z0-9]*}\\
 \texttt{BOARD\_ID :== INT}\\
 
 \texttt{INT :== [0-9]+}\\

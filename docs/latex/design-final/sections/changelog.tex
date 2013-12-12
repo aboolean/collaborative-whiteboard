@@ -1,0 +1,14 @@
+\section{Changelog}
+Our implementation almost \textit{mirrors} our original design. We put significant effort into developing our data classes and our server/client on paper, while carefully thinking through behaviors and problem cases. With a few minor modifications, we were able to implement what we intended.
+
+\subsection{Multiple Outgoing Queues}
+Each \texttt{User} instance has two message queues from which a background thread consumes messages to be sent to the client. One contains only \texttt{STROKE} messages, whereas the other contains all other general messages. The general message queue is prioritized over the stroke queue, and the stroke queue is cleared each time the board is switched. More information can be found in the "Threads and Queues" section.
+
+\subsection{Missing Methods}
+Although we had an idea of the functioning of the overall system, we had neglected to define a few crucial methods which we assumed to exist. For instance, the \texttt{void notifyClear()} method in \texttt{Users} -- which is called by the \texttt{MasterBoard} when the selected board is cleared -- was not defined originally, although it was alluded to. Another instnace of this was \texttt{void removeAllUsers()} in \texttt{MasterBoard}, which removes all editors when the board is deleted.
+
+\subsection{Clear Message}
+Although we discussed the functionality of clearing the selected board, we neglected to define any of the necessary methods or the message in the protocol. We have included a new \texttt{BRD\_CLR} message that specifies that a specific board has been cleared.
+
+\subsection{Tighter Grammar Specifications}
+Certain tokens were loosely defined, such as the [1,10] range for the thickness or the [0,255] range for the IP address. These has been specified more precisely. In other words, the numbers are checked to match within the range rather than being the correct number of digits.

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  10 DEC 2013 05:16
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  11 DEC 2013 19:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -586,8 +586,19 @@ Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/pplx/m/sc/12'.
 (microtype)             Ignoring protrusion settings for this character.
 
+(./sections/changelog.tex
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 5.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/t1pcr.fd
+File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
+)
+Package microtype Info: Loading generic settings for font family
+(microtype)             `pcr' (encoding: T1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+)
 (./sections/functionality.tex
-<img/gui-sketch.jpg, id=269, 1170.3725pt x 824.07875pt>
+<img/gui-sketch.jpg, id=289, 1170.3725pt x 824.07875pt>
 File: img/gui-sketch.jpg Graphic file (type jpg)
 
 <use img/gui-sketch.jpg>
@@ -598,24 +609,15 @@ Overfull \hbox (3.61537pt too wide) in paragraph at lines 5--6
 [] 
  []
 
-LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <10> not available
-(Font)              Font shape `T1/pplx/b/n' tried instead on input line 7.
 
-Underfull \vbox (badness 1527) has occurred while \output is active []
+Underfull \vbox (badness 2158) has occurred while \output is active []
 
  [1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
- <./img/gui-sketch.jpg>]) (./sections/protocol.tex
-LaTeX Font Info:    Try loading font information for T1+pcr on input line 6.
-
-(/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/t1pcr.fd
-File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
-)
-Package microtype Info: Loading generic settings for font family
-(microtype)             `pcr' (encoding: T1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
- [2]
+]
+LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <10> not available
+(Font)              Font shape `T1/pplx/b/n' tried instead on input line 7.
+ [2 <./img/gui-sketch.jpg>]) (./sections/protocol.tex
 Underfull \hbox (badness 10000) in paragraph at lines 12--13
 
  []
@@ -625,7 +627,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 14--15
 
  []
 
-
+[3]
 Underfull \hbox (badness 10000) in paragraph at lines 17--22
 
  []
@@ -657,7 +659,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 39--43
 
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <10> not available
 (Font)              Font shape `T1/pcr/b/n' tried instead on input line 49.
-[3] [4]) (./sections/datatype.tex
+[4]) (./sections/datatype.tex [5]
 LaTeX Font Info:    Try loading font information for OMS+pplx on input line 10.
 
 LaTeX Font Info:    No file OMSpplx.fd. on input line 10.
@@ -667,7 +669,7 @@ LaTeX Font Warning: Font shape `OMS/pplx/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
 (Font)              for symbol `textbullet' on input line 10.
 
-[5] <img/wb-snapshot.jpg, id=312, 316.3017pt x 265.9536pt>
+[6] <img/wb-snapshot.jpg, id=338, 316.3017pt x 265.9536pt>
 File: img/wb-snapshot.jpg Graphic file (type jpg)
 
 <use img/wb-snapshot.jpg>
@@ -678,10 +680,6 @@ Overfull \hbox (3.61537pt too wide) in paragraph at lines 35--36
 [] 
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [6]
 [7 <./img/wb-snapshot.jpg>]
 Overfull \hbox (31.23994pt too wide) in paragraph at lines 62--63
 \T1/pplx/m/n/10 (-20) mand from the client. The user re-moves it-self from the 
@@ -696,7 +694,7 @@ Overfull \hbox (6.35895pt too wide) in paragraph at lines 62--63
  []
 
 [8] [9] [10]
-<img/switch-sequence/switch-00.jpg, id=335, 2634.84375pt x 876.27374pt>
+<img/switch-sequence/switch-00.jpg, id=356, 2634.84375pt x 876.27374pt>
 File: img/switch-sequence/switch-00.jpg Graphic file (type jpg)
 
 <use img/switch-sequence/switch-00.jpg>
@@ -708,7 +706,7 @@ Overfull \hbox (28.6154pt too wide) in paragraph at lines 140--141
 [] 
  []
 
-<img/switch-sequence/switch-01.jpg, id=336, 2634.84375pt x 876.27374pt>
+<img/switch-sequence/switch-01.jpg, id=357, 2634.84375pt x 876.27374pt>
 File: img/switch-sequence/switch-01.jpg Graphic file (type jpg)
 
 <use img/switch-sequence/switch-01.jpg>
@@ -720,7 +718,7 @@ Overfull \hbox (28.6154pt too wide) in paragraph at lines 141--142
 [] 
  []
 
-<img/switch-sequence/switch-02.jpg, id=337, 2634.84375pt x 876.27374pt>
+<img/switch-sequence/switch-02.jpg, id=358, 2634.84375pt x 876.27374pt>
 File: img/switch-sequence/switch-02.jpg Graphic file (type jpg)
 
 <use img/switch-sequence/switch-02.jpg>
@@ -732,7 +730,7 @@ Overfull \hbox (28.6154pt too wide) in paragraph at lines 142--143
 [] 
  []
 
-<img/switch-sequence/switch-03.jpg, id=338, 2634.84375pt x 876.27374pt>
+<img/switch-sequence/switch-03.jpg, id=359, 2634.84375pt x 876.27374pt>
 File: img/switch-sequence/switch-03.jpg Graphic file (type jpg)
 
 <use img/switch-sequence/switch-03.jpg>
@@ -745,9 +743,12 @@ Overfull \hbox (28.6154pt too wide) in paragraph at lines 143--144
  []
 
 [11 <./img/switch-sequence/switch-00.jpg> <./img/switch-sequence/switch-01.jpg>
- <./img/switch-sequence/switch-02.jpg>]) (./sections/classes.tex)
-(./sections/concurrency.tex [12 <./img/switch-sequence/switch-03.jpg>] [13])
-(./sections/testing.tex [14] [15] [16])
+ <./img/switch-sequence/switch-02.jpg>]) (./sections/concurrency.tex
+Underfull \vbox (badness 6808) has occurred while \output is active []
+
+ [12 <./img/switch-sequence/switch-03.jpg>] [13]) (./sections/testing.tex [14] 
+[15]
+[16])
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 117.
  [17]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 117.
@@ -755,7 +756,7 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 117.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 117.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 117.
 Package rerunfilecheck Info: File `design-final.out' has not changed.
-(rerunfilecheck)             Checksum: 7B27DCE1DC03BBF1BDA63815C8B4B694;4594.
+(rerunfilecheck)             Checksum: CC85B4ED2773FCCD5073B891E7EA7083;4921.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
@@ -763,11 +764,11 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 117.
  ) 
 Here is how much of TeX's memory you used:
- 11015 strings out of 493315
- 169631 string characters out of 6137904
+ 11047 strings out of 493315
+ 170006 string characters out of 6137904
  380876 words of memory out of 5000000
- 13984 multiletter control sequences out of 15000+600000
- 47328 words of font info for 207 fonts, out of 8000000 for 9000
+ 13992 multiletter control sequences out of 15000+600000
+ 50019 words of font info for 219 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
  40i,14n,43p,1179b,431s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2013/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
@@ -776,11 +777,12 @@ xlive/2013/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb></usr/local/texlive/20
 13/texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb></usr/local/texlive/2013/texmf
 -dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2013/texmf-dist/fo
 nts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/typ
-e1/urw/palatino/uplr8a.pfb>
-Output written on design-final.pdf (17 pages, 1901762 bytes).
+e1/urw/palatino/uplr8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/urw/
+palatino/uplri8a.pfb>
+Output written on design-final.pdf (17 pages, 1910707 bytes).
 PDF statistics:
- 419 PDF objects out of 1000 (max. 8388607)
- 384 compressed objects within 4 object streams
- 103 named destinations out of 1000 (max. 500000)
- 33327 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 444 PDF objects out of 1000 (max. 8388607)
+ 407 compressed objects within 5 object streams
+ 108 named destinations out of 1000 (max. 500000)
+ 39511 words of extra memory for PDF output out of 42996 (max. 10000000)
 
