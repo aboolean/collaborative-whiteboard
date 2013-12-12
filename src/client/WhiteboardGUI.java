@@ -30,6 +30,63 @@ import javax.swing.table.TableCellRenderer;
 
 import data.WhiteLine;
 
+
+/*
+ * GUI testing strategy: Specified below is the expected behavior of the
+ * client's GUI window. All behavior below was tested and confirmed to be
+ * functional.
+ * 
+ * Run the file. Client is prompted for an IP address and port to connect to. If
+ * an invalid address or port is entered, a popup informs the client of the
+ * error and allows them to reenter the information.
+ * 
+ * Upon successful connection, the client is prompted for a username. If an
+ * invalid username is submitted (either not matching the predined naming
+ * convention, or already in use), the user is assigned a preset username.
+ * Otherwise, the client is assigned the submitted name. This name is displayed
+ * in the bottom left of the GUI window.
+ * 
+ * The GUI opens, displaying editing tools and the canvas. The window is not
+ * resizable, and terminates the program when exited.
+ * 
+ * If the client tries to draw on the canvas before selecting a board, they will
+ * be prompted to choose a board first. The Create New Board button prompts the
+ * client for a new board name, and displays the newly created board in the
+ * Whiteboards table. Duplicate or blank names are acceptable.
+ * 
+ * The Delete Current Board button asks the client to confirm that they want to
+ * delete their currently selected board, and then deletes it from the list. The
+ * boards in the Whiteboards list have their list numbers updated. Other users
+ * on the same board will have their canvas cleared, and upon trying to draw
+ * again, will receive a popup informing them that their current board has been
+ * deleted. Clicking on a board selects that board, clearing the canvas of any
+ * strokes, and reloading the canvas with the strokes on the new board.
+ * 
+ * The Board Editors list displays the usernames of all clients who are also
+ * editing the same board. This list includes the client's own username. The
+ * rows in this list are unselectable.
+ * 
+ * The Stroke Thickness slider enables the client to choose a stroke thickness
+ * between 1 and 10. Selecting a larger number results in thicker strokes. Only
+ * integer values can be selected here.
+ * 
+ * The color palette enables the client to choose a new color to draw with.
+ * Clicking on a cell changes the current color. The More Colors button opens a
+ * JColorChooser which enables the client to choose from even more colors.
+ * 
+ * The Erase button sets the drawing color to white. The eraser's thickness is
+ * adjusted by the thickness slider. Toggling the eraser off preserves the
+ * user's previously selected color.
+ * 
+ * The Clear button makes the canvas completely white for all users.
+ * 
+ * Another client's strokes appear on the canvas of the client in real-time.
+ * Both clients are able to draw at the same time. If both clients draw over the
+ * same area, their strokes are able to interleave with one another.
+ * 
+ */
+
+
 @SuppressWarnings("serial")
 public class WhiteboardGUI extends JFrame {
 

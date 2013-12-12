@@ -19,7 +19,7 @@
 \begin{itemize}
 %\item \texttt{WhiteLine[] allStrokes()} - Returns all the strokes that have been made on the board thus far by locking on \texttt{strokes} list.
 \item \texttt{void makeStroke(WhiteLine stroke)} - Adds the new \texttt{stroke} while locking on the \texttt{strokes} list. Proceeds to call \texttt{incorporateStroke()} on each user while locking on the \texttt{users} list.
-\item \texttt{void clearBoard()} - Clears all strokes from the board while locking on the \texttt{strokes} list. Proveeds to call \texttt{notifyClear()} on each user while locking on the \texttt{users} list.
+\item \texttt{void clearBoard()} - Clears all strokes from the board while locking on the \texttt{strokes} list. Proceeds to call \texttt{notifyClear()} on each user while locking on the \texttt{users} list.
 \item \texttt{void addUser(User user)} - Adds the new \texttt{user} while locking on the \texttt{users} list. Then proceeds to send all existing strokes to the new \texttt{user}.
 \item \texttt{void removeUser(User user)} - Removes the user \texttt{user} while locking on the \texttt{users} list.
 \item \texttt{void removeAllUsers()} - This method is called by the \texttt{WhiteboardServer} after the board is removed from its global list of available boards but before all \texttt{users} are notified of the board's deletion. The the \texttt{users} list within the \texttt{MasterBoard} is cleared.

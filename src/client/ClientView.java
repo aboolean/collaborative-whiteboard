@@ -16,6 +16,12 @@ import javax.swing.JPanel;
 
 import data.WhiteLine;
 
+/**
+ * ClientView represents a drawing surface that allows the user to draw on it
+ * freehand, with the mouse.
+ *
+ */
+
 public class ClientView extends JPanel {
 
     public final int Y_SIZE = 600;

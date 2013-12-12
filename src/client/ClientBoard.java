@@ -1,5 +1,19 @@
 package client;
 
+/**
+ * Invariants:
+ * 
+ * Instances of the ClientBoard class are immutable. 
+ * 
+ *
+ */
+
+/**
+ * ClientBoard is the client-side representation of a whiteboard. It couples a
+ * board's name and ID. The name and ID of the ClientBoard are identical to
+ * those of the corresponding server-side MasterBoard.
+ * 
+ */
 public class ClientBoard {
 
     final String name;
@@ -35,7 +49,7 @@ public class ClientBoard {
     public int getID() {
         return id_num;
     }
-    
+
     /**
      * Compares this ClientBoard to other on the basis of identification numbers
      * using the standard conventions of compareTo.
@@ -43,7 +57,7 @@ public class ClientBoard {
      * @return +1 if this has greater ID number than other, -1 if lesser, 0 if
      *         equal
      */
-    public int compareTo(ClientBoard other){
+    public int compareTo(ClientBoard other) {
         return this.id_num > other.id_num ? 1 : this.id_num < other.id_num ? -1
                 : 0;
     }
@@ -52,6 +66,7 @@ public class ClientBoard {
      * Returns the properties of the board in the board of a BOARD_INFO message.
      * For example, a MasterBoard named "Giggles" with ID number 7 would produce
      * "board 7 Giggles".
+     * 
      * @return a String representation of this ClientBoard.
      */
     public String toString() {

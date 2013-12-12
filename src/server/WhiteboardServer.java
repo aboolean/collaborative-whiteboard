@@ -329,13 +329,18 @@ public class WhiteboardServer {
 			System.out.println("Uninstantiated user at <"
 					+ socket.getRemoteSocketAddress().toString()
 					+ "> disconnected.");
-			
+
 			out.close();
 			in.close();
 			socket.close();
 		}
 	}
 
+	/**
+	 * Runs the WhiteboardServer graphically. Prompts the user for port number
+	 * (defaults to 55000). Displays port and IP address of the server. Button
+	 * "Kill Server" closes the server and stops listening for connections.
+	 */
 	public static void main(String[] args) {
 		// Prompt User for Port Number
 		String portInput = "55000";
@@ -344,7 +349,6 @@ public class WhiteboardServer {
 			// Port in range [49152,65535]
 			String portPattern = "(49(1(5[2-9]|[6-9][0-9])|[2-9][0-9]{2})|5[0-9]{4}|6([0-4][0-9]{3}|5([0-4][0-9]{2}|5([0-2][0-9]|3[0-5]))))";
 
-			JTextField addressField = new JTextField();
 			JTextField portField = new JTextField();
 			Object[] message = { "Port:", portField };
 

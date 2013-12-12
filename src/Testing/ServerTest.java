@@ -26,7 +26,8 @@ public class ServerTest
      * that the correct operations are completed. Note that for these operations
      * to pass, all the datatype methods which depend on server interaction must
      * function properly. This test serves as a verification of functionality
-     * for both communication and datatype methods.
+     * for both communication and datatype methods. This is the end-to-end test
+     * for server-client functionality.
      * 
      * @throws IOException
      */
